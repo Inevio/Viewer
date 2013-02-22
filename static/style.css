@@ -1,0 +1,13 @@
+
+.wz-app-6{
+}
+
+.wz-app-6 .weevisor-main{
+	width: 300px;
+	height: 250px;
+	float: left;
+}
+
+.wz-app-6 .weevisor-frame{
+	transform-origin: left top;
+}
