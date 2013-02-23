@@ -1,12 +1,15 @@
 
 .wz-app-6{
+	background: url('https://static.weezeel.com/app/6/bg-img.png') left top repeat;
 }
 
-.wz-app-6 .weevisor-main{
-	width: 300px;
-	height: 250px;
-	float: left;
-	background: url('https://static.weezeel.com/app/6/bg-img.png') left top repeat;
+.wz-app-6 .wz-win-menu{
+	height: 29px;
+}
+
+.wz-app-6 .wz-win-menu-group{
+	padding-top: 9px;
+	padding-bottom: 4px;
 }
 
 .wz-app-6 .weevisor-frame{

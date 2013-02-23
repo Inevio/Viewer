@@ -2,10 +2,8 @@
 wz.app.addScript( 6, 'common', function( win ){
 
     var img     = $( '.weevisor-frame', win );
-    var winArea = $('.weevisor-main', win );
     var winBar  = $('.wz-win-menu', win );
-    var desktop = $('#wz-desktop');
-                        
+    var desktop = $('#wz-desktop');                        
 
     win.on( 'app-param', function( error, params ){
 
@@ -25,8 +23,6 @@ wz.app.addScript( 6, 'common', function( win ){
 
                         var imgHeight  = img.height();
                         var imgWidth   = img.width();
-                        var areaHeight = winArea.height();
-                        var areaWidth  = winArea.width();
                         var scale      = 1;
                         var niceLimit  = 100;
                         
@@ -44,23 +40,22 @@ wz.app.addScript( 6, 'common', function( win ){
                             
                         }
 
-                        img.css( 'scale', scale );
+                        win
+                            .delay(50)
+                            .transition({
 
-                        winArea.transition({
+                                width  : parseInt( imgWidth * scale, 10 ),
+                                height : parseInt( imgHeight * scale, 10 ) + winBar.outerHeight()
 
-                            width  : parseInt( img.width() * scale, 10 ) ,
-                            height : parseInt( img.height() * scale, 10 )
+                            }, 250, function(){
 
-                        }, 250 );
+                                img
+                                    .css( 'scale', scale )
+                                    .fadeIn();
+                                    
+                            });
 
-                        win.transition({
 
-                            width  : parseInt( img.width() * scale, 10 ) ,
-                            height : parseInt( img.height() * scale, 10 ) + winBar.outerHeight()
-
-                        }, 250, function(){
-                            img.fadeIn();
-                        });
 
                     });
 
