@@ -3,7 +3,9 @@ wz.app.addScript( 6, 'common', function( win ){
 
     var img     = $( '.weevisor-frame', win );
     var winBar  = $('.wz-win-menu', win );
-    var desktop = $('#wz-desktop');                        
+    var desktop = $('#wz-desktop');
+
+    win.addClass('wz-dragger');
 
     win.on( 'app-param', function( error, params ){
 
