@@ -1,20 +1,20 @@
 
 .wz-app-6{
-	background: url('https://static.weezeel.com/app/6/bg-img.png') left top repeat;
+    background: url('https://static.weezeel.com/app/6/bg-img.png') left top repeat;
 }
 
 .wz-app-6 .wz-win-menu{
-	height: 29px;
+    height: 29px;
 }
 
 .wz-app-6 .wz-win-menu-group{
-	padding-top: 9px;
-	padding-bottom: 4px;
+    padding-top: 9px;
+    padding-bottom: 4px;
 }
 
 .wz-app-6 .weevisor-frame{
-	-moz-transform-origin: left top;
-	-webkit-transform-origin: left top;
-	-o-transform-origin: left top;
-	transform-origin: left top;
+    -moz-transform-origin: left top;
+    -webkit-transform-origin: left top;
+    -o-transform-origin: left top;
+    transform-origin: left top;
 }
