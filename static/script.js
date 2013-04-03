@@ -4,6 +4,7 @@ wz.app.addScript( 6, 'common', function( win ){
     var img     = $( '.weevisor-frame', win );
     var winBar  = $('.wz-win-menu', win );
     var desktop = $('#wz-desktop');
+    var resize  = 0;
 
     win.addClass('wz-dragger');
 
@@ -65,6 +66,21 @@ wz.app.addScript( 6, 'common', function( win ){
 
         }
         
+    });
+
+    win.on( 'click', '.wz-win-maximize', function(){
+
+        clearTimeout( resize );
+        resize = setTimeout( function(){
+
+            var imgHeight = img.height();
+            var winHeight = win.height();
+            var barHeight = winBar.outerHeight( true );
+
+            img.css( 'margin-top', ( winHeight - barHeight - imgHeight ) / 2 );
+
+        }, 1 );
+
     });
 
 });
