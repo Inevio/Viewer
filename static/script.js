@@ -8,7 +8,8 @@ wz.app.addScript( 6, 'common', function( win ){
 
     win.addClass('wz-dragger');
 
-    win.on( 'app-param', function( error, params ){
+    win
+    .on( 'app-param', function( error, params ){
 
         if( params ){
             
@@ -66,20 +67,32 @@ wz.app.addScript( 6, 'common', function( win ){
 
         }
         
-    });
+    })
+    .on( 'wz-resize', function(){
 
-    win.on( 'click', '.wz-win-maximize', function(){
+        var winWidth  = win.width();
+        var winHeight = win.height() - winBar.outerHeight();
+        var imgWidth  = img.width();
+        var imgHeight = img.height();
 
-        clearTimeout( resize );
-        resize = setTimeout( function(){
+        var scale = [ ( winWidth / imgWidth ), ( winHeight / imgHeight ) ].sort()[ 0 ];
 
-            var imgHeight = img.height();
-            var winHeight = win.height();
-            var barHeight = winBar.outerHeight( true );
+        if( scale > 1 ){
+            scale = 1;
+        }
 
-            img.css( 'margin-top', ( winHeight - barHeight - imgHeight ) / 2 );
+        imgWidth  = imgWidth * scale;
+        imgHeight = imgHeight * scale;
 
-        }, 1 );
+        var marginHorizontal = Math.round( ( winWidth - imgWidth ) / 2, 10 );
+        var marginVertical   = Math.round( ( winHeight - imgHeight ) / 2, 10 );
+
+        img.css({
+
+            'margin' : marginVertical + 'px ' + marginHorizontal + 'px',
+            'scale'  : scale
+
+        });
 
     });
 
