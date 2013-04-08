@@ -1,5 +1,5 @@
 
-wz.app.addScript( 6, 'common', function( win ){
+wz.app.addScript( 6, 'common', function( win, app, lang, params ){
 
     var img     = $( '.weevisor-frame', win );
     var winBar  = $('.wz-win-menu', win );
