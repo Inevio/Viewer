@@ -2,13 +2,14 @@
 wz.app.addScript( 6, 'common', function( win, app, lang, params ){
 
     var img     = $( '.weevisor-frame', win );
-    var winBar  = $('.wz-win-menu', win );
-    var desktop = $('#wz-desktop');
+    var winBar  = $( '.wz-win-menu', win );
+    var desktop = $( '#wz-desktop' );
     var resize  = 0;
 
-    win.addClass('wz-dragger');
+    win.addClass( 'wz-dragger' );
 
     win
+
     .on( 'app-param', function( error, params ){
 
         if( params ){
@@ -20,46 +21,41 @@ wz.app.addScript( 6, 'common', function( win, app, lang, params ){
                     return false;
                 }
 
+                var imgHeight  = structure.metadata.exif.height;
+                var imgWidth   = structure.metadata.exif.width;
+                var scale      = 1;
+                var niceLimit  = 100;
+                
+                if( imgHeight > desktop.height() - niceLimit ){
+                    scale = ( desktop.height() - niceLimit ) / imgHeight;
+                }
+                
+                if( imgWidth > desktop.width() - niceLimit ){
+                    
+                    var tmpscale = ( desktop.width() - niceLimit ) / imgWidth;
+                    
+                    if( tmpscale < scale ){
+                        scale = tmpscale;
+                    }
+                    
+                }
+
+                win
+                    .animate({
+
+                        width  : parseInt( imgWidth * scale, 10 ),
+                        height : parseInt( imgHeight * scale, 10 ) + winBar.outerHeight()
+
+                    }, 250 );
+
                 img
                     .hide()
                     .attr( 'src', structure.thumbnails.original )
                     .on( 'load', function(){
 
-                        var imgHeight  = img.height();
-                        var imgWidth   = img.width();
-                        var scale      = 1;
-                        var niceLimit  = 100;
-                        
-                        if( imgHeight > desktop.height() - niceLimit ){
-                            scale = ( desktop.height() - niceLimit ) / imgHeight;
-                        }
-                        
-                        if( imgWidth > desktop.width() - niceLimit ){
-                            
-                            var tmpscale = ( desktop.width() - niceLimit ) / imgWidth;
-                            
-                            if( tmpscale < scale ){
-                                scale = tmpscale;
-                            }
-                            
-                        }
-
-                        win
-                            .delay(50)
-                            .transition({
-
-                                width  : parseInt( imgWidth * scale, 10 ),
-                                height : parseInt( imgHeight * scale, 10 ) + winBar.outerHeight()
-
-                            }, 250, function(){
-
-                                img
-                                    .css( 'scale', scale )
-                                    .fadeIn();
-                                    
-                            });
-
-
+                        img
+                            .css( 'scale', scale )
+                            .fadeIn();
 
                     });
 
@@ -68,6 +64,7 @@ wz.app.addScript( 6, 'common', function( win, app, lang, params ){
         }
         
     })
+
     .on( 'wz-resize', function(){
 
         var winWidth  = win.width();
