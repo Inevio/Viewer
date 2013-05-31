@@ -7,6 +7,7 @@ wz.app.addScript( 6, 'common', function( win, app, lang, params ){
     var resize  = 0;
 
     win.addClass( 'wz-dragger' );
+    win.hide();
 
     win
 
@@ -39,6 +40,15 @@ wz.app.addScript( 6, 'common', function( win, app, lang, params ){
                     }
                     
                 }
+
+                win.css({
+
+                    x : ( $( window ).width() / 2 ) - ( parseInt( imgWidth * scale, 10 ) / 2 ) - 96,
+                    y : ( $( window ).height() / 2 ) - ( parseInt( imgHeight * scale, 10 ) / 2 )
+
+                })
+
+                win.fadeIn();
 
                 win
                     .animate({
