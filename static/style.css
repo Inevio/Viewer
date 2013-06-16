@@ -1,18 +1,18 @@
 
-.wz-app-6{
+.wz-win{
     background: url('https://static.weezeel.com/app/6/bg-img.png') left top repeat;
 }
 
-.wz-app-6 .wz-win-menu{
+.wz-win-menu{
     height: 29px;
 }
 
-.wz-app-6 .wz-win-menu-group{
+.wz-win-menu-group{
     height: 27px;
     padding: 1px 20px;
 }
 
-.wz-app-6 .weevisor-frame{
+.weevisor-frame{
     -moz-transform-origin: left top;
     -webkit-transform-origin: left top;
     -o-transform-origin: left top;
