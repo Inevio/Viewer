@@ -7,7 +7,7 @@ wz.app.addScript( 6, 'common', function( win, app, lang, params ){
     var resize  = 0;
 
     win.addClass( 'wz-dragger' );
-    //win.hide();
+    win.css( 'display', 'none' );
 
     win
 
