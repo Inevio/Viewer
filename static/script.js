@@ -42,7 +42,7 @@ wz.app.addScript( 6, 'common', function( win, app, lang, params ){
 
             }, 250 );
 
-        if( params[0] === 'url' ){
+        if( params[1] === 'url' ){
 
             img
                 .css( 'scale', scale )
@@ -70,11 +70,11 @@ wz.app.addScript( 6, 'common', function( win, app, lang, params ){
 
     .on( 'app-param', function( error, params ){
 
-        if( params[0] === 'url' ){
+        if( params[1] === 'url' ){
 
             img
                 .hide()
-                .attr( 'src', params[1] )
+                .attr( 'src', params[0] )
                 .on( 'load', function(){
 
                     var imgWidth  = img.width();
@@ -86,7 +86,7 @@ wz.app.addScript( 6, 'common', function( win, app, lang, params ){
 
         }else if( params ){
 
-            wz.structure( params[1], function( error, structure ){
+            wz.structure( params[0], function( error, structure ){
 
                 if( error ){
                     alert( error );
