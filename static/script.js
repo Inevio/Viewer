@@ -1,6 +1,4 @@
 
-wz.app.addScript( 6, 'common', function( win, app, lang, params ){
-
     var img     = $( '.weevisor-frame', win );
     var winBar  = $( '.wz-win-menu', win );
     var desktop = $( '#wz-desktop' );
@@ -135,5 +133,3 @@ wz.app.addScript( 6, 'common', function( win, app, lang, params ){
         });
 
     });
-
-});
