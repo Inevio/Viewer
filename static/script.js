@@ -22,16 +22,10 @@
             
         }
 
-        win.css({
-
-            x : ( wz.tool.environmentWidth() / 2 ) - ( parseInt( imgWidth * scale, 10 ) / 2 ) - 96,
-            y : ( wz.tool.environmentHeight() / 2 ) - ( parseInt( imgHeight * scale, 10 ) / 2 )
-
-        });
-
-        win.transition({ opacity : 1 }, 400 );
-
         win
+            .deskitemX( ( wz.tool.environmentWidth() / 2 ) - ( parseInt( imgWidth * scale, 10 ) / 2 ) - 96 )
+            .deskitemY( ( wz.tool.environmentHeight() / 2 ) - ( parseInt( imgHeight * scale, 10 ) / 2 ) )
+            .transition({ opacity : 1 }, 400 )
             .animate({
 
                 width  : parseInt( imgWidth * scale, 10 ),
@@ -105,7 +99,7 @@
         
     })
 
-    .on( 'wz-resize', function(){
+    .on( 'wz-resize wz-maximize wz-unmaximize', function(){
 
         var winWidth  = win.width();
         var winHeight = win.height() - winBar.outerHeight();
