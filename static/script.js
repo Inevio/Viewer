@@ -1,7 +1,6 @@
 
     var img     = $( '.weevisor-frame', win );
     var winBar  = $( '.wz-win-menu', win );
-    var desktop = $( '#wz-desktop' );
     var resize  = 0;
 
     var loadImage = function( imgWidth, imgHeight ){
@@ -9,13 +8,13 @@
         var scale      = 1;
         var niceLimit  = 100;
         
-        if( imgHeight > desktop.height() - niceLimit ){
-            scale = ( desktop.height() - niceLimit ) / imgHeight;
+        if( imgHeight > wz.tool.desktopHeight() - niceLimit ){
+            scale = ( wz.tool.desktopHeight() - niceLimit ) / imgHeight;
         }
-        
-        if( imgWidth > desktop.width() - niceLimit ){
+
+        if( imgWidth > wz.tool.desktopWidth() - niceLimit ){
             
-            var tmpscale = ( desktop.width() - niceLimit ) / imgWidth;
+            var tmpscale = ( wz.tool.desktopWidth() - niceLimit ) / imgWidth;
             
             if( tmpscale < scale ){
                 scale = tmpscale;
@@ -25,8 +24,8 @@
 
         win.css({
 
-            x : ( $( window ).width() / 2 ) - ( parseInt( imgWidth * scale, 10 ) / 2 ) - 96,
-            y : ( $( window ).height() / 2 ) - ( parseInt( imgHeight * scale, 10 ) / 2 )
+            x : ( wz.tool.environmentWidth() / 2 ) - ( parseInt( imgWidth * scale, 10 ) / 2 ) - 96,
+            y : ( wz.tool.environmentHeight() / 2 ) - ( parseInt( imgHeight * scale, 10 ) / 2 )
 
         });
 
@@ -59,7 +58,7 @@
 
         }
 
-    }
+    };
 
     win.addClass( 'wz-dragger' );
     win.css( 'opacity', 0 );
@@ -75,8 +74,8 @@
                 .attr( 'src', params[0] )
                 .on( 'load', function(){
 
-                    var imgWidth  = img.width();
-                    var imgHeight = img.height();
+                    var imgWidth  = img[ 0 ].nativeWidth;
+                    var imgHeight = img[ 0 ].nativeHeight;
 
                     loadImage( imgWidth, imgHeight );
 
