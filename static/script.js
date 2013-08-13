@@ -68,8 +68,8 @@
                 .attr( 'src', params[0] )
                 .on( 'load', function(){
 
-                    var imgWidth  = img[ 0 ].nativeWidth;
-                    var imgHeight = img[ 0 ].nativeHeight;
+                    var imgWidth  = img[ 0 ].naturalWidth;
+                    var imgHeight = img[ 0 ].naturalHeight;
 
                     loadImage( imgWidth, imgHeight );
 
