@@ -3,16 +3,144 @@
     background: url('https://static.weezeel.com/app/6/bg-img.png') left top repeat;
 }
 
+.wz-win.pdf{
+	background: #EBEBEB;
+}
+
 .wz-win-menu{
-    height: 29px;
+
+    height: 40px;
+    box-shadow: 0 2px 4px rgba( 0, 0, 0, 0.15), inset 0 1px rgba( 255, 255, 255, 0.1); 
+    border: solid 1px #252525;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+
+    background-image: -webkit-linear-gradient( bottom, #2e2e2e, #383838 ); 
+    background-image: -moz-linear-gradient( bottom, #2e2e2e, #383838 ); 
+    background-image: -o-linear-gradient( bottom, #2e2e2e, #383838 ); 
+    background-image: linear-gradient( to top, #2e2e2e, #383838 );
 }
 
 .wz-win-menu-group{
     height: 23px;
-    padding: 4px 20px 3px;
+    padding: 8px 20px 7px;
+    margin-top: 1px;
+}
+
+.wz-win-menu-group.right{
+	border-right: none;
+    border-left: 1px solid rgba( 0, 0, 0, 0.2 );
+    box-shadow: -1px 0px 0px rgba( 255, 255, 255, 0.1 );
+}
+
+.weevisor-sidebar-button{
+	display: none;
+}
+
+.pdf .weevisor-sidebar-button{
+	display: block;
+	margin-left: 15px;
+	margin-top: 6px;
+}
+
+.weevisor-sidebar-button i{
+
+	width: 10px;
+	height: 14px;
+	display: block;
+
+	background: url('https://staticbeta.weezeel.com/app/6/sprite.png') no-repeat -28px 0;
+    background-size: 57px 15px;
+
+}
+
+.shown .weevisor-sidebar-button i{
+	background-position: -38px 0;
+}
+
+.weevisor-zoom-minus i{
+
+	width: 14px;
+	height: 15px;
+	display: block;
+
+	background: url('https://staticbeta.weezeel.com/app/6/sprite.png') no-repeat -14px 0;
+    background-size: 57px 15px;
+
+}
+
+.weevisor-zoom-plus i{
+
+	width: 14px;
+	height: 15px;
+	display: block;
+
+	background: url('https://staticbeta.weezeel.com/app/6/sprite.png') no-repeat 0 0;
+    background-size: 57px 15px;
+
+}
+
+.weevisor-title{
+	float: left;
+	color: #FEFEFE;
+	text-shadow: 0 1px 1px rgba( 0, 0, 0, 0.3 );
+	font-size: 13px;
+	margin-left: 10px;
+	margin-top: 14px;
+}
+
+.weevisor-zoom{
+	float: right;
+	font-size: 12px;
+	height: 12px;
+	width: 22px;
+	text-align: right;
+	padding: 2px;
+	margin-right: 2px;
+	margin-top: 12px;
+	border-radius: 2px;
+	box-shadow: 0 1px 0 rgba( 0, 0, 0, 0.1 ) inset, 0 0 0 1px #252525;
+}
+
+.weevisor-percent{
+	float: right;
+	color: #FEFEFE;
+	font-size: 12px;
+	margin-top: 15px;
+	margin-right: 15px;
+}
+
+.weevisor-zoom-minus{
+	margin-top: 6px;
+	margin-right: 5px;
+}
+
+.weevisor-zoom-plus{
+	margin-top: 6px;
+}
+
+.weevisor-content{
+	width: 100%;
+	float: left;
+	border: 1px solid #252525;
+	border-top: none;
+	border-radius: 0 0 3px 3px;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+.weevisor-sidebar{
+	width: 179px;
+	height: 100%;
+	float: left;
+	border-right: 1px solid #CACACA;
+	background: #F5F5F5;
 }
 
 .weevisor-frame{
+	float: left;
     -moz-transform-origin: left top;
     -webkit-transform-origin: left top;
     -o-transform-origin: left top;

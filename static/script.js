@@ -1,4 +1,4 @@
-
+/*
     var img     = $( '.weevisor-frame', win );
     var winBar  = $( '.wz-win-menu', win );
     var resize  = 0;
@@ -126,3 +126,4 @@
         });
 
     });
+*/
