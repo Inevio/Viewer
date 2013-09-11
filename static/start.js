@@ -7,10 +7,12 @@
 
         if( structure.mime === 'application/pdf' ){
 
+            /*
             win
                 .addClass('pdf')
                 .width( 775 )
                 .height( 500 );
+            */
 
         }else{
 
@@ -23,15 +25,22 @@
             var imgHeight  = structure.metadata.exif.imageHeight;
             var horizontal = false;
             
-            if( imgHeight > deskHeight - niceLimit - menuHeight ){                
+            if( imgHeight > ( deskHeight - niceLimit - menuHeight ) ){
+                console.log( 1 );
                 scale = ( deskHeight - niceLimit - menuHeight ) / imgHeight;
             }
 
+            console.log( imgWidth, deskWidth, niceLimit );
+
             if( imgWidth > deskWidth - niceLimit ){
+
+                console.log( 2 );
                 
                 var tmpscale = ( deskWidth - niceLimit ) / imgWidth;
                 
                 if( tmpscale < scale ){
+
+                    console.log( 3 );
 
                     scale      = tmpscale;
                     horizontal = true;
@@ -40,13 +49,8 @@
                 
             }
 
-            if( horizontal ){
-                win.width( parseInt( scale * imgWidth , 10 ) );
-            }else{
-                win.height( parseInt( scale * imgHeight, 10 ) + menuHeight );
-            }
+            wz.fit( win, ( imgWidth * scale ) - win.width(), ( imgHeight * scale ) - win.height() );
 
-            app.scale      = scale;
             app.horizontal = horizontal;
                 
         }

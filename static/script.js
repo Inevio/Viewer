@@ -1,9 +1,8 @@
-    
 // App = This
     var app = this;
 
 // Variables
-    var zone =  $( '.weevisor-images', win );
+    var zone = $( '.weevisor-images', win );
 
 // Private Methods
     var _loadImage = function( file ){
@@ -11,12 +10,22 @@
         var img = $( '<img />').attr( 'src', file.thumbnails.original );
 
         if( app.horizontal ){
-            img.width( file.metadata.exif.imageWidth * app.scale );
+
+            img.width( zone.width() );
+
+            app.scale = zone.width() / file.metadata.exif.imageWidth;
+
         }else{
-            img.height( file.metadata.exif.imageHeight * app.scale );
+
+            img.height( zone.height() );
+
+            app.scale = zone.width() / file.metadata.exif.imageWidth;
+
         }
         
         zone.append( img );
+
+        console.log( app.scale );
 
     };
 
