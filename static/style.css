@@ -1,10 +1,21 @@
 
 .wz-win{
-    background: url('https://static.weezeel.com/app/6/bg-img.png') left top repeat;
+    /*background: url('https://static.weezeel.com/app/6/bg-img.png') left top repeat;*/
+    background: #EBEBEB;
 }
 
 .wz-win.pdf{
 	background: #EBEBEB;
+}
+
+.wz-scroll-bar{
+	width: 5px;
+	background: transparent;
+}
+
+.wz-scroll-slider{
+	width: 5px;
+	background: rgba( 0, 0, 0, 0.2 );
 }
 
 .wz-win-menu{
@@ -132,7 +143,7 @@
 }
 
 .weevisor-sidebar{
-	width: 179px;
+	width: 180px;
 	height: 100%;
 	float: left;
 	border-right: 1px solid #CACACA;
@@ -145,4 +156,43 @@
     -webkit-transform-origin: left top;
     -o-transform-origin: left top;
     transform-origin: left top;
+}
+
+.weevisor-sidebar-page{
+	width: 100%;
+	float: left;
+	text-align: center;
+	margin-top: 12px;
+}
+
+.weevisor-sidebar-page img{
+	width: 156px;
+	height: 112px;
+	border: 1px solid #CACACA;
+	display: inline-block;
+}
+
+.weevisor-sidebar-page.selected img{
+	border: 1px solid #7EBE30;
+}
+
+.weevisor-sidebar-page span{
+	width: 100%;
+	display: inline-block;
+	font-size: 13px;
+	color: #666;
+}
+
+.weevisor-images{
+	float: left;
+	text-align: center;
+	width: 592px;
+}
+
+.weevisor-images img{
+	width: 554px;
+	height: 400px;
+	display: inline-block;
+	margin-top: 12px;
+	border: 1px solid #CACACA;
 }
