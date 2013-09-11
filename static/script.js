@@ -1,3 +1,54 @@
+    
+// App = This
+    var app = this;
+
+// Variables
+    var zone =  $( '.weevisor-images', win );
+
+// Private Methods
+    var _loadImage = function( file ){
+
+        var img = $( '<img />').attr( 'src', file.thumbnails.original );
+
+        if( app.horizontal ){
+            img.width( file.metadata.exif.imageWidth * app.scale );
+        }else{
+            img.height( file.metadata.exif.imageHeight * app.scale );
+        }
+        
+        zone.append( img );
+
+    };
+
+    var _loadPdf = function( file ){
+
+        var images = [];
+
+        if( $.isArray( file.formats.jpeg ) ){
+
+            for( var i in file.formats.jpeg ){
+                images.push( file.formats.jpeg[ i ].url );
+            }
+
+        }else{
+            images.push( file.formats.jpeg.url );
+        }
+
+        for( var i in images ){
+            zone.append( $( '<img />').attr( 'src', images[ i ] ) );
+        }
+
+        console.log( images );
+
+    };
+
+// Start load
+    if( win.hasClass('pdf') ){
+        _loadPdf( this.file );
+    }else{
+        _loadImage( this.file );
+    }
+
 /*
     var img     = $( '.weevisor-frame', win );
     var winBar  = $( '.wz-win-menu', win );

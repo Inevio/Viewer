@@ -4,9 +4,11 @@
     background: #EBEBEB;
 }
 
+/*
 .wz-win.pdf{
 	background: #EBEBEB;
 }
+*/
 
 .wz-scroll-bar{
 	width: 5px;
@@ -49,7 +51,7 @@
 	display: none;
 }
 
-.pdf .weevisor-sidebar-button{
+.wz-win.pdf .weevisor-sidebar-button{
 	display: block;
 	margin-left: 15px;
 	margin-top: 6px;
@@ -143,11 +145,16 @@
 }
 
 .weevisor-sidebar{
+	display: none;
 	width: 180px;
 	height: 100%;
 	float: left;
 	border-right: 1px solid #CACACA;
 	background: #F5F5F5;
+}
+
+.wz-win.pdf .weevisor-sidebar{
+	display: block;
 }
 
 .weevisor-frame{
@@ -186,10 +193,14 @@
 .weevisor-images{
 	float: left;
 	text-align: center;
-	width: 592px;
+	width: 100%;
 }
 
 .weevisor-images img{
+	display: inline-block;
+}
+
+.wz-win.pdf .weevisor-images img{
 	width: 554px;
 	height: 400px;
 	display: inline-block;
