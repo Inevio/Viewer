@@ -2,30 +2,27 @@
     var app = this;
 
 // Variables
-    var zone = $( '.weevisor-images', win );
+    var minus = $( '.weevisor-zoom-minus', win );
+    var plus  = $( '.weevisor-zoom-plus', win );
+    var zone  = $( '.weevisor-images', win );
+    var zoom  = $( '.weevisor-zoom', win );
+
+// Valid zoom
+    var validZoom = [ 1, 2, 3, 4, 6, 8, 10, 15, 20, 30, 40, 50, 75, 100, 150, 200, 300, 400, 500 ];
 
 // Private Methods
     var _loadImage = function( file ){
 
-        var img = $( '<img />').attr( 'src', file.thumbnails.original );
+        $( '<img />').attr( 'src', file.thumbnails.original ).appendTo( zone );
 
         if( app.horizontal ){
-
-            img.width( zone.width() );
-
             app.scale = zone.width() / file.metadata.exif.imageWidth;
-
         }else{
-
-            img.height( zone.height() );
-
-            app.scale = zone.width() / file.metadata.exif.imageWidth;
-
+            app.scale = zone.height() / file.metadata.exif.imageHeight;
         }
-        
-        zone.append( img );
 
-        console.log( app.scale );
+        _scaleImage( app.scale * 100 );
+        zoom.val( app.scale * 100 );
 
     };
 
@@ -50,6 +47,125 @@
         console.log( images );
 
     };
+
+    var _scaleImage = function( scale ){
+
+        scale = parseInt( scale, 10 );
+
+        if( isNaN( scale ) || scale <= 0 || scale > 500 ){
+            return false;
+        }
+
+        app.scale = scale / 100;
+
+        if( app.horizontal ){
+            $( 'img', zone ).width( parseInt( app.scale * app.file.metadata.exif.imageWidth, 10 ) );
+        }else{
+            $( 'img', zone ).height( parseInt( app.scale * app.file.metadata.exif.imageHeight, 10 ) );
+        }
+
+        _marginImage();
+
+    };
+
+    var _marginImage = function(){
+
+        var img   = $( 'img', zone );
+        var scale = ( zone.height() - img.height() ) / 2;
+
+        if( scale > 0 ){
+            img.css( 'margin-top', scale );
+        }
+
+    };
+
+    var _scaleButton = function( dir ){
+
+        if( app.zoom === -1 ){
+            
+            var i = 0;
+            var j = validZoom.length;
+
+            if( dir > 0 ){
+                
+                for( i = 0; i < j; i++ ){
+                    if( validZoom[ i ] > ( app.scale * 100 ) ) break;
+                }
+
+            }else{
+
+                for( i = 0; i < j; i++ ){
+                    if( validZoom[ i ] < ( app.scale * 100 ) && validZoom[ i + 1 ] > ( app.scale * 100 ) ) break;
+                }
+
+            }
+
+            app.zoom = i;
+
+            _scaleImage( validZoom[ app.zoom ] );
+            zoom.val( validZoom[ app.zoom ] );
+
+        }else if( validZoom[ app.zoom + dir ] ){
+
+            var newZoom  = app.zoom + dir;
+            var winScale = 0;
+
+            if( app.horizontal ){
+                winScale = parseInt( ( zone.width() / app.file.metadata.exif.imageWidth ) * 100, 10 );
+            }else{
+                winScale = parseInt( ( zone.height() / app.file.metadata.exif.imageHeight ) * 100, 10 );
+            }
+
+            if( dir > 0 && validZoom[ app.zoom ] < winScale && validZoom[ newZoom ] > winScale ){
+
+                app.zoom = -1;
+                newZoom  = winScale;
+
+            }else if( dir < 0 && validZoom[ app.zoom ] > winScale && validZoom[ newZoom ] < winScale ){
+
+                app.zoom = -1;
+                newZoom  = winScale;
+
+            }else{
+
+                app.zoom = newZoom;
+                newZoom  = validZoom[ app.zoom ];
+
+            }
+
+            _scaleImage( newZoom );
+            zoom.val( newZoom );
+
+        }
+
+    };
+
+// Events
+    win
+    .on( 'wz-resize', function(){
+        _marginImage();
+    });
+
+    minus
+    .on( 'click', function(){
+        _scaleButton( -1 );
+    });
+
+    plus
+    .on( 'click', function(){
+        _scaleButton( 1 );
+    });
+
+    zoom
+    .on( 'change', function(){
+
+        _scaleImage( zoom.val() );
+
+        zoom
+            .val( app.scale * 100 )
+            .blur(); // To Do -> Provoca que se vuelva a invocar el evento al dar a intro
+
+    });
 
 // Start load
     if( win.hasClass('pdf') ){
