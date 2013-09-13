@@ -73,9 +73,7 @@
         var img   = $( 'img', zone );
         var scale = ( zone.height() - img.height() ) / 2;
 
-        if( scale > 0 ){
-            img.css( 'margin-top', scale );
-        }
+        img.css( 'margin-top', scale > 0 ? scale : 0 );
 
     };
 
