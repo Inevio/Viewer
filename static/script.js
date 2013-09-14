@@ -11,6 +11,10 @@
     var validZoom = [ 1, 2, 3, 4, 6, 8, 10, 15, 20, 30, 40, 50, 75, 100, 150, 200, 300, 400, 500 ];
 
 // Private Methods
+    var _preciseDecimal = function( number ){
+        return parseFloat( number.toFixed( 2 ) );
+    };
+
     var _loadImage = function( file ){
 
         $( '<img />')
@@ -21,13 +25,13 @@
             });
 
             if( app.horizontal ){
-                app.scale = zone.width() / file.metadata.exif.imageWidth;
+                app.scale = _preciseDecimal( zone.width() / file.metadata.exif.imageWidth );
             }else{
-                app.scale = zone.height() / file.metadata.exif.imageHeight;
+                app.scale = _preciseDecimal( zone.height() / file.metadata.exif.imageHeight );
             }
 
-            _scaleImage( app.scale * 100 );
-            zoom.val( app.scale * 100 );
+            _scaleImage( _preciseDecimal( app.scale * 100 ) );
+            zoom.val( _preciseDecimal( app.scale * 100 ) );
 
     };
 
@@ -61,7 +65,7 @@
             return false;
         }
 
-        app.scale = scale / 100;
+        app.scale = _preciseDecimal( scale / 100 );
 
         if( app.horizontal ){
             $( 'img', zone ).width( parseInt( app.scale * app.file.metadata.exif.imageWidth, 10 ) );
@@ -114,9 +118,9 @@
             var winScale = 0;
 
             if( app.horizontal ){
-                winScale = parseInt( ( zone.width() / app.file.metadata.exif.imageWidth ) * 100, 10 );
+                winScale = _preciseDecimal( ( zone.width() / app.file.metadata.exif.imageWidth ) * 100 );
             }else{
-                winScale = parseInt( ( zone.height() / app.file.metadata.exif.imageHeight ) * 100, 10 );
+                winScale = _preciseDecimal( ( zone.height() / app.file.metadata.exif.imageHeight ) * 100 );
             }
 
             if( dir > 0 && validZoom[ app.zoom ] < winScale && validZoom[ newZoom ] > winScale ){
@@ -165,7 +169,7 @@
         _scaleImage( zoom.val() );
 
         zoom
-            .val( app.scale * 100 )
+            .val( _preciseDecimal( app.scale * 100 ) )
             .blur(); // To Do -> Provoca que se vuelva a invocar el evento al dar a intro
 
     });
