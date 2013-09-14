@@ -2,10 +2,12 @@
     var app = this;
 
 // Variables
-    var minus = $( '.weevisor-zoom-minus', win );
-    var plus  = $( '.weevisor-zoom-plus', win );
-    var zone  = $( '.weevisor-images', win );
-    var zoom  = $( '.weevisor-zoom', win );
+    var minus   = $( '.weevisor-zoom-minus', win );
+    var plus    = $( '.weevisor-zoom-plus', win );
+    var sidebar = $( '.weevisor-sidebar', win );
+    var thumb   = $( '.weevisor-sidebar-page.wz-prototype', win );
+    var zone    = $( '.weevisor-images', win );
+    var zoom    = $( '.weevisor-zoom', win );
 
 // Valid zoom
     var validZoom = [ 1, 2, 3, 4, 6, 8, 10, 15, 20, 30, 40, 50, 75, 100, 150, 200, 300, 400, 500 ];
@@ -49,8 +51,21 @@
             images.push( file.formats.jpeg.url );
         }
 
-        for( var i in images ){
+        var i = 0;
+        var j = images.length;
+        var k = null;
+
+        for( i = 0; i < j; i++ ){
+
             zone.append( $( '<img />').attr( 'src', images[ i ] ) );
+
+            k = thumb.clone().removeClass('wz-prototype');
+
+            k.find('img').attr( 'src', images[ i ] );
+            k.find('span').text( i + 1 );
+
+            sidebar.append( k );
+
         }
 
         console.log( images );

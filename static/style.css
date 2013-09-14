@@ -49,6 +49,9 @@
 
 .weevisor-sidebar-button{
 	display: none;
+	width: 0px;
+	border: none;
+	margin-left: 0px;
 }
 
 .wz-win.pdf .weevisor-sidebar-button{
@@ -101,6 +104,13 @@
 	font-size: 13px;
 	margin-left: 10px;
 	margin-top: 14px;
+	width: 200px;
+	height: 13px;
+	overflow: hidden;
+}
+
+.wz-win.pdf .weevisor-title{
+	width: 195px;
 }
 
 .weevisor-zoom{
@@ -169,8 +179,8 @@
 }
 
 .weevisor-sidebar-page img{
-	width: 156px;
-	height: 112px;
+	max-width: 156px;
+	max-height: 156px;
 	border: 1px solid #CACACA;
 	display: inline-block;
 }
