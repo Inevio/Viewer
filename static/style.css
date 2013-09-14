@@ -1,6 +1,5 @@
 
 .wz-win{
-    /*background: url('https://static.weezeel.com/app/6/bg-img.png') left top repeat;*/
     background: #EBEBEB;
     border: solid 1px #252525;
     border-top: none;
@@ -196,14 +195,25 @@
 	font-size: 0px;
 }
 
+.wz-win.pdf .weevisor-images{
+	padding: 0px 15px;
+	width: 440px;
+}
+
 .weevisor-images img{
 	display: inline-block;
 }
 
 .wz-win.pdf .weevisor-images img{
-	width: 554px;
-	height: 400px;
+	width: 100%;
 	display: inline-block;
 	margin-top: 12px;
 	border: 1px solid #CACACA;
+	box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+}
+
+.wz-win.pdf .weevisor-images img.last{
+	margin-bottom: 12px;
 }

@@ -171,7 +171,7 @@
     });
 
 // Start load
-    if( win.hasClass('pdf') ){
+    if( app.mode ){
         _loadPdf( this.file );
     }else{
         _loadImage( this.file );

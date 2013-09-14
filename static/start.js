@@ -11,14 +11,19 @@
 
         if( structure.mime === 'application/pdf' ){
 
-            /*
-            win
-                .addClass('pdf')
-                .width( 775 )
-                .height( 500 );
-            */
+            app.mode = 1;
+
+            win.addClass('pdf');
+
+            $( '.weevisor-images', win ).width( '-=' + $( '.weevisor-sidebar', win ).outerWidth() );
+
+            wz.fit( win, 775 - win.width(), 500 - win.height() );
 
         }else{
+
+            app.mode = 0;
+
+            $( '.weevisor-sidebar', win ).remove();
 
             var menuHeight   = $( '.wz-win-menu', win ).innerHeight();
             var deskWidth    = wz.tool.desktopWidth();
