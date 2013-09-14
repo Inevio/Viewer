@@ -60,7 +60,7 @@
                 newHeight = winMinHeight;
             }
 
-            wz.fit( win, newWidth - win.width(), newHeight - win.height() );
+            wz.fit( win, newWidth - win.width(), newHeight - win.height() + menuHeight );
 
             app.horizontal = horizontal;
                 

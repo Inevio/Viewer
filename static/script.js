@@ -13,16 +13,21 @@
 // Private Methods
     var _loadImage = function( file ){
 
-        $( '<img />').attr( 'src', file.thumbnails.original ).appendTo( zone );
+        $( '<img />')
+            .attr( 'src', file.thumbnails.original )
+            .appendTo( zone )
+            .on( 'load', function(){
+                _marginImage();
+            });
 
-        if( app.horizontal ){
-            app.scale = zone.width() / file.metadata.exif.imageWidth;
-        }else{
-            app.scale = zone.height() / file.metadata.exif.imageHeight;
-        }
+            if( app.horizontal ){
+                app.scale = zone.width() / file.metadata.exif.imageWidth;
+            }else{
+                app.scale = zone.height() / file.metadata.exif.imageHeight;
+            }
 
-        _scaleImage( app.scale * 100 );
-        zoom.val( app.scale * 100 );
+            _scaleImage( app.scale * 100 );
+            zoom.val( app.scale * 100 );
 
     };
 
