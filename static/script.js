@@ -54,10 +54,11 @@
         var i = 0;
         var j = images.length;
         var k = null;
+        var s = zone.width();
 
         for( i = 0; i < j; i++ ){
 
-            zone.append( $( '<img />').attr( 'src', images[ i ] ) );
+            zone.append( $( '<img />').attr( 'src', images[ i ] ).width( s ) );
 
             k = thumb.clone().removeClass('wz-prototype');
 
@@ -68,7 +69,14 @@
 
         }
 
-        console.log( images );
+        $( 'img:first', zone ).on( 'load', function(){
+
+            app.scale = _preciseDecimal( s / this.naturalWidth );
+
+            _detectPage();
+            zoom.val( _preciseDecimal( app.scale * 100 ) );
+
+        });
 
     };
 
@@ -90,6 +98,25 @@
 
         _marginImage();
 
+    };
+
+    var _scalePdf = function( scale ){
+        
+        scale = parseInt( scale, 10 );
+
+        if( isNaN( scale ) || scale <= 0 || scale > 500 ){
+            return false;
+        }
+
+        app.scale = _preciseDecimal( scale / 100 );
+        var value = zone.width();
+
+        $( 'img', zone ).width( function(){
+            return parseInt( app.scale * this.naturalWidth );
+        });
+
+        _detectPage()
+        
     };
 
     var _marginImage = function(){
@@ -124,8 +151,39 @@
 
             app.zoom = i;
 
-            _scaleImage( validZoom[ app.zoom ] );
-            zoom.val( validZoom[ app.zoom ] );
+            if( app.mode ){
+                _scalePdf( validZoom[ app.zoom ] );
+            }else{
+                _scaleImage( validZoom[ app.zoom ] );
+            }
+
+            zoom.val( _preciseDecimal( app.scale * 100 ) );
+
+        }else if( validZoom[ app.zoom + dir ] && app.mode ){
+
+            var newZoom  = app.zoom + dir;
+            var winScale = _preciseDecimal( ( zone.width() / $( 'img:first', zone )[ 0 ].naturalWidth ) ) * 100;
+
+            if( dir > 0 && validZoom[ app.zoom ] < winScale && validZoom[ newZoom ] > winScale ){
+
+                app.zoom = -1;
+                newZoom  = winScale;
+
+            }else if( dir < 0 && validZoom[ app.zoom ] > winScale && validZoom[ newZoom ] < winScale ){
+
+                app.zoom = -1;
+                newZoom  = winScale;
+
+            }else{
+
+                app.zoom = newZoom;
+                newZoom  = validZoom[ app.zoom ];
+
+            }
+
+            _scalePdf( newZoom );
+
+            zoom.val( _preciseDecimal( app.scale * 100 ) );
 
         }else if( validZoom[ app.zoom + dir ] ){
 
@@ -156,7 +214,39 @@
             }
 
             _scaleImage( newZoom );
-            zoom.val( newZoom );
+
+            zoom.val( _preciseDecimal( app.scale * 100 ) );
+
+        }
+
+    };
+
+    var _detectPage = function(){
+
+        var counter = 0;
+        var current = $( 'img:first', zone );
+
+        $( 'img', zone ).each( function(){
+
+            current = this;
+
+            if( counter + ( $( this ).outerHeight( true ) / 2 ) > zone[ 0 ].scrollTop ){
+                return false;
+            }
+
+            counter += $( this ).outerHeight( true );
+
+        });
+
+        current = $( current );
+
+        var sidebarPages = $( '.weevisor-sidebar-page', sidebar );
+        var tmp          = sidebarPages.filter( '.selected' );
+
+        if( tmp.index() === -1 || current.index() !== ( tmp.index() + 1 ) ){ // +1 por el prototipo
+
+            tmp.removeClass('selected')
+            sidebarPages.eq( current.index() + 1 ).addClass('selected');
 
         }
 
@@ -188,6 +278,15 @@
             .blur(); // To Do -> Provoca que se vuelva a invocar el evento al dar a intro
 
     });
+
+    if( app.mode ){
+
+        zone
+        .on( 'scroll', function(){
+            _detectPage();
+        });
+
+    }
 
 // Start load
     if( app.mode ){
