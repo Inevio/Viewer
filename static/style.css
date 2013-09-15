@@ -187,6 +187,7 @@
 
 .weevisor-sidebar-page.selected img{
 	border: 1px solid #7EBE30;
+	box-shadow: 0px 0px 2px #7EBE30;
 }
 
 .weevisor-sidebar-page span{

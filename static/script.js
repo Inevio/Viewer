@@ -249,6 +249,8 @@
 
         }
 
+        sidebar[ 0 ].scrollTop = tmp[ 0 ].offsetTop - parseInt( tmp.css('margin-top'), 10 );
+
         /*
         if( sidebar.height() + sidebar[ 0 ].scrollTop < tmp[ 0 ].offsetTop ){
             sidebar[ 0 ].scrollTop = tmp.outerHeight( true ) + tmp[ 0 ].offsetTop - sidebar.height() - sidebar[ 0 ].scrollTop;
