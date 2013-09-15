@@ -109,10 +109,9 @@
         }
 
         app.scale = _preciseDecimal( scale / 100 );
-        var value = zone.width();
 
         $( 'img', zone ).width( function(){
-            return parseInt( app.scale * this.naturalWidth );
+            return parseInt( app.scale * this.naturalWidth, 10 );
         });
 
         _detectPage()
@@ -246,16 +245,29 @@
         if( tmp.index() === -1 || current.index() !== ( tmp.index() + 1 ) ){ // +1 por el prototipo
 
             tmp.removeClass('selected')
-            sidebarPages.eq( current.index() + 1 ).addClass('selected');
+            tmp = sidebarPages.eq( current.index() + 1 ).addClass('selected');
 
         }
+
+        /*
+        if( sidebar.height() + sidebar[ 0 ].scrollTop < tmp[ 0 ].offsetTop ){
+            sidebar[ 0 ].scrollTop = tmp.outerHeight( true ) + tmp[ 0 ].offsetTop - sidebar.height() - sidebar[ 0 ].scrollTop;
+            //sidebar[ 0 ].scrollTop = tmp[ 0 ].offsetTop - sidebar.height() + tmp.outerHeight( true );
+        }
+
+        console.log( tmp[ 0 ], tmp[ 0 ].offsetTop, sidebar.height() + sidebar[ 0 ].scrollTop );
+        */
 
     };
 
 // Events
     win
-    .on( 'wz-resize', function(){
-        _marginImage();
+    .on( 'wz-resize wz-maximize wz-unmaximize', function(){
+
+        if( !app.mode ){
+            _marginImage();
+        }
+
     });
 
     minus
