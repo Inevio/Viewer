@@ -223,17 +223,18 @@
     var _detectPage = function(){
 
         var counter = 0;
-        var current = $( 'img:first', zone );
+        var images  = $( 'img', zone );
+        var current = images.first();
 
         $( 'img', zone ).each( function(){
 
-            current = this;
+            current = $(this);
 
-            if( counter + ( $( this ).outerHeight( true ) / 2 ) > zone[ 0 ].scrollTop ){
+            if( counter + ( current.outerHeight( true ) / 2 ) > zone[ 0 ].scrollTop ){
                 return false;
             }
 
-            counter += $( this ).outerHeight( true );
+            counter += current.outerHeight( true );
 
         });
 
@@ -244,21 +245,15 @@
 
         if( tmp.index() === -1 || current.index() !== ( tmp.index() + 1 ) ){ // +1 por el prototipo
 
-            tmp.removeClass('selected')
+            tmp.removeClass('selected');
             tmp = sidebarPages.eq( current.index() + 1 ).addClass('selected');
 
+            sidebar
+                .stop()
+                .clearQueue()
+                .animate( { scrollTop : tmp[ 0 ].offsetTop - parseInt( tmp.css('margin-top'), 10 ) }, 250 );
+
         }
-
-        sidebar[ 0 ].scrollTop = tmp[ 0 ].offsetTop - parseInt( tmp.css('margin-top'), 10 );
-
-        /*
-        if( sidebar.height() + sidebar[ 0 ].scrollTop < tmp[ 0 ].offsetTop ){
-            sidebar[ 0 ].scrollTop = tmp.outerHeight( true ) + tmp[ 0 ].offsetTop - sidebar.height() - sidebar[ 0 ].scrollTop;
-            //sidebar[ 0 ].scrollTop = tmp[ 0 ].offsetTop - sidebar.height() + tmp.outerHeight( true );
-        }
-
-        console.log( tmp[ 0 ], tmp[ 0 ].offsetTop, sidebar.height() + sidebar[ 0 ].scrollTop );
-        */
 
     };
 
@@ -269,6 +264,23 @@
         if( !app.mode ){
             _marginImage();
         }
+
+    });
+
+    sidebar
+    .on( 'click', '.weevisor-sidebar-page', function(){
+
+        $(this)
+            .addClass('selected')
+            .siblings('.selected')
+                .removeClass('selected');
+
+        var img = $( 'img', zone ).eq( $(this).index() - 1 );
+
+        zone
+            .stop()
+            .clearQueue()
+            .animate( { scrollTop : img[ 0 ].offsetTop - parseInt( img.css('margin-top') ) }, 250 );
 
     });
 
@@ -296,7 +308,7 @@
     if( app.mode ){
 
         zone
-        .on( 'scroll', function(){
+        .on( 'mousewheel', function(){
             _detectPage();
         });
 

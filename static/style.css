@@ -11,13 +11,23 @@
 }
 */
 
-.wz-scroll-bar{
+.wz-scroll-bar-vertical{
 	width: 5px;
 	background: transparent;
 }
 
-.wz-scroll-slider{
+.wz-scroll-bar-vertical .wz-scroll-slider{
 	width: 5px;
+	background: rgba( 0, 0, 0, 0.2 );
+}
+
+.wz-scroll-bar-horizontal{
+	height: 5px;
+	background: transparent;
+}
+
+.wz-scroll-bar-horizontal .wz-scroll-slider{
+	height: 5px;
 	background: rgba( 0, 0, 0, 0.2 );
 }
 
