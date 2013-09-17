@@ -226,6 +226,7 @@
 	height: 259px;
 	line-height: 0px;
 	font-size: 0px;
+	overflow: hidden;
 }
 
 .wz-win.pdf .weevisor-images{

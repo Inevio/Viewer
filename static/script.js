@@ -10,6 +10,8 @@
     var zone    = $( '.weevisor-images', win );
     var zoom    = $( '.weevisor-zoom', win );
 
+    var menuHeight = $( '.wz-win-menu', win ).outerHeight();
+
 // Valid zoom
     var validZoom = [ 1, 2, 3, 4, 6, 8, 10, 15, 20, 30, 40, 50, 75, 100, 150, 200, 300, 400, 500 ];
 
@@ -336,6 +338,59 @@
             _detectPage();
         });
 
+    }else{
+
+        zone
+        .on( 'mousewheel', function( e, d, x, y ){
+
+            var zoom    = app.zoom;
+            var scrollX = 0;
+            var scrollY = 0;
+            var resize  = ( this.scrollWidth - this.offsetWidth ) || ( this.scrollHeight - this.offsetHeight );
+
+            if( resize ){
+
+                /*
+                 *
+                 * Las siguientes variables se han puesto directamente en la fórmula para no declarar variables que solo se usan una vez
+                 *
+                 * var posX   = e.clientX - offset.left;
+                 * var posY   = e.clientY - offset.top - menuHeight;
+                 *
+                 * Es la posición del ratón dentro de la zona de la imagen
+                 *
+                 */
+
+                var offset = win.offset();
+                var perX   = ( this.scrollLeft + ( e.clientX - offset.left ) ) / this.scrollWidth;
+                var perY   = ( this.scrollTop + ( e.clientY - offset.top - menuHeight ) ) / this.scrollHeight;
+
+            }
+
+            if( y < 0 ){
+                _scaleButton( -1 );
+            }else if( y > 0 ){
+                _scaleButton( 1 );
+            }
+
+            // Si no se comprueba el zoom se pueden emular desplazamientos, esto lo previene
+            if( zoom !== app.zoom ){
+
+                if( resize ){
+
+                    scrollX = ( this.scrollWidth * perX ) - ( this.offsetWidth * perX );
+                    scrollY = ( this.scrollHeight * perY ) - ( this.offsetHeight * perY );
+
+                }
+
+                $(this)
+                    .scrollLeft( scrollX )
+                    .scrollTop( scrollY );
+
+            }
+
+        });
+
     }
 
 // Start load
@@ -345,132 +400,8 @@
         _loadImage( this.file );
     }
 
-/*
-    var img     = $( '.weevisor-frame', win );
-    var winBar  = $( '.wz-win-menu', win );
-    var resize  = 0;
+});
 
-    var loadImage = function( imgWidth, imgHeight ){
+(function(){ console.log( window );})();
 
-        var scale      = 1;
-        var niceLimit  = 100;
-        
-        if( imgHeight > wz.tool.desktopHeight() - niceLimit ){
-            scale = ( wz.tool.desktopHeight() - niceLimit ) / imgHeight;
-        }
-
-        if( imgWidth > wz.tool.desktopWidth() - niceLimit ){
-            
-            var tmpscale = ( wz.tool.desktopWidth() - niceLimit ) / imgWidth;
-            
-            if( tmpscale < scale ){
-                scale = tmpscale;
-            }
-            
-        }
-
-        win
-            .deskitemX( ( wz.tool.environmentWidth() / 2 ) - ( parseInt( imgWidth * scale, 10 ) / 2 ) - 96 )
-            .deskitemY( ( wz.tool.environmentHeight() / 2 ) - ( parseInt( imgHeight * scale, 10 ) / 2 ) )
-            .transition({ opacity : 1 }, 400 )
-            .animate({
-
-                width  : parseInt( imgWidth * scale, 10 ),
-                height : parseInt( imgHeight * scale, 10 ) + winBar.outerHeight()
-
-            }, 250 );
-
-        if( params[1] === 'url' ){
-
-            img
-                .css( 'scale', scale )
-                .fadeIn();
-
-        }else{
-
-            img
-                .on( 'load', function(){
-
-                    img
-                        .css( 'scale', scale )
-                        .fadeIn();
-
-                });
-
-        }
-
-    };
-
-    win.addClass( 'wz-dragger' );
-    win.css( 'opacity', 0 );
-
-    win
-
-    .on( 'app-param', function( error, params ){
-
-        if( params[1] === 'url' ){
-
-            img
-                .hide()
-                .attr( 'src', params[0] )
-                .on( 'load', function(){
-
-                    var imgWidth  = img[ 0 ].naturalWidth;
-                    var imgHeight = img[ 0 ].naturalHeight;
-
-                    loadImage( imgWidth, imgHeight );
-
-                });
-
-        }else if( params ){
-
-            wz.structure( params[0], function( error, structure ){
-
-                if( error ){
-                    alert( error );
-                    return false;
-                }
-
-                var imgWidth  = structure.metadata.exif.width;
-                var imgHeight = structure.metadata.exif.height;
-
-                img
-                    .hide()
-                    .attr( 'src', structure.thumbnails.original );
-
-                loadImage( imgWidth, imgHeight );
-                
-            });
-
-        }
-        
-    })
-
-    .on( 'wz-resize wz-maximize wz-unmaximize', function(){
-
-        var winWidth  = win.width();
-        var winHeight = win.height() - winBar.outerHeight();
-        var imgWidth  = img.width();
-        var imgHeight = img.height();
-
-        var scale = [ ( winWidth / imgWidth ), ( winHeight / imgHeight ) ].sort()[ 0 ];
-
-        if( scale > 1 ){
-            scale = 1;
-        }
-
-        imgWidth  = imgWidth * scale;
-        imgHeight = imgHeight * scale;
-
-        var marginHorizontal = Math.round( ( winWidth - imgWidth ) / 2, 10 );
-        var marginVertical   = Math.round( ( winHeight - imgHeight ) / 2, 10 );
-
-        img.css({
-
-            'margin' : marginVertical + 'px ' + marginHorizontal + 'px',
-            'scale'  : scale
-
-        });
-
-    });
-*/
+(function(){

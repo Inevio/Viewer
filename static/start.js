@@ -17,7 +17,9 @@
                 .addClass('pdf')
                 .addClass('sidebar');
 
-            $( '.weevisor-images', win ).width( '-=' + $( '.weevisor-sidebar', win ).outerWidth() );
+            $( '.weevisor-images', win )
+                .addClass('wz-scroll')
+                .width( '-=' + $( '.weevisor-sidebar', win ).outerWidth() );
 
             wz.fit( win, 775 - win.width(), 500 - win.height() );
 
