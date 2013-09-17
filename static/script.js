@@ -146,7 +146,11 @@
             }else{
 
                 for( i = 0; i < j; i++ ){
-                    if( validZoom[ i ] < ( app.scale * 100 ) && validZoom[ i + 1 ] > ( app.scale * 100 ) ) break;
+                    if( validZoom[ i ] <= ( app.scale * 100 ) && validZoom[ i + 1 ] > ( app.scale * 100 ) ) break;
+                }
+
+                if( validZoom[ i ] === ( app.scale * 100 ) && validZoom[ i - 1 ] ){
+                    i--;
                 }
 
             }
