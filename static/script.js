@@ -307,12 +307,94 @@
 
     minus
     .on( 'click', function(){
+
+        var zoom    = app.zoom;
+        var scrollX = 0;
+        var scrollY = 0;
+        var resize  = ( zone[ 0 ].scrollWidth - zone[ 0 ].offsetWidth ) || ( zone[ 0 ].scrollHeight - zone[ 0 ].offsetHeight );
+
+        if( resize ){
+
+            /*
+             *
+             * Las siguientes variables se han puesto directamente en la fórmula para no declarar variables que solo se usan una vez
+             *
+             * var posX   = e.clientX - offset.left;
+             * var posY   = e.clientY - offset.top - menuHeight;
+             *
+             * Es la posición del ratón dentro de la zona de la imagen
+             *
+             */
+
+            var perX = ( zone[ 0 ].scrollLeft + ( zone[ 0 ].offsetWidth / 2 ) ) / zone[ 0 ].scrollWidth;
+            var perY = ( zone[ 0 ].scrollTop + ( zone[ 0 ].offsetHeight / 2 ) ) / zone[ 0 ].scrollHeight;
+
+        }
+
         _scaleButton( -1 );
+
+        // Si no se comprueba el zoom se pueden emular desplazamientos, esto lo previene
+        if( zoom !== app.zoom ){
+
+            if( resize ){
+
+                scrollX = ( zone[ 0 ].scrollWidth * perX ) - ( zone[ 0 ].offsetWidth * perX );
+                scrollY = ( zone[ 0 ].scrollHeight * perY ) - ( zone[ 0 ].offsetHeight * perY );
+
+            }
+
+            zone
+                .scrollLeft( scrollX )
+                .scrollTop( scrollY );
+
+        }
+        
     });
 
     plus
     .on( 'click', function(){
+
+        var zoom    = app.zoom;
+        var scrollX = 0;
+        var scrollY = 0;
+        var resize  = ( zone[ 0 ].scrollWidth - zone[ 0 ].offsetWidth ) || ( zone[ 0 ].scrollHeight - zone[ 0 ].offsetHeight );
+
+        if( resize ){
+
+            /*
+             *
+             * Las siguientes variables se han puesto directamente en la fórmula para no declarar variables que solo se usan una vez
+             *
+             * var posX   = e.clientX - offset.left;
+             * var posY   = e.clientY - offset.top - menuHeight;
+             *
+             * Es la posición del ratón dentro de la zona de la imagen
+             *
+             */
+
+            var perX = ( zone[ 0 ].scrollLeft + ( zone[ 0 ].offsetWidth / 2 ) ) / zone[ 0 ].scrollWidth;
+            var perY = ( zone[ 0 ].scrollTop + ( zone[ 0 ].offsetHeight / 2 ) ) / zone[ 0 ].scrollHeight;
+
+        }
+
         _scaleButton( 1 );
+
+        // Si no se comprueba el zoom se pueden emular desplazamientos, esto lo previene
+        if( zoom !== app.zoom ){
+
+            if( resize ){
+
+                scrollX = ( zone[ 0 ].scrollWidth * perX ) - ( zone[ 0 ].offsetWidth * perX );
+                scrollY = ( zone[ 0 ].scrollHeight * perY ) - ( zone[ 0 ].offsetHeight * perY );
+
+            }
+
+            zone
+                .scrollLeft( scrollX )
+                .scrollTop( scrollY );
+
+        }
+        
     });
 
     toggle
@@ -329,6 +411,15 @@
             .val( _preciseDecimal( app.scale * 100 ) )
             .blur(); // To Do -> Provoca que se vuelva a invocar el evento al dar a intro
 
+    });
+
+    win
+    .key( 'numadd', function(){
+        plus.click();
+    })
+    
+    .key( 'numsubtract', function(){
+        minus.click();
     });
 
     if( app.mode ){
@@ -399,9 +490,3 @@
     }else{
         _loadImage( this.file );
     }
-
-});
-
-(function(){ console.log( window );})();
-
-(function(){
