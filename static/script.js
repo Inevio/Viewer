@@ -6,6 +6,7 @@
     var plus    = $( '.weevisor-zoom-plus', win );
     var sidebar = $( '.weevisor-sidebar', win );
     var thumb   = $( '.weevisor-sidebar-page.wz-prototype', win );
+    var toggle  = $( '.weevisor-sidebar-button', win );
     var zone    = $( '.weevisor-images', win );
     var zoom    = $( '.weevisor-zoom', win );
 
@@ -257,6 +258,24 @@
 
     };
 
+    var _toggleSidebar = function(){
+
+        if( win.hasClass('sidebar') ){
+            
+            sidebar.css( 'display', 'none' );
+            zone.css('width', '+=' + sidebar.width() );
+            win.removeClass('sidebar');
+
+        }else{
+
+            sidebar.css( 'display', 'block' );
+            zone.css('width', '-=' + sidebar.width() );
+            win.addClass('sidebar');
+
+        }
+
+    };
+
 // Events
     win
     .on( 'wz-resize wz-maximize wz-unmaximize', function(){
@@ -292,6 +311,11 @@
     plus
     .on( 'click', function(){
         _scaleButton( 1 );
+    });
+
+    toggle
+    .on( 'click', function(){
+        _toggleSidebar();
     });
 
     zoom

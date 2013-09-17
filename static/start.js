@@ -13,7 +13,9 @@
 
             app.mode = 1;
 
-            win.addClass('pdf');
+            win
+                .addClass('pdf')
+                .addClass('sidebar');
 
             $( '.weevisor-images', win ).width( '-=' + $( '.weevisor-sidebar', win ).outerWidth() );
 

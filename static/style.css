@@ -67,10 +67,22 @@
 .wz-win.pdf .weevisor-sidebar-button{
 	display: block;
 	margin-left: 15px;
-	margin-top: 6px;
+	margin-top: 7px;
+	width: 10px;
 }
 
 .weevisor-sidebar-button i{
+
+	width: 10px;
+	height: 14px;
+	display: block;
+
+	background: url('https://staticbeta.weezeel.com/app/6/sprite.png') no-repeat -38px 0;
+    background-size: 57px 15px;
+
+}
+
+.wz-win.sidebar .weevisor-sidebar-button i{
 
 	width: 10px;
 	height: 14px;
@@ -120,7 +132,7 @@
 }
 
 .wz-win.pdf .weevisor-title{
-	width: 195px;
+	width: 185px;
 }
 
 .weevisor-zoom{
