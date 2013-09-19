@@ -13,7 +13,7 @@
     var menuHeight = $( '.wz-win-menu', win ).outerHeight();
 
 // Valid zoom
-    var validZoom = [ 1, 2, 3, 4, 6, 8, 10, 15, 20, 30, 40, 50, 75, 100, 150, 200, 300, 400, 500 ];
+    var validZoom = [ 0.01, 0.02, 0.03, 0.04, 0.06, 0.08, 0.1, 0.15, 0.2, 0.3, 0.4, 0.5, 0.75, 1, 1.5, 2, 3, 4, 5 ];
 
 // Private Methods
     var _preciseDecimal = function( number ){
@@ -30,12 +30,12 @@
             });
 
             if( app.horizontal ){
-                app.scale = _preciseDecimal( zone.width() / file.metadata.exif.imageWidth );
+                app.scale = zone.width() / file.metadata.exif.imageWidth;
             }else{
-                app.scale = _preciseDecimal( zone.height() / file.metadata.exif.imageHeight );
+                app.scale = zone.height() / file.metadata.exif.imageHeight;
             }
 
-            _scaleImage( _preciseDecimal( app.scale * 100 ) );
+            _scaleImage( app.scale );
             zoom.val( _preciseDecimal( app.scale * 100 ) );
 
     };
@@ -85,19 +85,19 @@
 
     var _scaleImage = function( scale ){
 
-        scale = parseInt( scale, 10 );
+        scale = _preciseDecimal( parseFloat( scale, 10 ) );
 
-        if( isNaN( scale ) || scale <= 0 || scale > 500 ){
+        if( isNaN( scale ) || scale <= 0 || scale > 5 ){
             return false;
         }
 
-        app.scale = _preciseDecimal( scale / 100 );
-
         if( app.horizontal ){
-            $( 'img', zone ).width( parseInt( app.scale * app.file.metadata.exif.imageWidth, 10 ) );
+            $( 'img', zone ).width( parseInt( scale * app.file.metadata.exif.imageWidth, 10 ) );
         }else{
-            $( 'img', zone ).height( parseInt( app.scale * app.file.metadata.exif.imageHeight, 10 ) );
+            $( 'img', zone ).height( parseInt( scale * app.file.metadata.exif.imageHeight, 10 ) );
         }
+
+        app.scale = scale;
 
         _marginImage();
         _detectCursor();
@@ -141,16 +141,16 @@
             if( dir > 0 ){
                 
                 for( i = 0; i < j; i++ ){
-                    if( validZoom[ i ] > ( app.scale * 100 ) ) break;
+                    if( validZoom[ i ] > app.scale ) break;
                 }
 
             }else{
 
                 for( i = 0; i < j; i++ ){
-                    if( validZoom[ i ] <= ( app.scale * 100 ) && validZoom[ i + 1 ] > ( app.scale * 100 ) ) break;
+                    if( validZoom[ i ] <= app.scale && validZoom[ i + 1 ] > app.scale ) break;
                 }
 
-                if( validZoom[ i ] === ( app.scale * 100 ) && validZoom[ i - 1 ] ){
+                if( validZoom[ i ] === app.scale && validZoom[ i - 1 ] ){
                     i--;
                 }
 
@@ -198,12 +198,12 @@
             var winScale = 0;
 
             if( app.horizontal ){
-                winScale = _preciseDecimal( ( zone.width() / app.file.metadata.exif.imageWidth ) * 100 );
+                winScale = zone.width() / app.file.metadata.exif.imageWidth;
             }else{
-                winScale = _preciseDecimal( ( zone.height() / app.file.metadata.exif.imageHeight ) * 100 );
+                winScale = zone.height() / app.file.metadata.exif.imageHeight;
             }
 
-            if( dir > 0 && validZoom[ app.zoom ] < winScale && validZoom[ newZoom ] > winScale ){
+            if( dir > 0 && validZoom[ app.zoom ] < winScale && validZoom[ newZoom ] >= winScale ){
 
                 app.zoom = -1;
                 newZoom  = winScale;
@@ -287,7 +287,7 @@
 
         var img = $( 'img', zone );
 
-        if( img.height() < zone.height() && img.width() < zone.width() ){
+        if( img.height() <= zone.height() && img.width() <= zone.width() ){
             zone.addClass('hide-hand');
         }else{
             zone.removeClass('hide-hand');
@@ -376,7 +376,7 @@
         var scrollY = 0;
         var resize  = ( zone[ 0 ].scrollWidth - zone[ 0 ].offsetWidth ) || ( zone[ 0 ].scrollHeight - zone[ 0 ].offsetHeight );
 
-        if( resize ){
+        if( resize || app.zoom === -1 ){
 
             /*
              *
@@ -399,7 +399,7 @@
         // Si no se comprueba el zoom se pueden emular desplazamientos, esto lo previene
         if( zoom !== app.zoom ){
 
-            if( resize ){
+            if( resize || zoom === -1 ){
 
                 scrollX = ( zone[ 0 ].scrollWidth * perX ) - ( zone[ 0 ].offsetWidth * perX );
                 scrollY = ( zone[ 0 ].scrollHeight * perY ) - ( zone[ 0 ].offsetHeight * perY );
@@ -456,7 +456,7 @@
             var scrollY = 0;
             var resize  = ( this.scrollWidth - this.offsetWidth ) || ( this.scrollHeight - this.offsetHeight );
 
-            if( resize ){
+            if( resize || app.zoom === -1 ){
 
                 /*
                  *
@@ -484,7 +484,7 @@
             // Si no se comprueba el zoom se pueden emular desplazamientos, esto lo previene
             if( zoom !== app.zoom ){
 
-                if( resize ){
+                if( resize || zoom === -1 ){
 
                     scrollX = ( this.scrollWidth * perX ) - ( this.offsetWidth * perX );
                     scrollY = ( this.scrollHeight * perY ) - ( this.offsetHeight * perY );

@@ -25,53 +25,64 @@
 
         }else{
 
+            // Modo imagen
             app.mode = 0;
-
             $( '.weevisor-sidebar', win ).remove();
+            var niceLimit = 100;
 
-            var menuHeight   = $( '.wz-win-menu', win ).innerHeight();
+            // Calculamos a cuanto debe re-escalarse la ventana
+            var menuHeight   = $( '.wz-win-menu', win ).outerHeight();
             var deskWidth    = wz.tool.desktopWidth();
             var deskHeight   = wz.tool.desktopHeight();
-            var imgWidth     = structure.metadata.exif.imageWidth;
-            var imgHeight    = structure.metadata.exif.imageHeight;
-            var winMinWidth  = parseInt( win.css('min-width') );
-            var winMinHeight = parseInt( win.css('min-height') );
+            var imgWidth     = parseInt( structure.metadata.exif.imageWidth, 10 );
+            var imgHeight    = parseInt( structure.metadata.exif.imageHeight, 10 );
+            var winMinWidth  = parseInt( win.css( 'min-width' ), 10 );
+            var winMinHeight = parseInt( win.css( 'min-height' ), 10 );
 
-            var scale      = 1;
-            var niceLimit  = 100;
-            var horizontal = false;
-            
-            if( imgHeight > ( deskHeight - niceLimit - menuHeight ) ){
-                scale = ( deskHeight - niceLimit - menuHeight ) / imgHeight;
-            }
+            var hasScaleX = imgWidth  > deskWidth  - niceLimit;
+            var hasScaleY = imgHeight > deskHeight - niceLimit - menuHeight;
 
-            if( imgWidth > deskWidth - niceLimit ){
-                
-                var tmpscale = ( deskWidth - niceLimit ) / imgWidth;
-                
-                if( tmpscale < scale ){
+            var newWinWidth  = 0;
+            var newWinHeight = 0;
 
-                    scale      = tmpscale;
-                    horizontal = true;
+            if( hasScaleX || hasScaleY ){
+
+                var scaleX = ( ( deskWidth  - niceLimit ) / imgWidth ).toFixed( 2 );
+                var scaleY = ( ( deskHeight - niceLimit - menuHeight ) / imgHeight ).toFixed( 2 );
+                var scale  = 1;
+
+                if( scaleX < scaleY ){
+
+                    scale          = scaleX;
+                    app.horizontal = true;
+
+                }else{
+
+                    scale          = scaleY;
+                    app.horizontal = false;
 
                 }
-                
+
+                newWinWidth  = Math.ceil( imgWidth * scale );
+                newWinHeight = Math.ceil( ( imgHeight * scale ) + menuHeight );
+
+            }else{
+
+                app.horizontal = imgWidth > imgHeight;
+                newWinWidth    = imgWidth;
+                newWinHeight   = imgHeight + menuHeight;
+
             }
 
-            var newWidth  = imgWidth * scale;
-            var newHeight = imgHeight * scale;
-
-            if( newWidth < winMinWidth ){
-                newWidth = winMinWidth;
+            if( newWinWidth < winMinWidth ){
+                newWinWidth = winMinWidth;
             }
 
-            if( newHeight < winMinHeight ){
-                newHeight = winMinHeight;
+            if( newWinHeight < winMinHeight ){
+                newWinHeight = winMinHeight;
             }
 
-            wz.fit( win, newWidth - win.width(), newHeight - win.height() + menuHeight );
-
-            app.horizontal = horizontal;
+            wz.fit( win, newWinWidth - win.width(), newWinHeight - win.height() );
                 
         }
 
