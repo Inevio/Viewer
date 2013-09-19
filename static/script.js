@@ -100,6 +100,7 @@
         }
 
         _marginImage();
+        _detectCursor();
 
     };
 
@@ -278,6 +279,18 @@
             zone.css('width', '-=' + sidebar.width() );
             win.addClass('sidebar');
 
+        }
+
+    };
+
+    var _detectCursor = function(){
+
+        var img = $( 'img', zone );
+
+        if( img.height() < zone.height() && img.width() < zone.width() ){
+            zone.addClass('hide-hand');
+        }else{
+            zone.removeClass('hide-hand');
         }
 
     };

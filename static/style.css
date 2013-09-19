@@ -251,3 +251,7 @@
 .wz-win.pdf .weevisor-images img.last{
 	margin-bottom: 12px;
 }
+
+.weevisor-images.hide-hand, .weevisor-images.hide-hand *{
+	cursor: default;
+}
