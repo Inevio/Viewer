@@ -38,8 +38,8 @@
 
             "width"  : {
 
-                "default" : 300,
-                "min"     : 141,
+                "default" : 470,
+                "min"     : 470,
                 "max"     : 0
 
             },
@@ -47,13 +47,14 @@
             "height" : {
 
                 "default" : 300,
-                "min"     : 31,
+                "min"     : 300,
                 "max"     : 0
 
             },
 
             "css"    : [],
-            "script" : []
+            "script" : [],
+            "start"  : ["start.js"]
 
         }
 

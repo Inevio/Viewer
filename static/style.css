@@ -1,36 +1,48 @@
 
 .wz-win{
-    /*background: url('https://static.weezeel.com/app/6/bg-img.png') left top repeat;*/
     background: #EBEBEB;
+    border: solid 1px #252525;
+    border-top: none;
 }
 
+/*
 .wz-win.pdf{
     background: #EBEBEB;
 }
+*/
 
-.wz-scroll-bar{
+.wz-scroll-bar-vertical{
     width: 5px;
     background: transparent;
 }
 
-.wz-scroll-slider{
+.wz-scroll-bar-vertical .wz-scroll-slider{
     width: 5px;
+    background: rgba( 0, 0, 0, 0.2 );
+}
+
+.wz-scroll-bar-horizontal{
+    height: 5px;
+    background: transparent;
+}
+
+.wz-scroll-bar-horizontal .wz-scroll-slider{
+    height: 5px;
     background: rgba( 0, 0, 0, 0.2 );
 }
 
 .wz-win-menu{
 
     height: 40px;
-    box-shadow: 0 2px 4px rgba( 0, 0, 0, 0.15), inset 0 1px rgba( 255, 255, 255, 0.1); 
-    border: solid 1px #252525;
-    -moz-box-sizing: border-box;
-    -webkit-box-sizing: border-box;
-    box-sizing: border-box;
+    box-shadow: 0 2px 4px rgba( 0, 0, 0, 0.15), inset 0 1px rgba( 255, 255, 255, 0.1);
+    border-bottom: 1px solid #000;
 
     background-image: -webkit-linear-gradient( bottom, #2e2e2e, #383838 ); 
     background-image: -moz-linear-gradient( bottom, #2e2e2e, #383838 ); 
     background-image: -o-linear-gradient( bottom, #2e2e2e, #383838 ); 
     background-image: linear-gradient( to top, #2e2e2e, #383838 );
+    float: left;
+    width: 470px;
 }
 
 .wz-win-menu-group{
@@ -47,15 +59,30 @@
 
 .weevisor-sidebar-button{
     display: none;
+    width: 0px;
+    border: none;
+    margin-left: 0px;
 }
 
-.pdf .weevisor-sidebar-button{
+.wz-win.pdf .weevisor-sidebar-button{
     display: block;
     margin-left: 15px;
-    margin-top: 6px;
+    margin-top: 7px;
+    width: 10px;
 }
 
 .weevisor-sidebar-button i{
+
+    width: 10px;
+    height: 14px;
+    display: block;
+
+    background: url('https://staticbeta.weezeel.com/app/6/sprite.png') no-repeat -38px 0;
+    background-size: 57px 15px;
+
+}
+
+.wz-win.sidebar .weevisor-sidebar-button i{
 
     width: 10px;
     height: 14px;
@@ -99,6 +126,13 @@
     font-size: 13px;
     margin-left: 10px;
     margin-top: 14px;
+    width: 200px;
+    height: 13px;
+    overflow: hidden;
+}
+
+.wz-win.pdf .weevisor-title{
+    width: 185px;
 }
 
 .weevisor-zoom{
@@ -132,22 +166,23 @@
 }
 
 .weevisor-content{
-    width: 100%;
+    width: 470px;
+    height: 259px;
     float: left;
-    border: 1px solid #252525;
-    border-top: none;
     border-radius: 0 0 3px 3px;
-    -moz-box-sizing: border-box;
-    -webkit-box-sizing: border-box;
-    box-sizing: border-box;
 }
 
 .weevisor-sidebar{
+    display: none;
     width: 180px;
-    height: 100%;
+    height: 259px;
     float: left;
     border-right: 1px solid #CACACA;
     background: #F5F5F5;
+}
+
+.wz-win.pdf .weevisor-sidebar{
+    display: block;
 }
 
 .weevisor-frame{
@@ -166,14 +201,15 @@
 }
 
 .weevisor-sidebar-page img{
-    width: 156px;
-    height: 112px;
+    max-width: 156px;
+    max-height: 156px;
     border: 1px solid #CACACA;
     display: inline-block;
 }
 
 .weevisor-sidebar-page.selected img{
     border: 1px solid #7EBE30;
+    box-shadow: 0px 0px 2px #7EBE30;
 }
 
 .weevisor-sidebar-page span{
@@ -186,13 +222,36 @@
 .weevisor-images{
     float: left;
     text-align: center;
-    width: 592px;
+    width: 470px;
+    height: 259px;
+    line-height: 0px;
+    font-size: 0px;
+    overflow: hidden;
+}
+
+.wz-win.pdf .weevisor-images{
+    padding: 0px 15px;
+    width: 440px;
 }
 
 .weevisor-images img{
-    width: 554px;
-    height: 400px;
+    display: inline-block;
+}
+
+.wz-win.pdf .weevisor-images img{
+    width: 100%;
     display: inline-block;
     margin-top: 12px;
     border: 1px solid #CACACA;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+}
+
+.wz-win.pdf .weevisor-images img.last{
+    margin-bottom: 12px;
+}
+
+.weevisor-images.hide-hand, .weevisor-images.hide-hand *{
+    cursor: default;
 }

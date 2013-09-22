@@ -1,129 +1,509 @@
-/*
-    var img     = $( '.weevisor-frame', win );
-    var winBar  = $( '.wz-win-menu', win );
-    var resize  = 0;
+// App = This
+    var app = this;
 
-    var loadImage = function( imgWidth, imgHeight ){
+// Variables
+    var minus   = $( '.weevisor-zoom-minus', win );
+    var plus    = $( '.weevisor-zoom-plus', win );
+    var sidebar = $( '.weevisor-sidebar', win );
+    var thumb   = $( '.weevisor-sidebar-page.wz-prototype', win );
+    var toggle  = $( '.weevisor-sidebar-button', win );
+    var zone    = $( '.weevisor-images', win );
+    var zoom    = $( '.weevisor-zoom', win );
 
-        var scale      = 1;
-        var niceLimit  = 100;
-        
-        if( imgHeight > wz.tool.desktopHeight() - niceLimit ){
-            scale = ( wz.tool.desktopHeight() - niceLimit ) / imgHeight;
-        }
+    var menuHeight = $( '.wz-win-menu', win ).outerHeight();
 
-        if( imgWidth > wz.tool.desktopWidth() - niceLimit ){
-            
-            var tmpscale = ( wz.tool.desktopWidth() - niceLimit ) / imgWidth;
-            
-            if( tmpscale < scale ){
-                scale = tmpscale;
+// Valid zoom
+    var validZoom = [ 0.01, 0.02, 0.03, 0.04, 0.06, 0.08, 0.1, 0.15, 0.2, 0.3, 0.4, 0.5, 0.75, 1, 1.5, 2, 3, 4, 5 ];
+
+// Private Methods
+    var _preciseDecimal = function( number ){
+        return parseFloat( number.toFixed( 2 ) );
+    };
+
+    var _loadImage = function( file ){
+
+        $( '<img />')
+            .attr( 'src', file.thumbnails.original )
+            .appendTo( zone )
+            .on( 'load', function(){
+                _marginImage();
+            });
+
+            if( app.horizontal ){
+                app.scale = zone.width() / file.metadata.exif.imageWidth;
+            }else{
+                app.scale = zone.height() / file.metadata.exif.imageHeight;
             }
-            
-        }
 
-        win
-            .deskitemX( ( wz.tool.environmentWidth() / 2 ) - ( parseInt( imgWidth * scale, 10 ) / 2 ) - 96 )
-            .deskitemY( ( wz.tool.environmentHeight() / 2 ) - ( parseInt( imgHeight * scale, 10 ) / 2 ) )
-            .transition({ opacity : 1 }, 400 )
-            .animate({
+            _scaleImage( app.scale );
+            zoom.val( _preciseDecimal( app.scale * 100 ) );
 
-                width  : parseInt( imgWidth * scale, 10 ),
-                height : parseInt( imgHeight * scale, 10 ) + winBar.outerHeight()
+    };
 
-            }, 250 );
+    var _loadPdf = function( file ){
 
-        if( params[1] === 'url' ){
+        var images = [];
 
-            img
-                .css( 'scale', scale )
-                .fadeIn();
+        if( $.isArray( file.formats.jpeg ) ){
+
+            for( var i in file.formats.jpeg ){
+                images.push( file.formats.jpeg[ i ].url );
+            }
 
         }else{
+            images.push( file.formats.jpeg.url );
+        }
 
-            img
-                .on( 'load', function(){
+        var i = 0;
+        var j = images.length;
+        var k = null;
+        var s = zone.width();
 
-                    img
-                        .css( 'scale', scale )
-                        .fadeIn();
+        for( i = 0; i < j; i++ ){
 
-                });
+            zone.append( $( '<img />').attr( 'src', images[ i ] ).width( s ) );
+
+            k = thumb.clone().removeClass('wz-prototype');
+
+            k.find('img').attr( 'src', images[ i ] );
+            k.find('span').text( i + 1 );
+
+            sidebar.append( k );
+
+        }
+
+        $( 'img:first', zone ).on( 'load', function(){
+
+            app.scale = _preciseDecimal( s / this.naturalWidth );
+
+            _detectPage();
+            zoom.val( _preciseDecimal( app.scale * 100 ) );
+
+        });
+
+    };
+
+    var _scaleImage = function( scale ){
+
+        scale = _preciseDecimal( parseFloat( scale, 10 ) );
+
+        if( isNaN( scale ) || scale <= 0 || scale > 5 ){
+            return false;
+        }
+
+        if( app.horizontal ){
+            $( 'img', zone ).width( parseInt( scale * app.file.metadata.exif.imageWidth, 10 ) );
+        }else{
+            $( 'img', zone ).height( parseInt( scale * app.file.metadata.exif.imageHeight, 10 ) );
+        }
+
+        app.scale = scale;
+
+        _marginImage();
+        _detectCursor();
+
+    };
+
+    var _scalePdf = function( scale ){
+        
+        scale = parseInt( scale, 10 );
+
+        if( isNaN( scale ) || scale <= 0 || scale > 500 ){
+            return false;
+        }
+
+        app.scale = _preciseDecimal( scale / 100 );
+
+        $( 'img', zone ).width( function(){
+            return parseInt( app.scale * this.naturalWidth, 10 );
+        });
+
+        _detectPage()
+        
+    };
+
+    var _marginImage = function(){
+
+        var img   = $( 'img', zone );
+        var scale = ( zone.height() - img.height() ) / 2;
+
+        img.css( 'margin-top', scale > 0 ? scale : 0 );
+
+    };
+
+    var _scaleButton = function( dir ){
+
+        if( app.zoom === -1 ){
+            
+            var i = 0;
+            var j = validZoom.length;
+
+            if( dir > 0 ){
+                
+                for( i = 0; i < j; i++ ){
+                    if( validZoom[ i ] > app.scale ) break;
+                }
+
+            }else{
+
+                for( i = 0; i < j; i++ ){
+                    if( validZoom[ i ] <= app.scale && validZoom[ i + 1 ] > app.scale ) break;
+                }
+
+                if( validZoom[ i ] === app.scale && validZoom[ i - 1 ] ){
+                    i--;
+                }
+
+            }
+
+            app.zoom = i;
+
+            if( app.mode ){
+                _scalePdf( validZoom[ app.zoom ] );
+            }else{
+                _scaleImage( validZoom[ app.zoom ] );
+            }
+
+            zoom.val( _preciseDecimal( app.scale * 100 ) );
+
+        }else if( validZoom[ app.zoom + dir ] && app.mode ){
+
+            var newZoom  = app.zoom + dir;
+            var winScale = _preciseDecimal( ( zone.width() / $( 'img:first', zone )[ 0 ].naturalWidth ) ) * 100;
+
+            if( dir > 0 && validZoom[ app.zoom ] < winScale && validZoom[ newZoom ] > winScale ){
+
+                app.zoom = -1;
+                newZoom  = winScale;
+
+            }else if( dir < 0 && validZoom[ app.zoom ] > winScale && validZoom[ newZoom ] < winScale ){
+
+                app.zoom = -1;
+                newZoom  = winScale;
+
+            }else{
+
+                app.zoom = newZoom;
+                newZoom  = validZoom[ app.zoom ];
+
+            }
+
+            _scalePdf( newZoom );
+
+            zoom.val( _preciseDecimal( app.scale * 100 ) );
+
+        }else if( validZoom[ app.zoom + dir ] ){
+
+            var newZoom  = app.zoom + dir;
+            var winScale = 0;
+
+            if( app.horizontal ){
+                winScale = zone.width() / app.file.metadata.exif.imageWidth;
+            }else{
+                winScale = zone.height() / app.file.metadata.exif.imageHeight;
+            }
+
+            if( dir > 0 && validZoom[ app.zoom ] < winScale && validZoom[ newZoom ] >= winScale ){
+
+                app.zoom = -1;
+                newZoom  = winScale;
+
+            }else if( dir < 0 && validZoom[ app.zoom ] > winScale && validZoom[ newZoom ] < winScale ){
+
+                app.zoom = -1;
+                newZoom  = winScale;
+
+            }else{
+
+                app.zoom = newZoom;
+                newZoom  = validZoom[ app.zoom ];
+
+            }
+
+            _scaleImage( newZoom );
+
+            zoom.val( _preciseDecimal( app.scale * 100 ) );
 
         }
 
     };
 
-    win.addClass( 'wz-dragger' );
-    win.css( 'opacity', 0 );
+    var _detectPage = function(){
 
-    win
+        var counter = 0;
+        var images  = $( 'img', zone );
+        var current = images.first();
 
-    .on( 'app-param', function( error, params ){
+        $( 'img', zone ).each( function(){
 
-        if( params[1] === 'url' ){
+            current = $(this);
 
-            img
-                .hide()
-                .attr( 'src', params[0] )
-                .on( 'load', function(){
+            if( counter + ( current.outerHeight( true ) / 2 ) > zone[ 0 ].scrollTop ){
+                return false;
+            }
 
-                    var imgWidth  = img[ 0 ].naturalWidth;
-                    var imgHeight = img[ 0 ].naturalHeight;
-
-                    loadImage( imgWidth, imgHeight );
-
-                });
-
-        }else if( params ){
-
-            wz.structure( params[0], function( error, structure ){
-
-                if( error ){
-                    alert( error );
-                    return false;
-                }
-
-                var imgWidth  = structure.metadata.exif.width;
-                var imgHeight = structure.metadata.exif.height;
-
-                img
-                    .hide()
-                    .attr( 'src', structure.thumbnails.original );
-
-                loadImage( imgWidth, imgHeight );
-                
-            });
-
-        }
-        
-    })
-
-    .on( 'wz-resize wz-maximize wz-unmaximize', function(){
-
-        var winWidth  = win.width();
-        var winHeight = win.height() - winBar.outerHeight();
-        var imgWidth  = img.width();
-        var imgHeight = img.height();
-
-        var scale = [ ( winWidth / imgWidth ), ( winHeight / imgHeight ) ].sort()[ 0 ];
-
-        if( scale > 1 ){
-            scale = 1;
-        }
-
-        imgWidth  = imgWidth * scale;
-        imgHeight = imgHeight * scale;
-
-        var marginHorizontal = Math.round( ( winWidth - imgWidth ) / 2, 10 );
-        var marginVertical   = Math.round( ( winHeight - imgHeight ) / 2, 10 );
-
-        img.css({
-
-            'margin' : marginVertical + 'px ' + marginHorizontal + 'px',
-            'scale'  : scale
+            counter += current.outerHeight( true );
 
         });
 
+        current = $( current );
+
+        var sidebarPages = $( '.weevisor-sidebar-page', sidebar );
+        var tmp          = sidebarPages.filter( '.selected' );
+
+        if( tmp.index() === -1 || current.index() !== ( tmp.index() + 1 ) ){ // +1 por el prototipo
+
+            tmp.removeClass('selected');
+            tmp = sidebarPages.eq( current.index() + 1 ).addClass('selected');
+
+            sidebar
+                .stop()
+                .clearQueue()
+                .animate( { scrollTop : tmp[ 0 ].offsetTop - parseInt( tmp.css('margin-top'), 10 ) }, 250 );
+
+        }
+
+    };
+
+    var _toggleSidebar = function(){
+
+        if( win.hasClass('sidebar') ){
+            
+            sidebar.css( 'display', 'none' );
+            zone.css('width', '+=' + sidebar.width() );
+            win.removeClass('sidebar');
+
+        }else{
+
+            sidebar.css( 'display', 'block' );
+            zone.css('width', '-=' + sidebar.width() );
+            win.addClass('sidebar');
+
+        }
+
+    };
+
+    var _detectCursor = function(){
+
+        var img = $( 'img', zone );
+
+        if( img.height() <= zone.height() && img.width() <= zone.width() ){
+            zone.addClass('hide-hand');
+        }else{
+            zone.removeClass('hide-hand');
+        }
+
+    };
+
+// Events
+    win
+    .on( 'wz-resize wz-maximize wz-unmaximize', function(){
+
+        if( !app.mode ){
+            _marginImage();
+        }
+
     });
-*/
+
+    sidebar
+    .on( 'click', '.weevisor-sidebar-page', function(){
+
+        $(this)
+            .addClass('selected')
+            .siblings('.selected')
+                .removeClass('selected');
+
+        var img = $( 'img', zone ).eq( $(this).index() - 1 );
+
+        zone
+            .stop()
+            .clearQueue()
+            .animate( { scrollTop : img[ 0 ].offsetTop - parseInt( img.css('margin-top') ) }, 250 );
+
+    });
+
+    minus
+    .on( 'click', function(){
+
+        var zoom    = app.zoom;
+        var scrollX = 0;
+        var scrollY = 0;
+        var resize  = ( zone[ 0 ].scrollWidth - zone[ 0 ].offsetWidth ) || ( zone[ 0 ].scrollHeight - zone[ 0 ].offsetHeight );
+
+        if( resize ){
+
+            /*
+             *
+             * Las siguientes variables se han puesto directamente en la fórmula para no declarar variables que solo se usan una vez
+             *
+             * var posX   = e.clientX - offset.left;
+             * var posY   = e.clientY - offset.top - menuHeight;
+             *
+             * Es la posición del ratón dentro de la zona de la imagen
+             *
+             */
+
+            var perX = ( zone[ 0 ].scrollLeft + ( zone[ 0 ].offsetWidth / 2 ) ) / zone[ 0 ].scrollWidth;
+            var perY = ( zone[ 0 ].scrollTop + ( zone[ 0 ].offsetHeight / 2 ) ) / zone[ 0 ].scrollHeight;
+
+        }
+
+        _scaleButton( -1 );
+
+        // Si no se comprueba el zoom se pueden emular desplazamientos, esto lo previene
+        if( zoom !== app.zoom ){
+
+            if( resize ){
+
+                scrollX = ( zone[ 0 ].scrollWidth * perX ) - ( zone[ 0 ].offsetWidth * perX );
+                scrollY = ( zone[ 0 ].scrollHeight * perY ) - ( zone[ 0 ].offsetHeight * perY );
+
+            }
+
+            zone
+                .scrollLeft( scrollX )
+                .scrollTop( scrollY );
+
+        }
+        
+    });
+
+    plus
+    .on( 'click', function(){
+
+        var zoom    = app.zoom;
+        var scrollX = 0;
+        var scrollY = 0;
+        var resize  = ( zone[ 0 ].scrollWidth - zone[ 0 ].offsetWidth ) || ( zone[ 0 ].scrollHeight - zone[ 0 ].offsetHeight );
+
+        if( resize || app.zoom === -1 ){
+
+            /*
+             *
+             * Las siguientes variables se han puesto directamente en la fórmula para no declarar variables que solo se usan una vez
+             *
+             * var posX   = e.clientX - offset.left;
+             * var posY   = e.clientY - offset.top - menuHeight;
+             *
+             * Es la posición del ratón dentro de la zona de la imagen
+             *
+             */
+
+            var perX = ( zone[ 0 ].scrollLeft + ( zone[ 0 ].offsetWidth / 2 ) ) / zone[ 0 ].scrollWidth;
+            var perY = ( zone[ 0 ].scrollTop + ( zone[ 0 ].offsetHeight / 2 ) ) / zone[ 0 ].scrollHeight;
+
+        }
+
+        _scaleButton( 1 );
+
+        // Si no se comprueba el zoom se pueden emular desplazamientos, esto lo previene
+        if( zoom !== app.zoom ){
+
+            if( resize || zoom === -1 ){
+
+                scrollX = ( zone[ 0 ].scrollWidth * perX ) - ( zone[ 0 ].offsetWidth * perX );
+                scrollY = ( zone[ 0 ].scrollHeight * perY ) - ( zone[ 0 ].offsetHeight * perY );
+
+            }
+
+            zone
+                .scrollLeft( scrollX )
+                .scrollTop( scrollY );
+
+        }
+        
+    });
+
+    toggle
+    .on( 'click', function(){
+        _toggleSidebar();
+    });
+
+    zoom
+    .on( 'change', function(){
+
+        _scaleImage( zoom.val() );
+
+        zoom
+            .val( _preciseDecimal( app.scale * 100 ) )
+            .blur(); // To Do -> Provoca que se vuelva a invocar el evento al dar a intro
+
+    });
+
+    win
+    .key( 'numadd', function(){
+        plus.click();
+    })
+    
+    .key( 'numsubtract', function(){
+        minus.click();
+    });
+
+    if( app.mode ){
+
+        zone
+        .on( 'mousewheel', function(){
+            _detectPage();
+        });
+
+    }else{
+
+        zone
+        .on( 'mousewheel', function( e, d, x, y ){
+
+            var zoom    = app.zoom;
+            var scrollX = 0;
+            var scrollY = 0;
+            var resize  = ( this.scrollWidth - this.offsetWidth ) || ( this.scrollHeight - this.offsetHeight );
+
+            if( resize || app.zoom === -1 ){
+
+                /*
+                 *
+                 * Las siguientes variables se han puesto directamente en la fórmula para no declarar variables que solo se usan una vez
+                 *
+                 * var posX   = e.clientX - offset.left;
+                 * var posY   = e.clientY - offset.top - menuHeight;
+                 *
+                 * Es la posición del ratón dentro de la zona de la imagen
+                 *
+                 */
+
+                var offset = win.offset();
+                var perX   = ( this.scrollLeft + ( e.clientX - offset.left ) ) / this.scrollWidth;
+                var perY   = ( this.scrollTop + ( e.clientY - offset.top - menuHeight ) ) / this.scrollHeight;
+
+            }
+
+            if( y < 0 ){
+                _scaleButton( -1 );
+            }else if( y > 0 ){
+                _scaleButton( 1 );
+            }
+
+            // Si no se comprueba el zoom se pueden emular desplazamientos, esto lo previene
+            if( zoom !== app.zoom ){
+
+                if( resize || zoom === -1 ){
+
+                    scrollX = ( this.scrollWidth * perX ) - ( this.offsetWidth * perX );
+                    scrollY = ( this.scrollHeight * perY ) - ( this.offsetHeight * perY );
+
+                }
+
+                $(this)
+                    .scrollLeft( scrollX )
+                    .scrollTop( scrollY );
+
+            }
+
+        });
+
+    }
+
+// Start load
+    if( app.mode ){
+        _loadPdf( this.file );
+    }else{
+        _loadImage( this.file );
+    }
