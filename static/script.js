@@ -106,19 +106,19 @@
 
     var _scalePdf = function( scale ){
         
-        scale = parseInt( scale, 10 );
+        scale = _preciseDecimal( parseFloat( scale, 10 ) );
 
-        if( isNaN( scale ) || scale <= 0 || scale > 500 ){
+        if( isNaN( scale ) || scale <= 0 || scale > 5 ){
             return false;
         }
 
-        app.scale = _preciseDecimal( scale / 100 );
-
         $( 'img', zone ).width( function(){
-            return parseInt( app.scale * this.naturalWidth, 10 );
+            return parseInt( scale * this.naturalWidth, 10 );
         });
 
-        _detectPage()
+        app.scale = scale;
+
+        _detectPage();
         
     };
 
@@ -152,6 +152,10 @@
 
                 if( validZoom[ i ] === app.scale && validZoom[ i - 1 ] ){
                     i--;
+                }
+
+                if( i >= validZoom.length ){
+                    i = validZoom.length - 2;
                 }
 
             }
@@ -422,7 +426,15 @@
     zoom
     .on( 'change', function(){
 
-        _scaleImage( zoom.val() );
+        var value = _preciseDecimal( zoom.val() / 100 );
+
+        app.zoom = -1;
+
+        if( app.mode ){
+            _scalePdf( value );
+        }else{
+            _scaleImage( value );
+        }
 
         zoom
             .val( _preciseDecimal( app.scale * 100 ) )
