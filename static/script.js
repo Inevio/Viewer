@@ -242,21 +242,17 @@
 
             current = $(this);
 
-            if( counter + ( current.outerHeight( true ) / 2 ) > zone[ 0 ].scrollTop ){
+            if( ( parseInt( current.position().top, 10 ) + (current.outerHeight( true ) / 2 ) ) > 0 ){
                 return false;
             }
 
-            counter += current.outerHeight( true );
-
-        });
-
-        current = $( current );
+        });        
 
         var sidebarPages = $( '.weevisor-sidebar-page', sidebar );
         var tmp          = sidebarPages.filter( '.selected' );
 
-        if( tmp.index() === -1 || current.index() !== ( tmp.index() + 1 ) ){ // +1 por el prototipo
-
+        if( current.index() !== ( tmp.index() - 1 ) ){ // +1/-1 por el prototipo
+            
             tmp.removeClass('selected');
             tmp = sidebarPages.eq( current.index() + 1 ).addClass('selected');
 
@@ -303,7 +299,9 @@
     win
     .on( 'wz-resize wz-maximize wz-unmaximize', function(){
 
-        if( !app.mode ){
+        if( app.mode ){
+            _detectPage();
+        }else{
             _marginImage();
         }
 
