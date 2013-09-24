@@ -35,6 +35,10 @@
                 app.scale = zone.height() / file.metadata.exif.imageHeight;
             }
 
+            if( app.scale > 1 ){
+                app.scale = 1;
+            }
+
             _scaleImage( app.scale );
             zoom.val( _preciseDecimal( app.scale * 100 ) );
 
@@ -91,11 +95,9 @@
             return false;
         }
 
-        if( app.horizontal ){
-            $( 'img', zone ).width( parseInt( scale * app.file.metadata.exif.imageWidth, 10 ) );
-        }else{
-            $( 'img', zone ).height( parseInt( scale * app.file.metadata.exif.imageHeight, 10 ) );
-        }
+        $( 'img', zone )
+            .width( parseInt( scale * app.file.metadata.exif.imageWidth, 10 ) )
+            .height( parseInt( scale * app.file.metadata.exif.imageHeight, 10 ) );
 
         app.scale = scale;
 
@@ -112,9 +114,10 @@
             return false;
         }
 
-        $( 'img', zone ).width( function(){
-            return parseInt( scale * this.naturalWidth, 10 );
-        });
+        $( 'img', zone )
+            .width( function(){
+                return parseInt( scale * this.naturalWidth, 10 );
+            });
 
         app.scale = scale;
 
