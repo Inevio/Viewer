@@ -295,12 +295,16 @@
 
     };
 
+    var _inversePage = function(){
+        $( '.weevisor-sidebar-page.selected', sidebar ).trigger( 'click', true );
+    };
+
 // Events
     win
     .on( 'wz-resize wz-maximize wz-unmaximize', function(){
 
         if( app.mode ){
-            _detectPage();
+            _inversePage();
         }else{
             _marginImage();
         }
@@ -308,7 +312,7 @@
     });
 
     sidebar
-    .on( 'click', '.weevisor-sidebar-page', function(){
+    .on( 'click', '.weevisor-sidebar-page', function( e, noAnimate ){
 
         $(this)
             .addClass('selected')
@@ -319,8 +323,13 @@
 
         zone
             .stop()
-            .clearQueue()
-            .animate( { scrollTop : img[ 0 ].offsetTop - parseInt( img.css('margin-top') ) }, 250 );
+            .clearQueue();
+
+        if( noAnimate ){
+            zone.scrollTop( img[ 0 ].offsetTop - parseInt( img.css('margin-top') ) );
+        }else{
+            zone.animate( { scrollTop : img[ 0 ].offsetTop - parseInt( img.css('margin-top') ) }, 250 );
+        }
 
     });
 
