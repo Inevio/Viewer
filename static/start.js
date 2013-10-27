@@ -1,6 +1,9 @@
 
 // App = This
-    var app = this;
+// To Do -> Real var app    var app = this;
+var app = {};
+
+var win = $( this );
 
 // Load structure
     wz.structure( params[ 0 ], function( error, structure ){

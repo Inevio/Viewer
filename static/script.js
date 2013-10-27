@@ -1,7 +1,9 @@
 // App = This
-    var app = this;
+// To Do -> Real var app    var app = this;
+var app = {};
 
 // Variables
+    var win     = $( this );
     var minus   = $( '.weevisor-zoom-minus', win );
     var plus    = $( '.weevisor-zoom-plus', win );
     var sidebar = $( '.weevisor-sidebar', win );
