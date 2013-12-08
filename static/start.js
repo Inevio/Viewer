@@ -6,13 +6,13 @@ var app = {};
 var win = $( this );
 
 // Load structure
-    wz.structure( params[ 0 ], function( error, structure ){
+    if( params && params.command === 'openFile' ){
 
         // To Do -> Error
         
-        $( '.weevisor-title', win ).text( structure.name );
+        $( '.weevisor-title', win ).text( params.data.name );
 
-        if( structure.mime === 'application/pdf' ){
+        if( params.data.mime === 'application/pdf' ){
 
             app.mode = 1;
 
@@ -37,8 +37,8 @@ var win = $( this );
             var menuHeight   = $( '.wz-win-menu', win ).outerHeight();
             var deskWidth    = wz.tool.desktopWidth();
             var deskHeight   = wz.tool.desktopHeight();
-            var imgWidth     = parseInt( structure.metadata.exif.imageWidth, 10 );
-            var imgHeight    = parseInt( structure.metadata.exif.imageHeight, 10 );
+            var imgWidth     = parseInt( params.data.metadata.exif.imageWidth, 10 );
+            var imgHeight    = parseInt( params.data.metadata.exif.imageHeight, 10 );
             var winMinWidth  = parseInt( win.css( 'min-width' ), 10 );
             var winMinHeight = parseInt( win.css( 'min-height' ), 10 );
 
@@ -89,9 +89,9 @@ var win = $( this );
                 
         }
 
-        app.file = structure;
+        app.file = params.data;
         app.zoom = -1;
 
         start();
 
-    });
+    }
