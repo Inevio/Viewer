@@ -1,8 +1,4 @@
 
-// App = This
-// To Do -> Real var app    var app = this;
-var app = {};
-
 var win = $( this );
 
 // Load structure
@@ -14,7 +10,7 @@ var win = $( this );
 
         if( params.data.mime === 'application/pdf' ){
 
-            app.mode = 1;
+            wz.app.storage( 'mode', 1 );
 
             win
                 .addClass('pdf')
@@ -29,7 +25,7 @@ var win = $( this );
         }else{
 
             // Modo imagen
-            app.mode = 0;
+            wz.app.storage( 'mode', 0 );
             $( '.weevisor-sidebar', win ).remove();
             var niceLimit = 100;
 
@@ -56,13 +52,13 @@ var win = $( this );
 
                 if( scaleX < scaleY ){
 
-                    scale          = scaleX;
-                    app.horizontal = true;
+                    scale = scaleX;
+                    wz.app.storage( 'horizontal', true );
 
                 }else{
 
-                    scale          = scaleY;
-                    app.horizontal = false;
+                    scale = scaleY;
+                    wz.app.storage( 'horizontal', false );
 
                 }
 
@@ -71,7 +67,8 @@ var win = $( this );
 
             }else{
 
-                app.horizontal = imgWidth > imgHeight;
+                wz.app.storage( 'horizontal', imgWidth > imgHeight );
+
                 newWinWidth    = imgWidth;
                 newWinHeight   = imgHeight + menuHeight;
 
@@ -89,8 +86,8 @@ var win = $( this );
                 
         }
 
-        app.file = params.data;
-        app.zoom = -1;
+        wz.app.storage( 'file', params.data );
+        wz.app.storage( 'zoom', -1 );
 
         start();
 

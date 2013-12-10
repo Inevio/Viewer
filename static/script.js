@@ -1,6 +1,3 @@
-// App = This
-// To Do -> Real var app    var app = this;
-var app = {};
 
 // Variables
     var win     = $( this );
@@ -31,18 +28,18 @@ var app = {};
                 _marginImage();
             });
 
-            if( app.horizontal ){
-                app.scale = zone.width() / file.metadata.exif.imageWidth;
+            if( wz.app.storage('horizontal') ){
+                wz.app.storage( 'scale', zone.width() / file.metadata.exif.imageWidth );
             }else{
-                app.scale = zone.height() / file.metadata.exif.imageHeight;
+                wz.app.storage( 'scale', zone.height() / file.metadata.exif.imageHeight );
             }
 
-            if( app.scale > 1 ){
-                app.scale = 1;
+            if( wz.app.storage('scale') > 1 ){
+                wz.app.storage('scale', 1 );
             }
 
-            _scaleImage( app.scale );
-            zoom.val( _preciseDecimal( app.scale * 100 ) );
+            _scaleImage( wz.app.storage('scale') );
+            zoom.val( _preciseDecimal( wz.app.storage('scale') * 100 ) );
 
     };
 
@@ -80,10 +77,10 @@ var app = {};
 
         $( 'img:first', zone ).on( 'load', function(){
 
-            app.scale = _preciseDecimal( s / this.naturalWidth );
+            wz.app.storage( 'scale', _preciseDecimal( s / this.naturalWidth ) );
 
             _detectPage();
-            zoom.val( _preciseDecimal( app.scale * 100 ) );
+            zoom.val( _preciseDecimal( wz.app.storage('scale') * 100 ) );
 
         });
 
@@ -98,10 +95,10 @@ var app = {};
         }
 
         $( 'img', zone )
-            .width( parseInt( scale * app.file.metadata.exif.imageWidth, 10 ) )
-            .height( parseInt( scale * app.file.metadata.exif.imageHeight, 10 ) );
+            .width( parseInt( scale * wz.app.storage('file').metadata.exif.imageWidth, 10 ) )
+            .height( parseInt( scale * wz.app.storage('file').metadata.exif.imageHeight, 10 ) );
 
-        app.scale = scale;
+        wz.app.storage( 'scale', scale );
 
         _marginImage();
         _detectCursor();
@@ -121,7 +118,7 @@ var app = {};
                 return parseInt( scale * this.naturalWidth, 10 );
             });
 
-        app.scale = scale;
+        wz.app.storage( 'scale', scale );
 
         _detectPage();
         
@@ -138,7 +135,7 @@ var app = {};
 
     var _scaleButton = function( dir ){
 
-        if( app.zoom === -1 ){
+        if( wz.app.storage('zoom') === -1 ){
             
             var i = 0;
             var j = validZoom.length;
@@ -146,16 +143,16 @@ var app = {};
             if( dir > 0 ){
                 
                 for( i = 0; i < j; i++ ){
-                    if( validZoom[ i ] > app.scale ) break;
+                    if( validZoom[ i ] > wz.app.storage('scale') ) break;
                 }
 
             }else{
 
                 for( i = 0; i < j; i++ ){
-                    if( validZoom[ i ] <= app.scale && validZoom[ i + 1 ] > app.scale ) break;
+                    if( validZoom[ i ] <= wz.app.storage('scale') && validZoom[ i + 1 ] > wz.app.storage('scale') ) break;
                 }
 
-                if( validZoom[ i ] === app.scale && validZoom[ i - 1 ] ){
+                if( validZoom[ i ] === wz.app.storage('scale') && validZoom[ i - 1 ] ){
                     i--;
                 }
 
@@ -165,73 +162,73 @@ var app = {};
 
             }
 
-            app.zoom = i;
+            wz.app.storage( 'zoom', i );
 
-            if( app.mode ){
-                _scalePdf( validZoom[ app.zoom ] );
+            if( wz.app.storage('mode') ){
+                _scalePdf( validZoom[ wz.app.storage('zoom') ] );
             }else{
-                _scaleImage( validZoom[ app.zoom ] );
+                _scaleImage( validZoom[ wz.app.storage('zoom') ] );
             }
 
-            zoom.val( _preciseDecimal( app.scale * 100 ) );
+            zoom.val( _preciseDecimal( wz.app.storage('scale') * 100 ) );
 
-        }else if( validZoom[ app.zoom + dir ] && app.mode ){
+        }else if( validZoom[ wz.app.storage('zoom') + dir ] && wz.app.storage('mode') ){
 
-            var newZoom  = app.zoom + dir;
+            var newZoom  = wz.app.storage('zoom') + dir;
             var winScale = _preciseDecimal( ( zone.width() / $( 'img:first', zone )[ 0 ].naturalWidth ) ) * 100;
 
-            if( dir > 0 && validZoom[ app.zoom ] < winScale && validZoom[ newZoom ] > winScale ){
+            if( dir > 0 && validZoom[ wz.app.storage('zoom') ] < winScale && validZoom[ newZoom ] > winScale ){
 
-                app.zoom = -1;
-                newZoom  = winScale;
+                wz.app.storage( 'zoom', -1 );
+                newZoom = winScale;
 
-            }else if( dir < 0 && validZoom[ app.zoom ] > winScale && validZoom[ newZoom ] < winScale ){
+            }else if( dir < 0 && validZoom[ wz.app.storage('zoom') ] > winScale && validZoom[ newZoom ] < winScale ){
 
-                app.zoom = -1;
-                newZoom  = winScale;
+                wz.app.storage( 'zoom', -1 );
+                newZoom = winScale;
 
             }else{
 
-                app.zoom = newZoom;
-                newZoom  = validZoom[ app.zoom ];
+                wz.app.storage( 'zoom', newZoom );
+                newZoom = validZoom[ wz.app.storage('zoom') ];
 
             }
 
             _scalePdf( newZoom );
 
-            zoom.val( _preciseDecimal( app.scale * 100 ) );
+            zoom.val( _preciseDecimal( wz.app.storage('scale') * 100 ) );
 
-        }else if( validZoom[ app.zoom + dir ] ){
+        }else if( validZoom[ wz.app.storage('zoom') + dir ] ){
 
-            var newZoom  = app.zoom + dir;
+            var newZoom  = wz.app.storage('zoom') + dir;
             var winScale = 0;
 
-            if( app.horizontal ){
-                winScale = zone.width() / app.file.metadata.exif.imageWidth;
+            if( wz.app.storage('horizontal') ){
+                winScale = zone.width() / wz.app.storage('file').metadata.exif.imageWidth;
             }else{
-                winScale = zone.height() / app.file.metadata.exif.imageHeight;
+                winScale = zone.height() / wz.app.storage('file').metadata.exif.imageHeight;
             }
 
-            if( dir > 0 && validZoom[ app.zoom ] < winScale && validZoom[ newZoom ] >= winScale ){
+            if( dir > 0 && validZoom[ wz.app.storage('zoom') ] < winScale && validZoom[ newZoom ] >= winScale ){
 
-                app.zoom = -1;
-                newZoom  = winScale;
+                wz.app.storage( 'zoom', -1 );
+                newZoom = winScale;
 
-            }else if( dir < 0 && validZoom[ app.zoom ] > winScale && validZoom[ newZoom ] < winScale ){
+            }else if( dir < 0 && validZoom[ wz.app.storage('zoom') ] > winScale && validZoom[ newZoom ] < winScale ){
 
-                app.zoom = -1;
-                newZoom  = winScale;
+                wz.app.storage( 'zoom', -1 );
+                newZoom = winScale;
 
             }else{
 
-                app.zoom = newZoom;
-                newZoom  = validZoom[ app.zoom ];
+                wz.app.storage( 'zoom', newZoom );
+                newZoom = validZoom[ wz.app.storage('zoom') ];
 
             }
 
             _scaleImage( newZoom );
 
-            zoom.val( _preciseDecimal( app.scale * 100 ) );
+            zoom.val( _preciseDecimal( wz.app.storage('scale') * 100 ) );
 
         }
 
@@ -308,7 +305,7 @@ var app = {};
     win
     .on( 'wz-resize wz-maximize wz-unmaximize', function(){
 
-        if( app.mode ){
+        if( wz.app.storage('mode') ){
             _inversePage();
         }else{
             _marginImage();
@@ -341,7 +338,7 @@ var app = {};
     minus
     .on( 'click', function(){
 
-        var zoom    = app.zoom;
+        var zoom    = wz.app.storage('zoom');
         var scrollX = 0;
         var scrollY = 0;
         var resize  = ( zone[ 0 ].scrollWidth - zone[ 0 ].offsetWidth ) || ( zone[ 0 ].scrollHeight - zone[ 0 ].offsetHeight );
@@ -367,7 +364,7 @@ var app = {};
         _scaleButton( -1 );
 
         // Si no se comprueba el zoom se pueden emular desplazamientos, esto lo previene
-        if( zoom !== app.zoom ){
+        if( zoom !== wz.app.storage('zoom') ){
 
             if( resize ){
 
@@ -387,12 +384,12 @@ var app = {};
     plus
     .on( 'click', function(){
 
-        var zoom    = app.zoom;
+        var zoom    = wz.app.storage('zoom');
         var scrollX = 0;
         var scrollY = 0;
         var resize  = ( zone[ 0 ].scrollWidth - zone[ 0 ].offsetWidth ) || ( zone[ 0 ].scrollHeight - zone[ 0 ].offsetHeight );
 
-        if( resize || app.zoom === -1 ){
+        if( resize || wz.app.storage('zoom') === -1 ){
 
             /*
              *
@@ -413,7 +410,7 @@ var app = {};
         _scaleButton( 1 );
 
         // Si no se comprueba el zoom se pueden emular desplazamientos, esto lo previene
-        if( zoom !== app.zoom ){
+        if( zoom !== wz.app.storage('zoom') ){
 
             if( resize || zoom === -1 ){
 
@@ -440,16 +437,16 @@ var app = {};
 
         var value = _preciseDecimal( zoom.val() / 100 );
 
-        app.zoom = -1;
+        wz.app.storage( 'zoom', -1 );
 
-        if( app.mode ){
+        if( wz.app.storage('mode') ){
             _scalePdf( value );
         }else{
             _scaleImage( value );
         }
 
         zoom
-            .val( _preciseDecimal( app.scale * 100 ) )
+            .val( _preciseDecimal( wz.app.storage('scale') * 100 ) )
             .blur(); // To Do -> Provoca que se vuelva a invocar el evento al dar a intro
 
     });
@@ -463,7 +460,7 @@ var app = {};
         minus.click();
     });
 
-    if( app.mode ){
+    if( wz.app.storage('mode') ){
 
         zone
         .on( 'mousewheel', function(){
@@ -475,12 +472,12 @@ var app = {};
         zone
         .on( 'mousewheel', function( e, d, x, y ){
 
-            var zoom    = app.zoom;
+            var zoom    = wz.app.storage('zoom');
             var scrollX = 0;
             var scrollY = 0;
             var resize  = ( this.scrollWidth - this.offsetWidth ) || ( this.scrollHeight - this.offsetHeight );
 
-            if( resize || app.zoom === -1 ){
+            if( resize || wz.app.storage('zoom') === -1 ){
 
                 /*
                  *
@@ -506,7 +503,7 @@ var app = {};
             }
 
             // Si no se comprueba el zoom se pueden emular desplazamientos, esto lo previene
-            if( zoom !== app.zoom ){
+            if( zoom !== wz.app.storage('zoom') ){
 
                 if( resize || zoom === -1 ){
 
@@ -526,8 +523,8 @@ var app = {};
     }
 
 // Start load
-    if( app.mode ){
-        _loadPdf( this.file );
+    if( wz.app.storage('mode') ){
+        _loadPdf( wz.app.storage('file') );
     }else{
-        _loadImage( this.file );
+        _loadImage( wz.app.storage('file') );
     }
