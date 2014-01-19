@@ -303,7 +303,7 @@
 
 // Events
     win
-    .on( 'wz-resize wz-maximize wz-unmaximize', function(){
+    .on( 'ui-view-resize ui-view-maximize ui-view-unmaximize', function(){
 
         if( wz.app.storage('mode') ){
             _inversePage();
