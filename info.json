@@ -67,7 +67,7 @@
 
     "permission" : {
 
-        "structure" : {
+        "fs" : {
 
             "read" : true
 
