@@ -9,7 +9,7 @@
     var zone    = $( '.weevisor-images', win );
     var zoom    = $( '.weevisor-zoom', win );
 
-    var menuHeight = $( '.wz-win-menu', win ).outerHeight();
+    var menuHeight = $( '.wz-view-menu', win ).outerHeight();
 
 // Valid zoom
     var validZoom = [ 0.01, 0.02, 0.03, 0.04, 0.06, 0.08, 0.1, 0.15, 0.2, 0.3, 0.4, 0.5, 0.75, 1, 1.5, 2, 3, 4, 5 ];

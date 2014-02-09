@@ -1,11 +1,11 @@
 
-.wz-win{
+.wz-view{
     background: #EBEBEB;
     border: solid 1px #252525;
 }
 
 /*
-.wz-win.pdf{
+.wz-view.pdf{
     background: #EBEBEB;
 }
 */
@@ -30,7 +30,7 @@
     background: rgba( 0, 0, 0, 0.2 );
 }
 
-.wz-win-menu{
+.wz-view-menu{
 
     height: 40px;
     box-shadow: 0 2px 4px rgba( 0, 0, 0, 0.1), inset 0 1px rgba( 255, 255, 255, 0.15);
@@ -45,17 +45,17 @@
     width: 470px;
 }
 
-.wz-win.wz-win-maximized .wz-win-menu{
+.wz-view.wz-view-maximized .wz-view-menu{
     box-shadow: 0 2px 4px rgba( 0, 0, 0, 0.1), inset 0 1px rgba( 255, 255, 255, 0.1);
 }
 
-.wz-win-menu-group{
+.wz-view-menu-group{
     height: 23px;
     padding: 8px 20px;
     margin-top: 1px;
 }
 
-.wz-win-menu-group.right{
+.wz-view-menu-group.right{
     border-right: none;
     border-left: 1px solid rgba( 0, 0, 0, 0.2 );
     box-shadow: -1px 0px 0px rgba( 255, 255, 255, 0.1 );
@@ -68,7 +68,7 @@
     margin-left: 0px;
 }
 
-.wz-win.pdf .weevisor-sidebar-button{
+.wz-view.pdf .weevisor-sidebar-button{
     display: block;
     margin-left: 15px;
     margin-top: 7px;
@@ -86,7 +86,7 @@
 
 }
 
-.wz-win.sidebar .weevisor-sidebar-button i{
+.wz-view.sidebar .weevisor-sidebar-button i{
 
     width: 10px;
     height: 14px;
@@ -135,7 +135,7 @@
     overflow: hidden;
 }
 
-.wz-win.pdf .weevisor-title{
+.wz-view.pdf .weevisor-title{
     width: 185px;
 }
 
@@ -185,7 +185,7 @@
     background: #F5F5F5;
 }
 
-.wz-win.pdf .weevisor-sidebar{
+.wz-view.pdf .weevisor-sidebar{
     display: block;
 }
 
@@ -233,7 +233,7 @@
     overflow: hidden;
 }
 
-.wz-win.pdf .weevisor-images{
+.wz-view.pdf .weevisor-images{
     padding: 0px 15px;
     width: 440px;
 }
@@ -242,7 +242,7 @@
     display: inline-block;
 }
 
-.wz-win.pdf .weevisor-images img{
+.wz-view.pdf .weevisor-images img{
     width: 100%;
     display: inline-block;
     margin-top: 12px;
@@ -252,7 +252,7 @@
     -webkit-box-sizing: border-box;
 }
 
-.wz-win.pdf .weevisor-images img.last{
+.wz-view.pdf .weevisor-images img.last{
     margin-bottom: 12px;
 }
 

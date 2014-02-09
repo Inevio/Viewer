@@ -30,7 +30,7 @@ var win = $( this );
             var niceLimit = 100;
 
             // Calculamos a cuanto debe re-escalarse la ventana
-            var menuHeight   = $( '.wz-win-menu', win ).outerHeight();
+            var menuHeight   = $( '.wz-view-menu', win ).outerHeight();
             var deskWidth    = wz.tool.desktopWidth();
             var deskHeight   = wz.tool.desktopHeight();
             var imgWidth     = parseInt( params.data.metadata.exif.imageWidth, 10 );
