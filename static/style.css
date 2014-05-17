@@ -30,7 +30,7 @@
     background: rgba( 0, 0, 0, 0.2 );
 }
 
-.wz-view-menu{
+.wz-ui-header{
 
     height: 40px;
     box-shadow: 0 2px 4px rgba( 0, 0, 0, 0.1), inset 0 1px rgba( 255, 255, 255, 0.15);
@@ -45,7 +45,7 @@
     width: 470px;
 }
 
-.wz-view.wz-view-maximized .wz-view-menu{
+.wz-view.wz-view-maximized .wz-ui-header{
     box-shadow: 0 2px 4px rgba( 0, 0, 0, 0.1), inset 0 1px rgba( 255, 255, 255, 0.1);
 }
 
