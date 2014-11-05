@@ -29,9 +29,9 @@
             });
 
             if( wz.app.storage('horizontal') ){
-                wz.app.storage( 'scale', zone.width() / file.metadata.exif.imageWidth );
+                wz.app.storage( 'scale', zone.width() / parseInt( file.metadata.exif.imageWidth, 10 ) );
             }else{
-                wz.app.storage( 'scale', zone.height() / file.metadata.exif.imageHeight );
+                wz.app.storage( 'scale', zone.height() / parseInt( file.metadata.exif.imageHeight, 10 ) );
             }
 
             if( wz.app.storage('scale') > 1 ){
@@ -523,6 +523,9 @@
     }
 
 // Start load
+    win.deskitemX( parseInt( ( wz.tool.desktopWidth() - win.width() ) / 2, 10 ) );
+    win.deskitemY( parseInt( ( wz.tool.desktopHeight() - win.height() ) / 2, 10 ) );
+
     if( wz.app.storage('mode') ){
         _loadPdf( wz.app.storage('file') );
     }else{

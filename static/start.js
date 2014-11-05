@@ -1,94 +1,72 @@
 
-var win = $( this );
+// Constant
+var VIEW_MARGIN = 50;
+var MODE_IMAGE = 0;
+var MODE_PDF = 1;
+
+// Local variables
+var win      = $( this );
+var header   = $('.wz-ui-header');
+var uiImages = $('.weevisor-images');
 
 // Load structure
-    if( params && params.command === 'openFile' ){
+if( params && params.command === 'openFile' ){
 
-        // To Do -> Error
-        
-        $( '.weevisor-title', win ).text( params.data.name );
+    // To Do -> Error
+    
+    $( '.weevisor-title', win ).text( params.data.name );
 
-        if( params.data.mime === 'application/pdf' ){
+    // Si es un PDF
+    if( params.data.mime === 'application/pdf' ){
 
-            wz.app.storage( 'mode', 1 );
+        wz.app.storage( 'mode', MODE_PDF );
 
-            win
-                .addClass('pdf')
-                .addClass('sidebar');
+        win
+            .addClass('pdf')
+            .addClass('sidebar');
 
-            $( '.weevisor-images', win )
-                .addClass('wz-scroll')
-                .width( '-=' + $( '.weevisor-sidebar', win ).outerWidth() );
+        $( '.weevisor-images', win )
+            .addClass('wz-scroll')
+            .width( '-=' + $( '.weevisor-sidebar', win ).outerWidth() );
 
-            wz.fit( win, 775 - win.width(), 500 - win.height() );
+        wz.fit( win, 775 - win.width(), 500 - win.height() );
 
-        }else{
+    // Si es una imagen
+    }else{
 
-            // Modo imagen
-            wz.app.storage( 'mode', 0 );
-            $( '.weevisor-sidebar', win ).remove();
-            var niceLimit = 100;
+        // Modo imagen
+        wz.app.storage( 'mode', MODE_IMAGE );
+        $( '.weevisor-sidebar', win ).remove();
 
-            // Calculamos a cuanto debe re-escalarse la ventana
-            var menuHeight   = $( '.wz-view-menu', win ).outerHeight();
-            var deskWidth    = wz.tool.desktopWidth();
-            var deskHeight   = wz.tool.desktopHeight();
-            var imgWidth     = parseInt( params.data.metadata.exif.imageWidth, 10 );
-            var imgHeight    = parseInt( params.data.metadata.exif.imageHeight, 10 );
-            var winMinWidth  = parseInt( win.css( 'min-width' ), 10 );
-            var winMinHeight = parseInt( win.css( 'min-height' ), 10 );
+        var width       = parseInt( params.data.metadata.exif.imageWidth, 10 );
+        var height      = parseInt( params.data.metadata.exif.imageHeight, 10 );
+        var widthRatio  = width / ( wz.tool.desktopWidth() - ( VIEW_MARGIN * 2 ) );
+        var heightRatio = height / ( wz.tool.desktopHeight() - ( VIEW_MARGIN * 2 ) );
 
-            var hasScaleX = imgWidth  > deskWidth  - niceLimit;
-            var hasScaleY = imgHeight > deskHeight - niceLimit - menuHeight;
+        if( widthRatio > 1 || heightRatio > 1 ){
 
-            var newWinWidth  = 0;
-            var newWinHeight = 0;
+            if( widthRatio >= heightRatio ){
 
-            if( hasScaleX || hasScaleY ){
-
-                var scaleX = ( ( deskWidth  - niceLimit ) / imgWidth ).toFixed( 2 );
-                var scaleY = ( ( deskHeight - niceLimit - menuHeight ) / imgHeight ).toFixed( 2 );
-                var scale  = 1;
-
-                if( scaleX < scaleY ){
-
-                    scale = scaleX;
-                    wz.app.storage( 'horizontal', true );
-
-                }else{
-
-                    scale = scaleY;
-                    wz.app.storage( 'horizontal', false );
-
-                }
-
-                newWinWidth  = Math.ceil( imgWidth * scale );
-                newWinHeight = Math.ceil( ( imgHeight * scale ) + menuHeight );
+                width  = wz.tool.desktopWidth() - ( VIEW_MARGIN * 2 );
+                height = height / widthRatio;
 
             }else{
 
-                wz.app.storage( 'horizontal', imgWidth > imgHeight );
-
-                newWinWidth    = imgWidth;
-                newWinHeight   = imgHeight + menuHeight;
+                width  = width / heightRatio;
+                height = wz.tool.desktopHeight() - ( VIEW_MARGIN * 2 );
 
             }
 
-            if( newWinWidth < winMinWidth ){
-                newWinWidth = winMinWidth;
-            }
-
-            if( newWinHeight < winMinHeight ){
-                newWinHeight = winMinHeight;
-            }
-
-            wz.fit( win, newWinWidth - win.width(), newWinHeight - win.height() );
-                
         }
 
-        wz.app.storage( 'file', params.data );
-        wz.app.storage( 'zoom', -1 );
-
-        start();
-
+        wz.app.storage( 'horizontal', width >= height );
+        wz.fit( win, width - uiImages.width(), height - uiImages.height() );
+            
     }
+
+    wz.app.storage( 'file', params.data );
+    wz.app.storage( 'zoom', -1 );
+
+    start();
+
+}
