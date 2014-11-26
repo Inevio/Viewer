@@ -13,60 +13,64 @@ var uiImages = $('.weevisor-images');
 if( params && params.command === 'openFile' ){
 
     // To Do -> Error
+
+    wz.fs( params.data, function( error, structure ){
     
-    $( '.weevisor-title', win ).text( params.data.name );
+        $( '.weevisor-title', win ).text( structure.name );
 
-    // Si es un PDF
-    if( params.data.mime === 'application/pdf' ){
+        // Si es un PDF
+        if( structure.mime === 'application/pdf' ){
 
-        wz.app.storage( 'mode', MODE_PDF );
+            wz.app.storage( 'mode', MODE_PDF );
 
-        win
-            .addClass('pdf')
-            .addClass('sidebar');
+            win
+                .addClass('pdf')
+                .addClass('sidebar');
 
-        $( '.weevisor-images', win )
-            .addClass('wz-scroll')
-            .width( '-=' + $( '.weevisor-sidebar', win ).outerWidth() );
+            $( '.weevisor-images', win )
+                .addClass('wz-scroll')
+                .width( '-=' + $( '.weevisor-sidebar', win ).outerWidth() );
 
-        wz.fit( win, 775 - win.width(), 500 - win.height() );
+            wz.fit( win, 775 - win.width(), 500 - win.height() );
 
-    // Si es una imagen
-    }else{
+        // Si es una imagen
+        }else{
 
-        // Modo imagen
-        wz.app.storage( 'mode', MODE_IMAGE );
-        $( '.weevisor-sidebar', win ).remove();
+            // Modo imagen
+            wz.app.storage( 'mode', MODE_IMAGE );
+            $( '.weevisor-sidebar', win ).remove();
 
-        var width       = parseInt( params.data.metadata.exif.imageWidth, 10 );
-        var height      = parseInt( params.data.metadata.exif.imageHeight, 10 );
-        var widthRatio  = width / ( wz.tool.desktopWidth() - ( VIEW_MARGIN * 2 ) );
-        var heightRatio = height / ( wz.tool.desktopHeight() - ( VIEW_MARGIN * 2 ) );
+            var width       = parseInt( structure.metadata.exif.imageWidth, 10 );
+            var height      = parseInt( structure.metadata.exif.imageHeight, 10 );
+            var widthRatio  = width / ( wz.tool.desktopWidth() - ( VIEW_MARGIN * 2 ) );
+            var heightRatio = height / ( wz.tool.desktopHeight() - ( VIEW_MARGIN * 2 ) );
 
-        if( widthRatio > 1 || heightRatio > 1 ){
+            if( widthRatio > 1 || heightRatio > 1 ){
 
-            if( widthRatio >= heightRatio ){
+                if( widthRatio >= heightRatio ){
 
-                width  = wz.tool.desktopWidth() - ( VIEW_MARGIN * 2 );
-                height = height / widthRatio;
+                    width  = wz.tool.desktopWidth() - ( VIEW_MARGIN * 2 );
+                    height = height / widthRatio;
 
-            }else{
+                }else{
 
-                width  = width / heightRatio;
-                height = wz.tool.desktopHeight() - ( VIEW_MARGIN * 2 );
+                    width  = width / heightRatio;
+                    height = wz.tool.desktopHeight() - ( VIEW_MARGIN * 2 );
+
+                }
 
             }
 
+            wz.app.storage( 'horizontal', width >= height );
+            wz.fit( win, width - uiImages.width(), height - uiImages.height() );
+                
         }
 
-        wz.app.storage( 'horizontal', width >= height );
-        wz.fit( win, width - uiImages.width(), height - uiImages.height() );
-            
-    }
+        wz.app.storage( 'file', structure );
+        wz.app.storage( 'zoom', -1 );
 
-    wz.app.storage( 'file', params.data );
-    wz.app.storage( 'zoom', -1 );
+        start();
 
-    start();
+    });
 
 }
