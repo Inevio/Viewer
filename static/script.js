@@ -53,8 +53,14 @@
                 images.push( file.formats.jpeg[ i ].url );
             }
 
-        }else{
+        }else if( file.formats.jpeg ){
             images.push( file.formats.jpeg.url );
+        }else{
+
+            return alert( lang.canNotOpenPDF, function(){
+                wz.app.removeView( win );
+            });
+            
         }
 
         var i = 0;
