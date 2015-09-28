@@ -8,6 +8,14 @@
     var toggle  = $( '.weevisor-sidebar-button', win );
     var zone    = $( '.weevisor-images', win );
     var zoom    = $( '.weevisor-zoom', win );
+    var uiBarTop= $('.wz-ui-header');
+    var isWebKit          = /webkit/i.test( navigator.userAgent );
+    var prevClientX       = 0;
+    var prevClientY       = 0;
+    var hideControlsTimer = 0;
+    var normalWidth       = 0;
+    var normalHeight      = 0;
+
 
     var menuHeight = $( '.wz-view-menu', win ).outerHeight();
 
@@ -60,7 +68,7 @@
             return alert( lang.canNotOpenPDF, function(){
                 wz.app.removeView( win );
             });
-            
+
         }
 
         var i = 0;
@@ -112,7 +120,7 @@
     };
 
     var _scalePdf = function( scale ){
-        
+
         scale = _preciseDecimal( parseFloat( scale, 10 ) );
 
         if( isNaN( scale ) || scale <= 0 || scale > 5 ){
@@ -127,7 +135,7 @@
         wz.app.storage( 'scale', scale );
 
         _detectPage();
-        
+
     };
 
     var _marginImage = function(){
@@ -142,12 +150,12 @@
     var _scaleButton = function( dir ){
 
         if( wz.app.storage('zoom') === -1 ){
-            
+
             var i = 0;
             var j = validZoom.length;
 
             if( dir > 0 ){
-                
+
                 for( i = 0; i < j; i++ ){
                     if( validZoom[ i ] > wz.app.storage('scale') ) break;
                 }
@@ -254,13 +262,13 @@
                 return false;
             }
 
-        });        
+        });
 
         var sidebarPages = $( '.weevisor-sidebar-page', sidebar );
         var tmp          = sidebarPages.filter( '.selected' );
 
         if( current.index() !== ( tmp.index() - 1 ) ){ // +1/-1 por el prototipo
-            
+
             tmp.removeClass('selected');
             tmp = sidebarPages.eq( current.index() + 1 ).addClass('selected');
 
@@ -276,7 +284,7 @@
     var _toggleSidebar = function(){
 
         if( win.hasClass('sidebar') ){
-            
+
             sidebar.css( 'display', 'none' );
             zone.css('width', '+=' + sidebar.width() );
             win.removeClass('sidebar');
@@ -384,7 +392,7 @@
                 .scrollTop( scrollY );
 
         }
-        
+
     });
 
     plus
@@ -430,7 +438,7 @@
                 .scrollTop( scrollY );
 
         }
-        
+
     });
 
     toggle
@@ -461,7 +469,7 @@
     .key( 'numadd', function(){
         plus.click();
     })
-    
+
     .key( 'numsubtract', function(){
         minus.click();
     });
@@ -537,3 +545,148 @@
     }else{
         _loadImage( wz.app.storage('file') );
     }
+
+
+
+/* fullscreen mode */
+
+var toggleFullscreen = function(){
+
+    if( win.hasClass( 'fullscreen' ) ){
+
+        wz.tool.exitFullscreen();
+
+    }else{
+
+        if( win[ 0 ].requestFullScreen ){
+            win[ 0 ].requestFullScreen();
+        }else if( win[ 0 ].webkitRequestFullScreen ){
+            win[ 0 ].webkitRequestFullScreen();
+        }else if( win[ 0 ].mozRequestFullScreen ){
+            win[ 0 ].mozRequestFullScreen();
+        }else{
+            alert( lang.fullscreenSupport );
+        }
+
+        normalWidth  = win.width();
+        normalHeight = win.height();
+
+    }
+
+};
+
+var showControls = function(){
+        if( !win.hasClass( 'hidden-controls') ){
+            return;
+        }
+
+        uiBarTop.stop().clearQueue();
+        win.removeClass( 'hidden-controls' );
+
+        if( isWebKit ){
+            uiBarTop.animate( { top : 0 }, 500 );
+        }else{
+            uiBarTop.transition( { top : 0 }, 500 );
+        }
+};
+
+var hideControls = function(){
+
+    if( win.hasClass( 'hidden-controls') ){
+        return;
+    }
+
+    uiBarTop.stop().clearQueue();
+    win.addClass( 'hidden-controls' );
+
+    if( isWebKit ){
+        uiBarTop.animate( { top : -1 * uiBarTop.height() }, 1000 );
+    }else{
+        uiBarTop.transition( { top : -1 * uiBarTop.height() }, 1000 );
+    }
+
+};
+
+win
+.on( 'click', '.wz-view-fullscreen', function(){
+    toggleFullscreen();
+})
+
+.on( 'click', '.wz-view-minimize', function(){
+
+    if( win.hasClass('fullscreen') ){
+        toggleFullscreen();
+    }
+
+})
+
+.on( 'enterfullscreen', function(){
+
+    win.addClass('fullscreen');
+
+    wz.fit( win, screen.width - normalWidth, screen.height - normalHeight );
+
+    $('.weevisor-sidebar').hide();
+    $('.weevisor-images').css('width', '100%');
+    $('.weevisor-images').css('margin-top', '-35px');
+    zoom.val(69);
+    _scalePdf(0.69);
+})
+
+.on( 'exitfullscreen', function(){
+
+    win.removeClass('fullscreen');
+
+    wz.fit( win, normalWidth - win.width(), normalHeight - win.height() );
+
+    $('.weevisor-sidebar').show();
+    $('.weevisor-images').css('margin-top', '0');
+
+})
+
+.on( 'mouseleave', function(){
+
+    if(
+        !win.hasClass('maximized')
+    ){
+        hideControls();
+    }
+
+})
+
+.on( 'ui-view-maximize', function(){
+    win.addClass( 'maximized' );
+})
+
+.on( 'ui-view-unmaximize', function(){
+    win.removeClass( 'maximized' );
+})
+
+.on( 'mousemove', function( e ){
+
+    if( e.clientX !== prevClientX || e.clientY !== prevClientY ){
+
+        prevClientX = e.clientX;
+        prevClientY = e.clientY;
+
+        clearTimeout( 0 );
+
+        if( win.hasClass( 'hidden-controls' ) ){
+            showControls();
+        }
+
+        if( win.hasClass('maximized') || win.hasClass('fullscreen') ){
+
+            hideControlsTimer = setTimeout( function(){
+                hideControls();
+            }, 3000 );
+
+        }
+
+    }
+
+})
+
+.key( 'space', function(){
+  console.log('asd');
+})

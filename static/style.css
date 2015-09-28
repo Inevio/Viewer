@@ -37,9 +37,9 @@
     border-bottom: 1px solid #252525;
     border-radius: 0;
 
-    background-image: -webkit-linear-gradient( bottom, #2e2e2e, #383838 ); 
-    background-image: -moz-linear-gradient( bottom, #2e2e2e, #383838 ); 
-    background-image: -o-linear-gradient( bottom, #2e2e2e, #383838 ); 
+    background-image: -webkit-linear-gradient( bottom, #2e2e2e, #383838 );
+    background-image: -moz-linear-gradient( bottom, #2e2e2e, #383838 );
+    background-image: -o-linear-gradient( bottom, #2e2e2e, #383838 );
     background-image: linear-gradient( to top, #2e2e2e, #383838 );
     float: left;
     width: 470px;
@@ -130,13 +130,13 @@
     font-size: 13px;
     margin-left: 10px;
     margin-top: 14px;
-    width: 200px;
+    width: 120px;
     height: 14px;
     overflow: hidden;
 }
 
 .wz-view.pdf .weevisor-title{
-    width: 185px;
+    width: 120px;
 }
 
 .weevisor-zoom{
@@ -258,4 +258,29 @@
 
 .weevisor-images.hide-hand, .weevisor-images.hide-hand *{
     cursor: default;
+}
+
+/* fullscreen mode */
+
+.wz-view.fullscreen, .wz-view.fullscreen .wz-ui-header{
+    border-radius: 0;
+}
+
+.wz-view.fullscreen .wz-view-maximize{
+    display: none;
+}
+
+.wz-view-fullscreen{
+    margin-left: 5px;
+}
+
+.wz-view-fullscreen i{
+    width: 9px;
+    height: 10px;
+    float: left;
+    background: url('https://static.inevio.com/app/6/sprite.png') -48px 0px no-repeat;
+}
+
+.fullscreen .pdf .weevisor-images{
+  padding: 0;
 }
