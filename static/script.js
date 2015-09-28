@@ -576,34 +576,20 @@ var toggleFullscreen = function(){
 };
 
 var showControls = function(){
-        if( !win.hasClass( 'hidden-controls') ){
-            return;
-        }
 
-        uiBarTop.stop().clearQueue();
-        win.removeClass( 'hidden-controls' );
+    uiBarTop.stop().clearQueue();
+    win.removeClass( 'hidden-controls' );
+    //uiBarTop.transition( { top : 0 }, 500 );
+    uiBarTop.css( 'top', 0 );
 
-        if( isWebKit ){
-            uiBarTop.animate( { top : 0 }, 500 );
-        }else{
-            uiBarTop.transition( { top : 0 }, 500 );
-        }
 };
 
 var hideControls = function(){
 
-    if( win.hasClass( 'hidden-controls') ){
-        return;
-    }
-
     uiBarTop.stop().clearQueue();
     win.addClass( 'hidden-controls' );
-
-    if( isWebKit ){
-        uiBarTop.animate( { top : -1 * uiBarTop.height() }, 1000 );
-    }else{
-        uiBarTop.transition( { top : -1 * uiBarTop.height() }, 1000 );
-    }
+    //uiBarTop.transition( { top : -1 * uiBarTop.height() }, 1000 );
+    uiBarTop.css( 'top' , -1 * uiBarTop.height() );
 
 };
 
@@ -629,8 +615,10 @@ win
     $('.weevisor-sidebar').hide();
     $('.weevisor-images').css('width', '100%');
     $('.weevisor-images').css('margin-top', '-35px');
-    zoom.val(69);
-    _scalePdf(0.69);
+    zoom.val(95);
+    _scalePdf(0.95);
+    hideControls();
+
 })
 
 .on( 'exitfullscreen', function(){
@@ -641,10 +629,11 @@ win
 
     $('.weevisor-sidebar').show();
     $('.weevisor-images').css('margin-top', '0');
+    showControls();
 
 })
 
-.on( 'mouseleave', function(){
+/*.on( 'mouseleave', function(){
 
     if(
         !win.hasClass('maximized')
@@ -652,7 +641,7 @@ win
         hideControls();
     }
 
-})
+})*/
 
 .on( 'ui-view-maximize', function(){
     win.addClass( 'maximized' );
@@ -671,22 +660,87 @@ win
 
         clearTimeout( 0 );
 
-        if( win.hasClass( 'hidden-controls' ) ){
+        /*if( win.hasClass( 'hidden-controls' ) ){
             showControls();
-        }
+        }*/
 
-        if( win.hasClass('maximized') || win.hasClass('fullscreen') ){
+        /*if( win.hasClass('maximized') || win.hasClass('fullscreen') ){
 
             hideControlsTimer = setTimeout( function(){
                 hideControls();
             }, 3000 );
 
-        }
+        }*/
 
     }
 
 })
 
-.key( 'space', function(){
-  console.log('asd');
+.key( 'left, pageup', function(){
+
+  var sidebarArray = $('.weevisor-sidebar-page');
+  var itemSelected = $('.weevisor-sidebar-page.selected');
+  var positionSelected = parseInt( itemSelected.children('span').text() );
+
+  if (positionSelected > 1 ){
+
+    var prevItem = sidebarArray.eq( positionSelected - 1 );
+    itemSelected.removeClass('selected');
+    prevItem.addClass('selected');
+
+    var img = $( 'img', zone ).eq( prevItem.index() - 1 );
+    //zone.animate( { scrollTop : img[ 0 ].offsetTop - parseInt( img.css('margin-top') ) }, 250 );
+    zone.scrollTop( img[ 0 ].offsetTop - parseInt( img.css('margin-top') ) );
+
+    var tmp = $( '.weevisor-sidebar-page.selected');
+    sidebar
+        .stop()
+        .clearQueue()
+        .animate( { scrollTop : tmp[ 0 ].offsetTop - parseInt( tmp.css('margin-top'), 10 ) }, 250 );
+
+  }
+
 })
+
+.key( 'right, pagedown', function(){
+
+  var sidebarArray = $('.weevisor-sidebar-page');
+  var itemSelected = $('.weevisor-sidebar-page.selected');
+  var positionSelected = parseInt( itemSelected.children('span').text() );
+
+  if (positionSelected < sidebarArray.length - 1 ){
+
+    var nextItem = sidebarArray.eq( positionSelected + 1 );
+    itemSelected.removeClass('selected');
+    nextItem.addClass('selected');
+
+    var img = $( 'img', zone ).eq( nextItem.index() - 1 );
+    //zone.animate( { scrollTop : img[ 0 ].offsetTop - parseInt( img.css('margin-top') ) }, 250 );
+    zone.scrollTop( img[ 0 ].offsetTop - parseInt( img.css('margin-top') ) );
+
+    var tmp = $( '.weevisor-sidebar-page.selected');
+    sidebar
+        .stop()
+        .clearQueue()
+        .animate( { scrollTop : tmp[ 0 ].offsetTop - parseInt( tmp.css('margin-top'), 10 ) }, 250 );
+  }
+
+})
+
+.key( 'f5' , function(e){
+
+  if( !win.hasClass( 'fullscreen' ) ){
+    toggleFullscreen();
+    e.preventDefault();
+  }
+
+})
+
+.key( 'esc' , function(e){
+
+  if( win.hasClass( 'fullscreen' ) ){
+    toggleFullscreen();
+    e.preventDefault();
+  }
+
+});
