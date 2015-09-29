@@ -556,6 +556,7 @@ var toggleFullscreen = function(){
 
         wz.tool.exitFullscreen();
 
+
     }else{
 
         if( win[ 0 ].requestFullScreen ){
@@ -571,6 +572,7 @@ var toggleFullscreen = function(){
         normalWidth  = win.width();
         normalHeight = win.height();
 
+        _scalePdf(0.90);
     }
 
 };
@@ -612,6 +614,8 @@ win
 
     $('.weevisor-sidebar').hide();
     hideControls();
+    var imgWidth = zone.find('img')[1].naturalWidth;
+    zone.find('img').css('width', imgWidth);
 
 })
 
@@ -623,6 +627,7 @@ win
 
     $('.weevisor-sidebar').show();
     showControls();
+    _scalePdf(0.29);
 
 })
 
