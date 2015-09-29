@@ -170,16 +170,17 @@
 }
 
 .weevisor-content{
-    width: 470px;
-    height: 259px;
+    width: 100%;
+    height: ~'calc(100% - 41px)';
     float: left;
     border-radius: 0 0 3px 3px;
+    position: relative;
 }
 
 .weevisor-sidebar{
     display: none;
     width: 180px;
-    height: 259px;
+    height: 100%;
     float: left;
     border-right: 1px solid #CACACA;
     background: #F5F5F5;
@@ -226,8 +227,8 @@
 .weevisor-images{
     float: left;
     text-align: center;
-    width: 470px;
-    height: 259px;
+    width: ~'calc(100% - 211px) !important';
+    height: 100%;
     line-height: 0px;
     font-size: 0px;
     overflow: hidden;
@@ -262,25 +263,45 @@
 
 /* fullscreen mode */
 
+.wz-view.fullscreen{
+  border: 0;
+}
+
+.wz-view.fullscreen .weevisor-content{
+  width: 100% ;
+  height: 100% ;
+  top: -40px;
+}
+
+.wz-view.fullscreen .weevisor-images{
+  padding: 0;
+  width: 100% !important;
+  height: 100%;
+}
+
+.wz-view.fullscreen .weevisor-images img{
+  width: 100% !important;
+  height: 100%;
+  top: 0;
+  margin: 0;
+  left: 0;
+}
+
 .wz-view.fullscreen, .wz-view.fullscreen .wz-ui-header{
-    border-radius: 0;
+  border-radius: 0;
 }
 
 .wz-view.fullscreen .wz-view-maximize{
-    display: none;
+  display: none;
 }
 
 .wz-view-fullscreen{
-    margin-left: 5px;
+  margin-left: 5px;
 }
 
 .wz-view-fullscreen i{
-    width: 9px;
-    height: 10px;
-    float: left;
-    background: url('https://static.inevio.com/app/6/sprite.png') -48px 0px no-repeat;
-}
-
-.fullscreen .pdf .weevisor-images{
-  padding: 0;
+  width: 9px;
+  height: 10px;
+  float: left;
+  background: url('https://static.inevio.com/app/6/sprite.png') -48px 0px no-repeat;
 }
