@@ -15,6 +15,8 @@
     var hideControlsTimer = 0;
     var normalWidth       = 0;
     var normalHeight      = 0;
+    var pdfMode           = false;
+    var imageLoaded       = null;
 
 
     var menuHeight = $( '.wz-view-menu', win ).outerHeight();
@@ -28,6 +30,8 @@
     };
 
     var _loadImage = function( file ){
+
+        imageLoaded = file;
 
         $( '<img />')
             .attr( 'src', file.thumbnails.original )
@@ -52,6 +56,8 @@
     };
 
     var _loadPdf = function( file ){
+
+        pdfMode = true;
 
         var images = [];
 
@@ -107,6 +113,11 @@
         if( isNaN( scale ) || scale <= 0 || scale > 5 ){
             return false;
         }
+
+        // console.log('Ancho de la zona ' + zone.css('width') );
+        // console.log('Alto de la zona ' + zone.css('height') );
+        // console.log('Ancho de la imagen ' + scale * wz.app.storage('file').metadata.exif.imageWidth );
+        // console.log('Alto de la imagen ' +  scale * wz.app.storage('file').metadata.exif.imageHeight );
 
         $( 'img', zone )
             .width( parseInt( scale * wz.app.storage('file').metadata.exif.imageWidth, 10 ) )
@@ -571,8 +582,6 @@ var toggleFullscreen = function(){
 
         normalWidth  = win.width();
         normalHeight = win.height();
-
-        _scalePdf(0.90);
     }
 
 };
@@ -610,12 +619,19 @@ win
 
     win.addClass('fullscreen');
 
-    wz.fit( win, screen.width - normalWidth, screen.height - normalHeight );
+    win.css( 'width', screen.width );
+    win.css( 'height', screen.height );
 
     $('.weevisor-sidebar').hide();
     hideControls();
-    var imgWidth = zone.find('img')[1].naturalWidth;
-    zone.find('img').css('width', imgWidth);
+
+    if( pdfMode ){
+      _scalePdf(0.90);
+    }else{
+      _scaleImage( screen.width / parseInt( imageLoaded.metadata.exif.imageWidth, 10 ) );
+      zoom.val( _preciseDecimal( screen.width / parseInt( imageLoaded.metadata.exif.imageWidth, 10 ) * 100 ) );
+      console.log(zoom.val());
+    }
 
 })
 
@@ -623,11 +639,19 @@ win
 
     win.removeClass('fullscreen');
 
-    wz.fit( win, normalWidth - win.width(), normalHeight - win.height() );
+    win.css( 'width', normalWidth );
+    win.css( 'height', normalHeight );
 
     $('.weevisor-sidebar').show();
     showControls();
-    _scalePdf(0.29);
+
+    if( pdfMode ){
+      _scalePdf(0.29);
+    }else{
+      _scaleImage( normalWidth / parseInt( imageLoaded.metadata.exif.imageWidth, 10 ) );
+      zoom.val( _preciseDecimal( normalWidth / parseInt( imageLoaded.metadata.exif.imageWidth, 10 ) * 100 ) );
+      console.log(zoom.val());
+    }
 
 })
 
@@ -705,7 +729,7 @@ win
 
 .key( 'f5' , function(e){
 
-  if( !win.hasClass( 'fullscreen' ) ){
+  if( !win.hasClass( 'fullscreen' ) && pdfMode ){
     toggleFullscreen();
     e.preventDefault();
   }
@@ -714,7 +738,7 @@ win
 
 .key( 'esc' , function(e){
 
-  if( win.hasClass( 'fullscreen' ) ){
+  if( win.hasClass( 'fullscreen' ) && pdfMode ){
     toggleFullscreen();
     e.preventDefault();
   }
