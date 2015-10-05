@@ -270,18 +270,19 @@
 .wz-view.fullscreen .weevisor-content{
   width: 100% ;
   height: 100% ;
-  top: -40px;
+  /*top: -40px;*/
 }
 
 .wz-view.fullscreen .weevisor-images{
   padding: 0;
   width: 100% !important;
   height: 100%;
+  background-color: black;
 }
 
 .wz-view.fullscreen .weevisor-images img{
   /*max-width: 100% !important;*/
-  height: 100%;
+  /*height: 100%;*/
   top: 0;
   margin: 0;
   left: 0;

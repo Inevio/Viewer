@@ -16,6 +16,7 @@
     var normalWidth       = 0;
     var normalHeight      = 0;
     var pdfMode           = false;
+    var pdfSize           = null;
     var imageLoaded       = null;
 
 
@@ -99,6 +100,7 @@
 
             wz.app.storage( 'scale', _preciseDecimal( s / this.naturalWidth ) );
 
+            pdfSize = [this.naturalWidth, this.naturalHeight];
             _detectPage();
             zoom.val( _preciseDecimal( wz.app.storage('scale') * 100 ) );
 
@@ -113,11 +115,6 @@
         if( isNaN( scale ) || scale <= 0 || scale > 5 ){
             return false;
         }
-
-        // console.log('Ancho de la zona ' + zone.css('width') );
-        // console.log('Alto de la zona ' + zone.css('height') );
-        // console.log('Ancho de la imagen ' + scale * wz.app.storage('file').metadata.exif.imageWidth );
-        // console.log('Alto de la imagen ' +  scale * wz.app.storage('file').metadata.exif.imageHeight );
 
         $( 'img', zone )
             .width( parseInt( scale * wz.app.storage('file').metadata.exif.imageWidth, 10 ) )
@@ -589,16 +586,18 @@ var toggleFullscreen = function(){
 var showControls = function(){
 
     uiBarTop.stop().clearQueue();
-    win.removeClass( 'hidden-controls' );
-    uiBarTop.css( 'top', 0 );
+    //win.removeClass( 'hidden-controls' );
+    // uiBarTop.css( 'top', 0 );
+    uiBarTop.css( 'display', 'block' );
 
 };
 
 var hideControls = function(){
 
     uiBarTop.stop().clearQueue();
-    win.addClass( 'hidden-controls' );
-    uiBarTop.css( 'top' , -1 * uiBarTop.height() );
+    //win.addClass( 'hidden-controls' );
+    //uiBarTop.css( 'top' , -1 * uiBarTop.height() );
+    uiBarTop.css( 'display' , 'none' );
 
 };
 
@@ -626,11 +625,34 @@ win
     hideControls();
 
     if( pdfMode ){
-      _scalePdf(0.90);
+
+      var zoomWidth = screen.width / pdfSize[0] ;
+      var zoomHeight = screen.height / pdfSize[1] ;
+
+      console.log(pdfSize);
+      if( zoomWidth < zoomHeight ){
+
+        console.log('width ' + zoomWidth );
+        _scalePdf( zoomWidth );
+        var margins = parseInt( ( screen.height - $('.weevisor-images').find('img')[0].height ) / 2 );
+        console.log(margins);
+        $('.weevisor-images').find('img').css( { "margin-top": margins + 'px' , "margin-bottom": margins + 'px' } );
+
+      }else{
+
+        console.log('height ' +  zoomHeight );
+        _scalePdf(zoomHeight );
+
+      }
+
+      zone.scrollTop( 0 );
+
     }else{
+
       _scaleImage( screen.width / parseInt( imageLoaded.metadata.exif.imageWidth, 10 ) );
       zoom.val( _preciseDecimal( screen.width / parseInt( imageLoaded.metadata.exif.imageWidth, 10 ) * 100 ) );
       console.log(zoom.val());
+
     }
 
 })
@@ -646,11 +668,16 @@ win
     showControls();
 
     if( pdfMode ){
+
       _scalePdf(0.29);
+      $('.weevisor-images').find('img').css( { "margin-top": 12 + 'px' , "margin-bottom": 0 + 'px' } );
+
     }else{
+
       _scaleImage( normalWidth / parseInt( imageLoaded.metadata.exif.imageWidth, 10 ) );
       zoom.val( _preciseDecimal( normalWidth / parseInt( imageLoaded.metadata.exif.imageWidth, 10 ) * 100 ) );
       console.log(zoom.val());
+      
     }
 
 })
