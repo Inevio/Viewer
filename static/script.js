@@ -677,7 +677,7 @@ win
       _scaleImage( normalWidth / parseInt( imageLoaded.metadata.exif.imageWidth, 10 ) );
       zoom.val( _preciseDecimal( normalWidth / parseInt( imageLoaded.metadata.exif.imageWidth, 10 ) * 100 ) );
       console.log(zoom.val());
-      
+
     }
 
 })
@@ -764,6 +764,15 @@ win
 })
 
 .key( 'esc' , function(e){
+
+  if( win.hasClass( 'fullscreen' ) && pdfMode ){
+    toggleFullscreen();
+    e.preventDefault();
+  }
+
+})
+
+.key( 'b' , function(e){
 
   if( win.hasClass( 'fullscreen' ) && pdfMode ){
     toggleFullscreen();
