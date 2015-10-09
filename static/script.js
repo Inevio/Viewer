@@ -142,7 +142,7 @@
 
         wz.app.storage( 'scale', scale );
 
-        _detectPage();
+        //_detectPage();
 
     };
 
@@ -278,6 +278,7 @@
         if( current.index() !== ( tmp.index() - 1 ) ){ // +1/-1 por el prototipo
 
             tmp.removeClass('selected');
+            console.log(current.index() + 1);
             tmp = sidebarPages.eq( current.index() + 1 ).addClass('selected');
 
             sidebar
@@ -645,7 +646,10 @@ win
 
       }
 
-      zone.scrollTop( 0 );
+      var itemSelected = $('.weevisor-sidebar-page.selected');
+      var img = $( 'img', zone ).eq( itemSelected.index() - 1 );
+      zone.scrollTop( img[ 0 ].offsetTop - parseInt( img.css('margin-top') ) );
+      //zone.scrollTop( 0 );
 
     }else{
 
@@ -671,12 +675,20 @@ win
 
       _scalePdf(0.29);
       $('.weevisor-images').find('img').css( { "margin-top": 12 + 'px' , "margin-bottom": 0 + 'px' } );
+      var tmp = $( '.weevisor-sidebar-page.selected');
+      sidebar
+          .stop()
+          .clearQueue()
+          .animate( { scrollTop : tmp[ 0 ].offsetTop - parseInt( tmp.css('margin-top'), 10 ) }, 250 );
+
+      var itemSelected = $('.weevisor-sidebar-page.selected');
+      var img = $( 'img', zone ).eq( itemSelected.index() - 1 );
+      zone.scrollTop( img[ 0 ].offsetTop - parseInt( img.css('margin-top') ) );
 
     }else{
 
       _scaleImage( normalWidth / parseInt( imageLoaded.metadata.exif.imageWidth, 10 ) );
       zoom.val( _preciseDecimal( normalWidth / parseInt( imageLoaded.metadata.exif.imageWidth, 10 ) * 100 ) );
-      console.log(zoom.val());
 
     }
 
@@ -758,6 +770,8 @@ win
 
   if( !win.hasClass( 'fullscreen' ) && pdfMode ){
     toggleFullscreen();
+    e.preventDefault();
+  }else if( win.hasClass( 'fullscreen' ) && pdfMode ){
     e.preventDefault();
   }
 
