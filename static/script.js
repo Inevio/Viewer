@@ -587,8 +587,6 @@ var toggleFullscreen = function(){
 var showControls = function(){
 
     uiBarTop.stop().clearQueue();
-    //win.removeClass( 'hidden-controls' );
-    // uiBarTop.css( 'top', 0 );
     uiBarTop.css( 'display', 'block' );
 
 };
@@ -596,8 +594,6 @@ var showControls = function(){
 var hideControls = function(){
 
     uiBarTop.stop().clearQueue();
-    //win.addClass( 'hidden-controls' );
-    //uiBarTop.css( 'top' , -1 * uiBarTop.height() );
     uiBarTop.css( 'display' , 'none' );
 
 };
@@ -649,7 +645,6 @@ win
       var itemSelected = $('.weevisor-sidebar-page.selected');
       var img = $( 'img', zone ).eq( itemSelected.index() - 1 );
       zone.scrollTop( img[ 0 ].offsetTop - parseInt( img.css('margin-top') ) );
-      //zone.scrollTop( 0 );
 
     }else{
 
@@ -777,16 +772,7 @@ win
 
 })
 
-.key( 'esc' , function(e){
-
-  if( win.hasClass( 'fullscreen' ) && pdfMode ){
-    toggleFullscreen();
-    e.preventDefault();
-  }
-
-})
-
-.key( 'b' , function(e){
+.key( 'esc, b' , function(e){
 
   if( win.hasClass( 'fullscreen' ) && pdfMode ){
     toggleFullscreen();
