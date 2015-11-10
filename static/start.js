@@ -15,11 +15,14 @@ if( params && params.command === 'openFile' ){
     // To Do -> Error
 
     wz.fs( params.data, function( error, structure ){
-    
+
         $( '.weevisor-title', win ).text( structure.name );
 
         // Si es un PDF
-        if( structure.mime === 'application/pdf' ){
+        if(
+            structure.mime === 'application/pdf' ||
+            ( structure.formats && structure.formats['pdf'] )
+        ){
 
             wz.app.storage( 'mode', MODE_PDF );
 
@@ -63,7 +66,7 @@ if( params && params.command === 'openFile' ){
 
             wz.app.storage( 'horizontal', width >= height );
             wz.fit( win, width - uiImages.width(), height - uiImages.height() );
-                
+
         }
 
         wz.app.storage( 'file', structure );
