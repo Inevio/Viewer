@@ -37,9 +37,9 @@
     border-bottom: 1px solid #252525;
     border-radius: 0;
 
-    background-image: -webkit-linear-gradient( bottom, #2e2e2e, #383838 ); 
-    background-image: -moz-linear-gradient( bottom, #2e2e2e, #383838 ); 
-    background-image: -o-linear-gradient( bottom, #2e2e2e, #383838 ); 
+    background-image: -webkit-linear-gradient( bottom, #2e2e2e, #383838 );
+    background-image: -moz-linear-gradient( bottom, #2e2e2e, #383838 );
+    background-image: -o-linear-gradient( bottom, #2e2e2e, #383838 );
     background-image: linear-gradient( to top, #2e2e2e, #383838 );
     float: left;
     width: 470px;
@@ -130,13 +130,13 @@
     font-size: 13px;
     margin-left: 10px;
     margin-top: 14px;
-    width: 200px;
+    width: 120px;
     height: 14px;
     overflow: hidden;
 }
 
 .wz-view.pdf .weevisor-title{
-    width: 185px;
+    width: 120px;
 }
 
 .weevisor-zoom{
@@ -170,16 +170,17 @@
 }
 
 .weevisor-content{
-    width: 470px;
-    height: 259px;
+    width: 100%;
+    height: ~'calc(100% - 41px)';
     float: left;
     border-radius: 0 0 3px 3px;
+    position: relative;
 }
 
 .weevisor-sidebar{
     display: none;
     width: 180px;
-    height: 259px;
+    height: 100%;
     float: left;
     border-right: 1px solid #CACACA;
     background: #F5F5F5;
@@ -226,8 +227,8 @@
 .weevisor-images{
     float: left;
     text-align: center;
-    width: 470px;
-    height: 259px;
+    width: 100%;
+    height: 100%;
     line-height: 0px;
     font-size: 0px;
     overflow: hidden;
@@ -235,7 +236,7 @@
 
 .wz-view.pdf .weevisor-images{
     padding: 0px 15px;
-    width: 440px;
+    width: ~'calc(100% - 211px) !important';
 }
 
 .weevisor-images img{
@@ -258,4 +259,52 @@
 
 .weevisor-images.hide-hand, .weevisor-images.hide-hand *{
     cursor: default;
+}
+
+/* fullscreen mode */
+
+.wz-view.fullscreen{
+  border: 0;
+}
+
+.wz-view.fullscreen .weevisor-content{
+  width: 100% ;
+  height: 100% ;
+  /*top: -40px;*/
+}
+
+.wz-view.fullscreen .weevisor-images{
+  padding: 0;
+  width: 100% !important;
+  height: 100%;
+  background-color: black;
+}
+
+.wz-view.fullscreen .weevisor-images img{
+  /*max-width: 100% !important;*/
+  /*height: 100%;*/
+  top: 0;
+  margin: 0;
+  left: 0;
+  border: 0;
+}
+
+.wz-view.fullscreen, .wz-view.fullscreen .wz-ui-header{
+  border-radius: 0;
+}
+
+.wz-view.fullscreen .wz-view-maximize{
+  display: none;
+}
+
+.wz-view-fullscreen{
+  margin-left: 5px;
+}
+
+.wz-view-fullscreen i{
+  width: 9px;
+  height: 10px;
+  float: left;
+  background: url('@static/sprite.png') -48px 0px no-repeat;
+  background-size: 57px 15px;
 }

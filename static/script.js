@@ -8,6 +8,17 @@
     var toggle  = $( '.weevisor-sidebar-button', win );
     var zone    = $( '.weevisor-images', win );
     var zoom    = $( '.weevisor-zoom', win );
+    var uiBarTop= $('.wz-ui-header');
+    var isWebKit          = /webkit/i.test( navigator.userAgent );
+    var prevClientX       = 0;
+    var prevClientY       = 0;
+    var hideControlsTimer = 0;
+    var normalWidth       = 0;
+    var normalHeight      = 0;
+    var pdfMode           = false;
+    var pdfSize           = null;
+    var imageLoaded       = null;
+
 
     var menuHeight = $( '.wz-view-menu', win ).outerHeight();
 
@@ -20,6 +31,8 @@
     };
 
     var _loadImage = function( file ){
+
+        imageLoaded = file;
 
         $( '<img />')
             .attr( 'src', file.thumbnails.original )
@@ -45,6 +58,8 @@
 
     var _loadPdf = function( file ){
 
+        pdfMode = true;
+
         var images = [];
 
         if( $.isArray( file.formats.jpeg ) ){
@@ -60,7 +75,7 @@
             return alert( lang.canNotOpenPDF, function(){
                 wz.app.removeView( win );
             });
-            
+
         }
 
         var i = 0;
@@ -85,6 +100,7 @@
 
             wz.app.storage( 'scale', _preciseDecimal( s / this.naturalWidth ) );
 
+            pdfSize = [this.naturalWidth, this.naturalHeight];
             _detectPage();
             zoom.val( _preciseDecimal( wz.app.storage('scale') * 100 ) );
 
@@ -112,7 +128,7 @@
     };
 
     var _scalePdf = function( scale ){
-        
+
         scale = _preciseDecimal( parseFloat( scale, 10 ) );
 
         if( isNaN( scale ) || scale <= 0 || scale > 5 ){
@@ -126,8 +142,8 @@
 
         wz.app.storage( 'scale', scale );
 
-        _detectPage();
-        
+        //_detectPage();
+
     };
 
     var _marginImage = function(){
@@ -142,12 +158,12 @@
     var _scaleButton = function( dir ){
 
         if( wz.app.storage('zoom') === -1 ){
-            
+
             var i = 0;
             var j = validZoom.length;
 
             if( dir > 0 ){
-                
+
                 for( i = 0; i < j; i++ ){
                     if( validZoom[ i ] > wz.app.storage('scale') ) break;
                 }
@@ -254,14 +270,15 @@
                 return false;
             }
 
-        });        
+        });
 
         var sidebarPages = $( '.weevisor-sidebar-page', sidebar );
         var tmp          = sidebarPages.filter( '.selected' );
 
         if( current.index() !== ( tmp.index() - 1 ) ){ // +1/-1 por el prototipo
-            
+
             tmp.removeClass('selected');
+            console.log(current.index() + 1);
             tmp = sidebarPages.eq( current.index() + 1 ).addClass('selected');
 
             sidebar
@@ -276,7 +293,7 @@
     var _toggleSidebar = function(){
 
         if( win.hasClass('sidebar') ){
-            
+
             sidebar.css( 'display', 'none' );
             zone.css('width', '+=' + sidebar.width() );
             win.removeClass('sidebar');
@@ -384,7 +401,7 @@
                 .scrollTop( scrollY );
 
         }
-        
+
     });
 
     plus
@@ -430,7 +447,7 @@
                 .scrollTop( scrollY );
 
         }
-        
+
     });
 
     toggle
@@ -461,7 +478,7 @@
     .key( 'numadd', function(){
         plus.click();
     })
-    
+
     .key( 'numsubtract', function(){
         minus.click();
     });
@@ -537,3 +554,229 @@
     }else{
         _loadImage( wz.app.storage('file') );
     }
+
+
+
+/* fullscreen mode */
+
+var toggleFullscreen = function(){
+
+    if( win.hasClass( 'fullscreen' ) ){
+
+        wz.tool.exitFullscreen();
+
+
+    }else{
+
+        if( win[ 0 ].requestFullScreen ){
+            win[ 0 ].requestFullScreen();
+        }else if( win[ 0 ].webkitRequestFullScreen ){
+            win[ 0 ].webkitRequestFullScreen();
+        }else if( win[ 0 ].mozRequestFullScreen ){
+            win[ 0 ].mozRequestFullScreen();
+        }else{
+            alert( lang.fullscreenSupport );
+        }
+
+        normalWidth  = win.width();
+        normalHeight = win.height();
+    }
+
+};
+
+var showControls = function(){
+
+    uiBarTop.stop().clearQueue();
+    uiBarTop.css( 'display', 'block' );
+
+};
+
+var hideControls = function(){
+
+    uiBarTop.stop().clearQueue();
+    uiBarTop.css( 'display' , 'none' );
+
+};
+
+win
+.on( 'click', '.wz-view-fullscreen', function(){
+    toggleFullscreen();
+})
+
+.on( 'click', '.wz-view-minimize', function(){
+
+    if( win.hasClass('fullscreen') ){
+        toggleFullscreen();
+    }
+
+})
+
+.on( 'enterfullscreen', function(){
+
+    win.addClass('fullscreen');
+
+    win.css( 'width', screen.width );
+    win.css( 'height', screen.height );
+
+    $('.weevisor-sidebar').hide();
+    hideControls();
+
+    if( pdfMode ){
+
+      var zoomWidth = screen.width / pdfSize[0] ;
+      var zoomHeight = screen.height / pdfSize[1] ;
+
+      console.log(pdfSize);
+      if( zoomWidth < zoomHeight ){
+
+        console.log('width ' + zoomWidth );
+        _scalePdf( zoomWidth );
+        var margins = parseInt( ( screen.height - $('.weevisor-images').find('img')[0].height ) / 2 );
+        console.log(margins);
+        $('.weevisor-images').find('img').css( { "margin-top": margins + 'px' , "margin-bottom": margins + 'px' } );
+
+      }else{
+
+        console.log('height ' +  zoomHeight );
+        _scalePdf(zoomHeight );
+
+      }
+
+      var itemSelected = $('.weevisor-sidebar-page.selected');
+      var img = $( 'img', zone ).eq( itemSelected.index() - 1 );
+      zone.scrollTop( img[ 0 ].offsetTop - parseInt( img.css('margin-top') ) );
+
+    }else{
+
+      _scaleImage( screen.width / parseInt( imageLoaded.metadata.exif.imageWidth, 10 ) );
+      zoom.val( _preciseDecimal( screen.width / parseInt( imageLoaded.metadata.exif.imageWidth, 10 ) * 100 ) );
+      console.log(zoom.val());
+
+    }
+
+})
+
+.on( 'exitfullscreen', function(){
+
+    win.removeClass('fullscreen');
+
+    win.css( 'width', normalWidth );
+    win.css( 'height', normalHeight );
+
+    $('.weevisor-sidebar').show();
+    showControls();
+
+    if( pdfMode ){
+
+      _scalePdf(0.29);
+      $('.weevisor-images').find('img').css( { "margin-top": 12 + 'px' , "margin-bottom": 0 + 'px' } );
+      var tmp = $( '.weevisor-sidebar-page.selected');
+      sidebar
+          .stop()
+          .clearQueue()
+          .animate( { scrollTop : tmp[ 0 ].offsetTop - parseInt( tmp.css('margin-top'), 10 ) }, 250 );
+
+      var itemSelected = $('.weevisor-sidebar-page.selected');
+      var img = $( 'img', zone ).eq( itemSelected.index() - 1 );
+      zone.scrollTop( img[ 0 ].offsetTop - parseInt( img.css('margin-top') ) );
+
+    }else{
+
+      _scaleImage( normalWidth / parseInt( imageLoaded.metadata.exif.imageWidth, 10 ) );
+      zoom.val( _preciseDecimal( normalWidth / parseInt( imageLoaded.metadata.exif.imageWidth, 10 ) * 100 ) );
+
+    }
+
+})
+
+.on( 'ui-view-maximize', function(){
+    win.addClass( 'maximized' );
+})
+
+.on( 'ui-view-unmaximize', function(){
+    win.removeClass( 'maximized' );
+})
+
+.on( 'mousemove', function( e ){
+
+    if( e.clientX !== prevClientX || e.clientY !== prevClientY ){
+
+        prevClientX = e.clientX;
+        prevClientY = e.clientY;
+
+        clearTimeout( 0 );
+
+    }
+
+})
+
+.key( 'left, pageup', function(){
+
+  var sidebarArray = $('.weevisor-sidebar-page');
+  var itemSelected = $('.weevisor-sidebar-page.selected');
+  var positionSelected = parseInt( itemSelected.children('span').text() );
+
+  if (positionSelected > 1 ){
+
+    var prevItem = sidebarArray.eq( positionSelected - 1 );
+    itemSelected.removeClass('selected');
+    prevItem.addClass('selected');
+
+    var img = $( 'img', zone ).eq( prevItem.index() - 1 );
+    //zone.animate( { scrollTop : img[ 0 ].offsetTop - parseInt( img.css('margin-top') ) }, 250 );
+    zone.scrollTop( img[ 0 ].offsetTop - parseInt( img.css('margin-top') ) );
+
+    var tmp = $( '.weevisor-sidebar-page.selected');
+    sidebar
+        .stop()
+        .clearQueue()
+        .animate( { scrollTop : tmp[ 0 ].offsetTop - parseInt( tmp.css('margin-top'), 10 ) }, 250 );
+
+  }
+
+})
+
+.key( 'right, pagedown', function(){
+
+  var sidebarArray = $('.weevisor-sidebar-page');
+  var itemSelected = $('.weevisor-sidebar-page.selected');
+  var positionSelected = parseInt( itemSelected.children('span').text() );
+
+  if (positionSelected < sidebarArray.length - 1 ){
+
+    var nextItem = sidebarArray.eq( positionSelected + 1 );
+    itemSelected.removeClass('selected');
+    nextItem.addClass('selected');
+
+    var img = $( 'img', zone ).eq( nextItem.index() - 1 );
+    //zone.animate( { scrollTop : img[ 0 ].offsetTop - parseInt( img.css('margin-top') ) }, 250 );
+    zone.scrollTop( img[ 0 ].offsetTop - parseInt( img.css('margin-top') ) );
+
+    var tmp = $( '.weevisor-sidebar-page.selected');
+    sidebar
+        .stop()
+        .clearQueue()
+        .animate( { scrollTop : tmp[ 0 ].offsetTop - parseInt( tmp.css('margin-top'), 10 ) }, 250 );
+  }
+
+})
+
+.key( 'f5' , function(e){
+
+  if( !win.hasClass( 'fullscreen' ) && pdfMode ){
+    toggleFullscreen();
+    e.preventDefault();
+  }else if( win.hasClass( 'fullscreen' ) && pdfMode ){
+    e.preventDefault();
+  }
+
+})
+
+.key( 'esc, b' , function(e){
+
+  if( win.hasClass( 'fullscreen' ) && pdfMode ){
+    toggleFullscreen();
+    e.preventDefault();
+  }
+
+});
