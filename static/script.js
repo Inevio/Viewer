@@ -98,10 +98,18 @@
 
         $( 'img:first', zone ).on( 'load', function(){
 
-            wz.app.storage( 'scale', _preciseDecimal( s / this.naturalWidth ) );
+            var x = _preciseDecimal( s / this.naturalWidth );
+            var y = _preciseDecimal( zone.height() / this.naturalHeight );
 
-            pdfSize = [this.naturalWidth, this.naturalHeight];
+            if( y < x ){
+              wz.app.storage( 'scale', y );
+            }else{
+              wz.app.storage( 'scale', x );
+            }
+
+            pdfSize = [ this.naturalWidth, this.naturalHeight ];
             _detectPage();
+            $( 'img', zone ).width( parseInt( wz.app.storage('scale') * this.naturalWidth, 10 ) );
             zoom.val( _preciseDecimal( wz.app.storage('scale') * 100 ) );
 
         });
@@ -546,19 +554,22 @@
     }
 
 // Start load
-    win.deskitemX( parseInt( ( wz.tool.desktopWidth() - win.width() ) / 2, 10 ) );
-    win.deskitemY( parseInt( ( wz.tool.desktopHeight() - win.height() ) / 2, 10 ) );
+if( location.host.indexOf('file') === -1 ){
 
-    if( wz.app.storage('mode') ){
-        _loadPdf( wz.app.storage('file') );
-    }else{
-        _loadImage( wz.app.storage('file') );
-    }
+  win.deskitemX( parseInt( ( wz.tool.desktopWidth() - win.width() ) / 2, 10 ) );
+  win.deskitemY( parseInt( ( wz.tool.desktopHeight() - win.height() ) / 2, 10 ) );
 
+}else{
+  wz.app.maximizeView( win );
+}
 
+if( wz.app.storage('mode') ){
+  _loadPdf( wz.app.storage('file') );
+}else{
+  _loadImage( wz.app.storage('file') );
+}
 
 /* fullscreen mode */
-
 var toggleFullscreen = function(){
 
     if( win.hasClass( 'fullscreen' ) ){

@@ -42,7 +42,7 @@
     background-image: -o-linear-gradient( bottom, #2e2e2e, #383838 );
     background-image: linear-gradient( to top, #2e2e2e, #383838 );
     float: left;
-    width: 470px;
+    width: 100%;
 }
 
 .wz-view.wz-view-maximized .wz-ui-header{
@@ -130,13 +130,8 @@
     font-size: 13px;
     margin-left: 10px;
     margin-top: 14px;
-    width: 120px;
     height: 14px;
     overflow: hidden;
-}
-
-.wz-view.pdf .weevisor-title{
-    width: 120px;
 }
 
 .weevisor-zoom{

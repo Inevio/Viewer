@@ -34,8 +34,6 @@ if( params && params.command === 'openFile' ){
                 .addClass('wz-scroll')
                 .width( '-=' + $( '.weevisor-sidebar', win ).outerWidth() );
 
-            wz.fit( win, 775 - win.width(), 500 - win.height() );
-
         // Si es una imagen
         }else{
 
@@ -65,7 +63,6 @@ if( params && params.command === 'openFile' ){
             }
 
             wz.app.storage( 'horizontal', width >= height );
-            wz.fit( win, width - uiImages.width(), height - uiImages.height() );
 
         }
 
