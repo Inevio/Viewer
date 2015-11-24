@@ -34,6 +34,10 @@ if( params && params.command === 'openFile' ){
                 .addClass('wz-scroll')
                 .width( '-=' + $( '.weevisor-sidebar', win ).outerWidth() );
 
+            if( location.host.indexOf('file') === -1 ){
+              wz.fit( win, 775 - win.width(), 500 - win.height() );
+            }
+
         // Si es una imagen
         }else{
 
@@ -64,6 +68,10 @@ if( params && params.command === 'openFile' ){
 
             wz.app.storage( 'horizontal', width >= height );
 
+            if( location.host.indexOf('file') === -1 ){
+              wz.fit( win, width - uiImages.width(), height - uiImages.height() );
+            }
+            
         }
 
         wz.app.storage( 'file', structure );
