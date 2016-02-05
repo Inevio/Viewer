@@ -1,346 +1,269 @@
 
 // Variables
-    var win     = $( this );
-    var minus   = $( '.weevisor-zoom-minus', win );
-    var plus    = $( '.weevisor-zoom-plus', win );
-    var sidebar = $( '.weevisor-sidebar', win );
-    var thumb   = $( '.weevisor-sidebar-page.wz-prototype', win );
-    var toggle  = $( '.weevisor-sidebar-button', win );
-    var zone    = $( '.weevisor-images', win );
-    var zoom    = $( '.weevisor-zoom', win );
-    var uiBarTop= $('.wz-ui-header');
-    var isWebKit          = /webkit/i.test( navigator.userAgent );
-    var prevClientX       = 0;
-    var prevClientY       = 0;
-    var hideControlsTimer = 0;
-    var normalWidth       = 0;
-    var normalHeight      = 0;
-    var pdfMode           = false;
-    var pdfSize           = null;
-    var imageLoaded       = null;
+var win               = $( this );
+var minus             = $( '.weevisor-zoom-minus', win );
+var plus              = $( '.weevisor-zoom-plus', win );
+var sidebar           = $( '.weevisor-sidebar', win );
+var thumb             = $( '.weevisor-sidebar-page.wz-prototype', win );
+var toggle            = $( '.weevisor-sidebar-button', win );
+var zone              = $( '.weevisor-images', win );
+var zoom              = $( '.weevisor-zoom', win );
+var uiBarTop          = $('.wz-ui-header');
+var isWebKit          = /webkit/i.test( navigator.userAgent );
+var prevClientX       = 0;
+var prevClientY       = 0;
+var hideControlsTimer = 0;
+var normalWidth       = 0;
+var normalHeight      = 0;
+var pdfMode           = false;
+var pdfSize           = null;
+var fileLoaded        = null;
+var appliedZoom       = null;
+var appliedScale      = null;
 
 
-    var menuHeight = $( '.wz-view-menu', win ).outerHeight();
+var menuHeight = $( '.wz-view-menu', win ).outerHeight();
 
 // Valid zoom
-    var validZoom = [ 0.01, 0.02, 0.03, 0.04, 0.06, 0.08, 0.1, 0.15, 0.2, 0.3, 0.4, 0.5, 0.75, 1, 1.5, 2, 3, 4, 5 ];
+var validZoom = [ 0.01, 0.02, 0.03, 0.04, 0.06, 0.08, 0.1, 0.15, 0.2, 0.3, 0.4, 0.5, 0.75, 1, 1.5, 2, 3, 4, 5 ];
 
 // Private Methods
-    var _preciseDecimal = function( number ){
-        return parseFloat( number.toFixed( 2 ) );
-    };
+var _startApp = function(){
 
-    var _loadImage = function( file ){
+  if( params && params.command === 'openFile' ){
 
-        imageLoaded = file;
+      // To Do -> Error
 
-        $( '<img />')
-            .attr( 'src', file.thumbnails.original )
-            .appendTo( zone )
-            .on( 'load', function(){
-                _marginImage();
-            });
+      wz.fs( params.data, function( error, structure ){
 
-            if( wz.app.storage('horizontal') ){
-                wz.app.storage( 'scale', zone.width() / parseInt( file.metadata.exif.imageWidth, 10 ) );
-            }else{
-                wz.app.storage( 'scale', zone.height() / parseInt( file.metadata.exif.imageHeight, 10 ) );
-            }
+        $( '.weevisor-title', win ).text( structure.name );
 
-            if( wz.app.storage('scale') > 1 ){
-                wz.app.storage('scale', 1 );
-            }
+        fileLoaded = structure;
+        appliedZoom = -1;
 
-            _scaleImage( wz.app.storage('scale') );
-            zoom.val( _preciseDecimal( wz.app.storage('scale') * 100 ) );
+        _loadPdf( fileLoaded );
 
-    };
+      });
 
-    var _loadPdf = function( file ){
+  }
 
-        pdfMode = true;
+}
 
-        var images = [];
+var _preciseDecimal = function( number ){
+    return parseFloat( number.toFixed( 2 ) );
+};
 
-        if( $.isArray( file.formats.jpeg ) ){
+var _loadPdf = function( file ){
 
-            for( var i in file.formats.jpeg ){
-                images.push( file.formats.jpeg[ i ].url );
-            }
+    var images = [];
 
-        }else if( file.formats.jpeg ){
-            images.push( file.formats.jpeg.url );
+    if( $.isArray( file.formats.jpeg ) ){
+
+      for( var i in file.formats.jpeg ){
+        images.push( file.formats.jpeg[ i ].url );
+      }
+
+    }else if( file.formats.jpeg ){
+      images.push( file.formats.jpeg.url );
+    }else{
+
+      return alert( lang.canNotOpenPDF, function(){
+        wz.app.removeView( win );
+      });
+
+    }
+
+    var i = 0;
+    var j = images.length;
+    var k = null;
+    var s = zone.width();
+
+    for( i = 0; i < j; i++ ){
+
+        zone.append( $( '<img />').attr( 'src', images[ i ] ).width( s ) );
+
+        k = thumb.clone().removeClass('wz-prototype');
+
+        k.find('img').attr( 'src', images[ i ] );
+        k.find('span').text( i + 1 );
+
+        sidebar.append( k );
+
+    }
+
+    $( 'img:first', zone ).on( 'load', function(){
+
+        var x = _preciseDecimal( s / this.naturalWidth );
+        var y = _preciseDecimal( zone.height() / this.naturalHeight );
+
+        if( y < x ){
+          aplliedScale = y;
         }else{
-
-            return alert( lang.canNotOpenPDF, function(){
-                wz.app.removeView( win );
-            });
-
+          aplliedScale = x;
         }
+
+        pdfSize = [ this.naturalWidth, this.naturalHeight ];
+        _detectPage();
+        $( 'img', zone ).width( parseInt( aplliedScale * this.naturalWidth, 10 ) );
+        zoom.val( _preciseDecimal( aplliedScale * 100 ) );
+
+    });
+
+};
+
+var _scalePdf = function( scale ){
+
+    scale = _preciseDecimal( parseFloat( scale, 10 ) );
+
+    if( isNaN( scale ) || scale <= 0 || scale > 5 ){
+        return false;
+    }
+
+    $( 'img', zone )
+        .width( function(){
+            return parseInt( scale * this.naturalWidth, 10 );
+        });
+
+    aplliedScale = scale;
+
+    //_detectPage();
+
+};
+
+var _scaleButton = function( dir ){
+
+    if( appliedZoom === -1 ){
 
         var i = 0;
-        var j = images.length;
-        var k = null;
-        var s = zone.width();
+        var j = validZoom.length;
 
-        for( i = 0; i < j; i++ ){
+        if( dir > 0 ){
 
-            zone.append( $( '<img />').attr( 'src', images[ i ] ).width( s ) );
-
-            k = thumb.clone().removeClass('wz-prototype');
-
-            k.find('img').attr( 'src', images[ i ] );
-            k.find('span').text( i + 1 );
-
-            sidebar.append( k );
-
-        }
-
-        $( 'img:first', zone ).on( 'load', function(){
-
-            var x = _preciseDecimal( s / this.naturalWidth );
-            var y = _preciseDecimal( zone.height() / this.naturalHeight );
-
-            if( y < x ){
-              wz.app.storage( 'scale', y );
-            }else{
-              wz.app.storage( 'scale', x );
+            for( i = 0; i < j; i++ ){
+                if( validZoom[ i ] > aplliedScale ) break;
             }
-
-            pdfSize = [ this.naturalWidth, this.naturalHeight ];
-            _detectPage();
-            $( 'img', zone ).width( parseInt( wz.app.storage('scale') * this.naturalWidth, 10 ) );
-            zoom.val( _preciseDecimal( wz.app.storage('scale') * 100 ) );
-
-        });
-
-    };
-
-    var _scaleImage = function( scale ){
-
-        scale = _preciseDecimal( parseFloat( scale, 10 ) );
-
-        if( isNaN( scale ) || scale <= 0 || scale > 5 ){
-            return false;
-        }
-
-        $( 'img', zone )
-            .width( parseInt( scale * wz.app.storage('file').metadata.exif.imageWidth, 10 ) )
-            .height( parseInt( scale * wz.app.storage('file').metadata.exif.imageHeight, 10 ) );
-
-        wz.app.storage( 'scale', scale );
-
-        _marginImage();
-        _detectCursor();
-
-    };
-
-    var _scalePdf = function( scale ){
-
-        scale = _preciseDecimal( parseFloat( scale, 10 ) );
-
-        if( isNaN( scale ) || scale <= 0 || scale > 5 ){
-            return false;
-        }
-
-        $( 'img', zone )
-            .width( function(){
-                return parseInt( scale * this.naturalWidth, 10 );
-            });
-
-        wz.app.storage( 'scale', scale );
-
-        //_detectPage();
-
-    };
-
-    var _marginImage = function(){
-
-        var img   = $( 'img', zone );
-        var scale = ( zone.height() - img.height() ) / 2;
-
-        img.css( 'margin-top', scale > 0 ? scale : 0 );
-
-    };
-
-    var _scaleButton = function( dir ){
-
-        if( wz.app.storage('zoom') === -1 ){
-
-            var i = 0;
-            var j = validZoom.length;
-
-            if( dir > 0 ){
-
-                for( i = 0; i < j; i++ ){
-                    if( validZoom[ i ] > wz.app.storage('scale') ) break;
-                }
-
-            }else{
-
-                for( i = 0; i < j; i++ ){
-                    if( validZoom[ i ] <= wz.app.storage('scale') && validZoom[ i + 1 ] > wz.app.storage('scale') ) break;
-                }
-
-                if( validZoom[ i ] === wz.app.storage('scale') && validZoom[ i - 1 ] ){
-                    i--;
-                }
-
-                if( i >= validZoom.length ){
-                    i = validZoom.length - 2;
-                }
-
-            }
-
-            wz.app.storage( 'zoom', i );
-
-            if( wz.app.storage('mode') ){
-                _scalePdf( validZoom[ wz.app.storage('zoom') ] );
-            }else{
-                _scaleImage( validZoom[ wz.app.storage('zoom') ] );
-            }
-
-            zoom.val( _preciseDecimal( wz.app.storage('scale') * 100 ) );
-
-        }else if( validZoom[ wz.app.storage('zoom') + dir ] && wz.app.storage('mode') ){
-
-            var newZoom  = wz.app.storage('zoom') + dir;
-            var winScale = _preciseDecimal( ( zone.width() / $( 'img:first', zone )[ 0 ].naturalWidth ) ) * 100;
-
-            if( dir > 0 && validZoom[ wz.app.storage('zoom') ] < winScale && validZoom[ newZoom ] > winScale ){
-
-                wz.app.storage( 'zoom', -1 );
-                newZoom = winScale;
-
-            }else if( dir < 0 && validZoom[ wz.app.storage('zoom') ] > winScale && validZoom[ newZoom ] < winScale ){
-
-                wz.app.storage( 'zoom', -1 );
-                newZoom = winScale;
-
-            }else{
-
-                wz.app.storage( 'zoom', newZoom );
-                newZoom = validZoom[ wz.app.storage('zoom') ];
-
-            }
-
-            _scalePdf( newZoom );
-
-            zoom.val( _preciseDecimal( wz.app.storage('scale') * 100 ) );
-
-        }else if( validZoom[ wz.app.storage('zoom') + dir ] ){
-
-            var newZoom  = wz.app.storage('zoom') + dir;
-            var winScale = 0;
-
-            if( wz.app.storage('horizontal') ){
-                winScale = zone.width() / wz.app.storage('file').metadata.exif.imageWidth;
-            }else{
-                winScale = zone.height() / wz.app.storage('file').metadata.exif.imageHeight;
-            }
-
-            if( dir > 0 && validZoom[ wz.app.storage('zoom') ] < winScale && validZoom[ newZoom ] >= winScale ){
-
-                wz.app.storage( 'zoom', -1 );
-                newZoom = winScale;
-
-            }else if( dir < 0 && validZoom[ wz.app.storage('zoom') ] > winScale && validZoom[ newZoom ] < winScale ){
-
-                wz.app.storage( 'zoom', -1 );
-                newZoom = winScale;
-
-            }else{
-
-                wz.app.storage( 'zoom', newZoom );
-                newZoom = validZoom[ wz.app.storage('zoom') ];
-
-            }
-
-            _scaleImage( newZoom );
-
-            zoom.val( _preciseDecimal( wz.app.storage('scale') * 100 ) );
-
-        }
-
-    };
-
-    var _detectPage = function(){
-
-        var counter = 0;
-        var images  = $( 'img', zone );
-        var current = images.first();
-
-        $( 'img', zone ).each( function(){
-
-            current = $(this);
-
-            if( ( parseInt( current.position().top, 10 ) + (current.outerHeight( true ) / 2 ) ) > 0 ){
-                return false;
-            }
-
-        });
-
-        var sidebarPages = $( '.weevisor-sidebar-page', sidebar );
-        var tmp          = sidebarPages.filter( '.selected' );
-
-        if( current.index() !== ( tmp.index() - 1 ) ){ // +1/-1 por el prototipo
-
-            tmp.removeClass('selected');
-            console.log(current.index() + 1);
-            tmp = sidebarPages.eq( current.index() + 1 ).addClass('selected');
-
-            sidebar
-                .stop()
-                .clearQueue()
-                .animate( { scrollTop : tmp[ 0 ].offsetTop - parseInt( tmp.css('margin-top'), 10 ) }, 250 );
-
-        }
-
-    };
-
-    var _toggleSidebar = function(){
-
-        if( win.hasClass('sidebar') ){
-
-            sidebar.css( 'display', 'none' );
-            zone.css('width', '+=' + sidebar.width() );
-            win.removeClass('sidebar');
 
         }else{
 
-            sidebar.css( 'display', 'block' );
-            zone.css('width', '-=' + sidebar.width() );
-            win.addClass('sidebar');
+            for( i = 0; i < j; i++ ){
+                if( validZoom[ i ] <= aplliedScale && validZoom[ i + 1 ] > aplliedScale ) break;
+            }
+
+            if( validZoom[ i ] === aplliedScale && validZoom[ i - 1 ] ){
+                i--;
+            }
+
+            if( i >= validZoom.length ){
+                i = validZoom.length - 2;
+            }
 
         }
 
-    };
+        appliedZoom = i;
+        _scalePdf( validZoom[ appliedZoom ] );
+        zoom.val( _preciseDecimal( aplliedScale * 100 ) );
 
-    var _detectCursor = function(){
+    }else if( validZoom[ appliedZoom + dir ] ){
 
-        var img = $( 'img', zone );
+        var newZoom  = appliedZoom + dir;
+        var winScale = _preciseDecimal( ( zone.width() / $( 'img:first', zone )[ 0 ].naturalWidth ) ) * 100;
 
-        if( img.height() <= zone.height() && img.width() <= zone.width() ){
-            zone.addClass('hide-hand');
+        if( dir > 0 && validZoom[ appliedZoom ] < winScale && validZoom[ newZoom ] > winScale ){
+
+            appliedZoom = -1;
+            newZoom = winScale;
+
+        }else if( dir < 0 && validZoom[ appliedZoom ] > winScale && validZoom[ newZoom ] < winScale ){
+
+            appliedZoom = -1;
+            newZoom = winScale;
+
         }else{
-            zone.removeClass('hide-hand');
+
+            appliedZoom = newZoom;
+            newZoom = validZoom[ appliedZoom ];
+
         }
 
-    };
+        _scalePdf( newZoom );
 
-    var _inversePage = function(){
-        $( '.weevisor-sidebar-page.selected', sidebar ).trigger( 'click', true );
-    };
+        zoom.val( _preciseDecimal( aplliedScale * 100 ) );
+
+    }
+
+};
+
+var _detectPage = function(){
+
+    var counter = 0;
+    var images  = $( 'img', zone );
+    var current = images.first();
+
+    $( 'img', zone ).each( function(){
+
+        current = $(this);
+
+        if( ( parseInt( current.position().top, 10 ) + (current.outerHeight( true ) / 2 ) ) > 0 ){
+            return false;
+        }
+
+    });
+
+    var sidebarPages = $( '.weevisor-sidebar-page', sidebar );
+    var tmp          = sidebarPages.filter( '.selected' );
+
+    if( current.index() !== ( tmp.index() - 1 ) ){ // +1/-1 por el prototipo
+
+        tmp.removeClass('selected');
+        console.log(current.index() + 1);
+        tmp = sidebarPages.eq( current.index() + 1 ).addClass('selected');
+
+        sidebar
+            .stop()
+            .clearQueue()
+            .animate( { scrollTop : tmp[ 0 ].offsetTop - parseInt( tmp.css('margin-top'), 10 ) }, 250 );
+
+    }
+
+};
+
+var _toggleSidebar = function(){
+
+    if( win.hasClass('sidebar') ){
+
+        sidebar.css( 'display', 'none' );
+        win.removeClass('sidebar');
+
+    }else{
+
+        sidebar.css( 'display', 'block' );
+        win.addClass('sidebar');
+
+    }
+
+};
+
+var _detectCursor = function(){
+
+    var img = $( 'img', zone );
+
+    if( img.height() <= zone.height() && img.width() <= zone.width() ){
+        zone.addClass('hide-hand');
+    }else{
+        zone.removeClass('hide-hand');
+    }
+
+};
+
+var _inversePage = function(){
+    $( '.weevisor-sidebar-page.selected', sidebar ).trigger( 'click', true );
+};
 
 // Events
     win
     .on( 'ui-view-resize ui-view-maximize ui-view-unmaximize', function(){
 
-        if( wz.app.storage('mode') ){
-            _inversePage();
-        }else{
-            _marginImage();
-        }
+        _inversePage();
 
     });
 
@@ -369,7 +292,7 @@
     minus
     .on( 'click', function(){
 
-        var zoom    = wz.app.storage('zoom');
+        var zoom    = appliedZoom;
         var scrollX = 0;
         var scrollY = 0;
         var resize  = ( zone[ 0 ].scrollWidth - zone[ 0 ].offsetWidth ) || ( zone[ 0 ].scrollHeight - zone[ 0 ].offsetHeight );
@@ -395,7 +318,7 @@
         _scaleButton( -1 );
 
         // Si no se comprueba el zoom se pueden emular desplazamientos, esto lo previene
-        if( zoom !== wz.app.storage('zoom') ){
+        if( zoom !== appliedZoom ){
 
             if( resize ){
 
@@ -415,12 +338,12 @@
     plus
     .on( 'click', function(){
 
-        var zoom    = wz.app.storage('zoom');
+        var zoom    = appliedZoom;
         var scrollX = 0;
         var scrollY = 0;
         var resize  = ( zone[ 0 ].scrollWidth - zone[ 0 ].offsetWidth ) || ( zone[ 0 ].scrollHeight - zone[ 0 ].offsetHeight );
 
-        if( resize || wz.app.storage('zoom') === -1 ){
+        if( resize || appliedZoom === -1 ){
 
             /*
              *
@@ -441,7 +364,7 @@
         _scaleButton( 1 );
 
         // Si no se comprueba el zoom se pueden emular desplazamientos, esto lo previene
-        if( zoom !== wz.app.storage('zoom') ){
+        if( zoom !== appliedZoom ){
 
             if( resize || zoom === -1 ){
 
@@ -468,16 +391,11 @@
 
         var value = _preciseDecimal( zoom.val() / 100 );
 
-        wz.app.storage( 'zoom', -1 );
-
-        if( wz.app.storage('mode') ){
-            _scalePdf( value );
-        }else{
-            _scaleImage( value );
-        }
+        appliedZoom = -1;
+        _scalePdf( value );
 
         zoom
-            .val( _preciseDecimal( wz.app.storage('scale') * 100 ) )
+            .val( _preciseDecimal( aplliedScale * 100 ) )
             .blur(); // To Do -> Provoca que se vuelva a invocar el evento al dar a intro
 
     });
@@ -491,67 +409,11 @@
         minus.click();
     });
 
-    if( wz.app.storage('mode') ){
+    zone.on( 'mousewheel', function(){
+      console.log('scroll');
+      _detectPage();
+    });
 
-        zone
-        .on( 'mousewheel', function(){
-            _detectPage();
-        });
-
-    }else{
-
-        zone
-        .on( 'mousewheel', function( e, d, x, y ){
-
-            var zoom    = wz.app.storage('zoom');
-            var scrollX = 0;
-            var scrollY = 0;
-            var resize  = ( this.scrollWidth - this.offsetWidth ) || ( this.scrollHeight - this.offsetHeight );
-
-            if( resize || wz.app.storage('zoom') === -1 ){
-
-                /*
-                 *
-                 * Las siguientes variables se han puesto directamente en la fórmula para no declarar variables que solo se usan una vez
-                 *
-                 * var posX   = e.clientX - offset.left;
-                 * var posY   = e.clientY - offset.top - menuHeight;
-                 *
-                 * Es la posición del ratón dentro de la zona de la imagen
-                 *
-                 */
-
-                var offset = win.offset();
-                var perX   = ( this.scrollLeft + ( e.clientX - offset.left ) ) / this.scrollWidth;
-                var perY   = ( this.scrollTop + ( e.clientY - offset.top - menuHeight ) ) / this.scrollHeight;
-
-            }
-
-            if( y < 0 ){
-                _scaleButton( -1 );
-            }else if( y > 0 ){
-                _scaleButton( 1 );
-            }
-
-            // Si no se comprueba el zoom se pueden emular desplazamientos, esto lo previene
-            if( zoom !== wz.app.storage('zoom') ){
-
-                if( resize || zoom === -1 ){
-
-                    scrollX = ( this.scrollWidth * perX ) - ( this.offsetWidth * perX );
-                    scrollY = ( this.scrollHeight * perY ) - ( this.offsetHeight * perY );
-
-                }
-
-                $(this)
-                    .scrollLeft( scrollX )
-                    .scrollTop( scrollY );
-
-            }
-
-        });
-
-    }
 
 // Start load
 if( location.host.indexOf('file') === -1 ){
@@ -563,11 +425,7 @@ if( location.host.indexOf('file') === -1 ){
   wz.app.maximizeView( win );
 }
 
-if( wz.app.storage('mode') ){
-  _loadPdf( wz.app.storage('file') );
-}else{
-  _loadImage( wz.app.storage('file') );
-}
+_startApp();
 
 /* fullscreen mode */
 var toggleFullscreen = function(){
@@ -632,38 +490,28 @@ win
     $('.weevisor-sidebar').hide();
     hideControls();
 
-    if( pdfMode ){
+    var zoomWidth = screen.width / pdfSize[0] ;
+    var zoomHeight = screen.height / pdfSize[1] ;
 
-      var zoomWidth = screen.width / pdfSize[0] ;
-      var zoomHeight = screen.height / pdfSize[1] ;
+    console.log(pdfSize);
+    if( zoomWidth < zoomHeight ){
 
-      console.log(pdfSize);
-      if( zoomWidth < zoomHeight ){
-
-        console.log('width ' + zoomWidth );
-        _scalePdf( zoomWidth );
-        var margins = parseInt( ( screen.height - $('.weevisor-images').find('img')[0].height ) / 2 );
-        console.log(margins);
-        $('.weevisor-images').find('img').css( { "margin-top": margins + 'px' , "margin-bottom": margins + 'px' } );
-
-      }else{
-
-        console.log('height ' +  zoomHeight );
-        _scalePdf(zoomHeight );
-
-      }
-
-      var itemSelected = $('.weevisor-sidebar-page.selected');
-      var img = $( 'img', zone ).eq( itemSelected.index() - 1 );
-      zone.scrollTop( img[ 0 ].offsetTop - parseInt( img.css('margin-top') ) );
+      console.log('width ' + zoomWidth );
+      _scalePdf( zoomWidth );
+      var margins = parseInt( ( screen.height - $('.weevisor-images').find('img')[0].height ) / 2 );
+      console.log(margins);
+      $('.weevisor-images').find('img').css( { "margin-top": margins + 'px' , "margin-bottom": margins + 'px' } );
 
     }else{
 
-      _scaleImage( screen.width / parseInt( imageLoaded.metadata.exif.imageWidth, 10 ) );
-      zoom.val( _preciseDecimal( screen.width / parseInt( imageLoaded.metadata.exif.imageWidth, 10 ) * 100 ) );
-      console.log(zoom.val());
+      console.log('height ' +  zoomHeight );
+      _scalePdf( zoomHeight );
 
     }
+
+    var itemSelected = $('.weevisor-sidebar-page.selected');
+    var img = $( 'img', zone ).eq( itemSelected.index() - 1 );
+    zone.scrollTop( img[ 0 ].offsetTop - parseInt( img.css('margin-top') ) );
 
 })
 
@@ -677,26 +525,17 @@ win
     $('.weevisor-sidebar').show();
     showControls();
 
-    if( pdfMode ){
+    _scalePdf(0.29);
+    $('.weevisor-images').find('img').css( { "margin-top": 12 + 'px' , "margin-bottom": 0 + 'px' } );
+    var tmp = $( '.weevisor-sidebar-page.selected');
+    sidebar
+        .stop()
+        .clearQueue()
+        .animate( { scrollTop : tmp[ 0 ].offsetTop - parseInt( tmp.css('margin-top'), 10 ) }, 250 );
 
-      _scalePdf(0.29);
-      $('.weevisor-images').find('img').css( { "margin-top": 12 + 'px' , "margin-bottom": 0 + 'px' } );
-      var tmp = $( '.weevisor-sidebar-page.selected');
-      sidebar
-          .stop()
-          .clearQueue()
-          .animate( { scrollTop : tmp[ 0 ].offsetTop - parseInt( tmp.css('margin-top'), 10 ) }, 250 );
-
-      var itemSelected = $('.weevisor-sidebar-page.selected');
-      var img = $( 'img', zone ).eq( itemSelected.index() - 1 );
-      zone.scrollTop( img[ 0 ].offsetTop - parseInt( img.css('margin-top') ) );
-
-    }else{
-
-      _scaleImage( normalWidth / parseInt( imageLoaded.metadata.exif.imageWidth, 10 ) );
-      zoom.val( _preciseDecimal( normalWidth / parseInt( imageLoaded.metadata.exif.imageWidth, 10 ) * 100 ) );
-
-    }
+    var itemSelected = $('.weevisor-sidebar-page.selected');
+    var img = $( 'img', zone ).eq( itemSelected.index() - 1 );
+    zone.scrollTop( img[ 0 ].offsetTop - parseInt( img.css('margin-top') ) );
 
 })
 
@@ -727,7 +566,7 @@ win
   var itemSelected = $('.weevisor-sidebar-page.selected');
   var positionSelected = parseInt( itemSelected.children('span').text() );
 
-  if (positionSelected > 1 ){
+  if ( positionSelected > 1 ){
 
     var prevItem = sidebarArray.eq( positionSelected - 1 );
     itemSelected.removeClass('selected');
@@ -774,18 +613,17 @@ win
 
 .key( 'f5' , function(e){
 
-  if( !win.hasClass( 'fullscreen' ) && pdfMode ){
+  if( !win.hasClass( 'fullscreen' ) ){
     toggleFullscreen();
-    e.preventDefault();
-  }else if( win.hasClass( 'fullscreen' ) && pdfMode ){
-    e.preventDefault();
   }
+
+  e.preventDefault();
 
 })
 
 .key( 'esc, b' , function(e){
 
-  if( win.hasClass( 'fullscreen' ) && pdfMode ){
+  if( win.hasClass( 'fullscreen' ) ){
     toggleFullscreen();
     e.preventDefault();
   }

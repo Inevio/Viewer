@@ -229,9 +229,9 @@
     overflow: hidden;
 }
 
-.wz-view.pdf .weevisor-images{
+.wz-view.pdf.sidebar .weevisor-images{
     padding: 0px 15px;
-    width: ~'calc(100% - 211px) !important';
+    width: ~'calc(100% - 211px)';
 }
 
 .weevisor-images img{
