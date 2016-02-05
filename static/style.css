@@ -172,6 +172,10 @@
     position: relative;
 }
 
+.wz-view.sidebar .weevisor-sidebar{
+    display: block;
+}
+
 .weevisor-sidebar{
     display: none;
     width: 180px;
@@ -179,10 +183,7 @@
     float: left;
     border-right: 1px solid #CACACA;
     background: #F5F5F5;
-}
-
-.wz-view.pdf .weevisor-sidebar{
-    display: block;
+    display: none;
 }
 
 .weevisor-frame{
@@ -222,7 +223,8 @@
 .weevisor-images{
     float: left;
     text-align: center;
-    width: 100%;
+    width: ~'calc(100% - 30px)';
+    padding: 0px 15px;
     height: 100%;
     line-height: 0px;
     font-size: 0px;

@@ -6,6 +6,7 @@ var win      = $( this );
 var header   = $('.wz-ui-header');
 var uiImages = $('.weevisor-images');
 var view_margin = 50;
+var sidebarWidth = 181;
 
 // Load structure
 if( params && params.command === 'openFile' ){
@@ -28,8 +29,8 @@ if( params && params.command === 'openFile' ){
 
         var dimensions  = structure.metadata.pdf.pageSize.split(' ');
         console.log(dimensions);
-        var width       = parseInt( dimensions[0], 10 );
-        var height      = parseInt( dimensions[2], 10 );
+        var width       = parseInt( dimensions[0], 10 ) + sidebarWidth;
+        var height      = parseInt( dimensions[2], 10 ) + header.outerHeight();
         var widthRatio  = width / ( wz.tool.desktopWidth() - ( view_margin * 2 ) );
         var heightRatio = height / ( wz.tool.desktopHeight() - ( view_margin * 2 ) );
 
@@ -61,9 +62,6 @@ if( params && params.command === 'openFile' ){
 
       // Si es una imagen
       }
-
-      wz.app.storage( 'file', structure );
-      wz.app.storage( 'zoom', -1 );
 
       start();
 

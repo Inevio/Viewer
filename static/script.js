@@ -80,7 +80,7 @@ var _loadPdf = function( file ){
 
     for( i = 0; i < j; i++ ){
 
-        zone.append( $( '<img />').attr( 'src', images[ i ] ).width( s ) );
+        zone.append( $( '<img />').attr( 'src', images[ i ] ) );
 
         k = thumb.clone().removeClass('wz-prototype');
 
@@ -91,23 +91,7 @@ var _loadPdf = function( file ){
 
     }
 
-    $( 'img:first', zone ).on( 'load', function(){
-
-        var x = _preciseDecimal( s / this.naturalWidth );
-        var y = _preciseDecimal( zone.height() / this.naturalHeight );
-
-        if( y < x ){
-          aplliedScale = y;
-        }else{
-          aplliedScale = x;
-        }
-
-        pdfSize = [ this.naturalWidth, this.naturalHeight ];
-        _detectPage();
-        $( 'img', zone ).width( parseInt( aplliedScale * this.naturalWidth, 10 ) );
-        zoom.val( _preciseDecimal( aplliedScale * 100 ) );
-
-    });
+    $('.weevisor-images img:last').css('margin-bottom', '12px');
 
 };
 
