@@ -9,6 +9,7 @@ var toggle            = $( '.weevisor-sidebar-button', win );
 var zone              = $( '.weevisor-images', win );
 var zoom              = $( '.weevisor-zoom', win );
 var uiBarTop          = $('.wz-ui-header');
+var marginTop         = 12;
 var isWebKit          = /webkit/i.test( navigator.userAgent );
 var prevClientX       = 0;
 var prevClientY       = 0;
@@ -16,10 +17,11 @@ var hideControlsTimer = 0;
 var normalWidth       = 0;
 var normalHeight      = 0;
 var pdfMode           = false;
-var pdfSize           = null;
+var pdfSize           = [];
 var fileLoaded        = null;
 var appliedZoom       = null;
 var appliedScale      = null;
+var fixedZoom         = false;
 
 
 var menuHeight = $( '.wz-view-menu', win ).outerHeight();
@@ -37,7 +39,8 @@ var _startApp = function(){
       wz.fs( params.data, function( error, structure ){
 
         $( '.weevisor-title', win ).text( structure.name );
-
+        var dimensions  = structure.metadata.pdf.pageSize.split(' ');
+        pdfSize.push( parseInt( dimensions[0] , 10 ) , parseInt( dimensions[2] , 10 ) );
         fileLoaded = structure;
         appliedZoom = -1;
 
@@ -45,6 +48,28 @@ var _startApp = function(){
 
       });
 
+  }
+
+}
+
+var _scaleWindow = function(){
+
+  var zWidth = zone.width();
+  var zHeight = zone.height()- marginTop*2;
+  var scale = null;
+  var scaleWidth = zWidth / pdfSize[0];
+  var scaleHeight = zHeight / pdfSize[1];
+
+  console.log( zWidth, zHeight, scaleWidth, scaleHeight );
+
+  if( scaleWidth >= scaleHeight ){
+    scale = scaleHeight;
+  }else{
+    scale = scaleWidth;
+  }
+
+  if( scale != appliedScale){
+    _scalePdf(scale);
   }
 
 }
@@ -73,12 +98,9 @@ var _loadPdf = function( file ){
 
     }
 
-    var i = 0;
-    var j = images.length;
     var k = null;
-    var s = zone.width();
 
-    for( i = 0; i < j; i++ ){
+    for( var i = 0; i < images.length; i++ ){
 
         zone.append( $( '<img />').attr( 'src', images[ i ] ) );
 
@@ -90,6 +112,23 @@ var _loadPdf = function( file ){
         sidebar.append( k );
 
     }
+
+    var zWidth = zone.width();
+    var zHeight = zone.height() - marginTop;
+    var scale = null;
+    var scaleWidth = zWidth / pdfSize[0];
+    var scaleHeight = zHeight / pdfSize[1];
+
+    console.log( zWidth, zHeight, scaleWidth, scaleHeight );
+
+    if( scaleWidth >= scaleHeight ){
+      scale = scaleHeight;
+    }else{
+      scale = scaleWidth;
+    }
+
+    console.log(pdfSize, scale);
+    _scalePdf(scale);
 
     $('.weevisor-images img:last').css('margin-bottom', '12px');
 
@@ -103,18 +142,20 @@ var _scalePdf = function( scale ){
         return false;
     }
 
+    console.log( scale, pdfSize[0] );
+
     $( 'img', zone )
-        .width( function(){
-            return parseInt( scale * this.naturalWidth, 10 );
-        });
+        .width( parseInt( scale * pdfSize[0] , 10 ) );
 
-    aplliedScale = scale;
+    appliedScale = scale;
 
-    //_detectPage();
+    _detectPage();
 
 };
 
 var _scaleButton = function( dir ){
+
+    fixedZoom = true;
 
     if( appliedZoom === -1 ){
 
@@ -124,16 +165,16 @@ var _scaleButton = function( dir ){
         if( dir > 0 ){
 
             for( i = 0; i < j; i++ ){
-                if( validZoom[ i ] > aplliedScale ) break;
+                if( validZoom[ i ] > appliedScale ) break;
             }
 
         }else{
 
             for( i = 0; i < j; i++ ){
-                if( validZoom[ i ] <= aplliedScale && validZoom[ i + 1 ] > aplliedScale ) break;
+                if( validZoom[ i ] <= appliedScale && validZoom[ i + 1 ] > appliedScale ) break;
             }
 
-            if( validZoom[ i ] === aplliedScale && validZoom[ i - 1 ] ){
+            if( validZoom[ i ] === appliedScale && validZoom[ i - 1 ] ){
                 i--;
             }
 
@@ -145,7 +186,7 @@ var _scaleButton = function( dir ){
 
         appliedZoom = i;
         _scalePdf( validZoom[ appliedZoom ] );
-        zoom.val( _preciseDecimal( aplliedScale * 100 ) );
+        zoom.val( _preciseDecimal( appliedScale * 100 ) );
 
     }else if( validZoom[ appliedZoom + dir ] ){
 
@@ -171,7 +212,7 @@ var _scaleButton = function( dir ){
 
         _scalePdf( newZoom );
 
-        zoom.val( _preciseDecimal( aplliedScale * 100 ) );
+        zoom.val( _preciseDecimal( appliedScale * 100 ) );
 
     }
 
@@ -225,6 +266,10 @@ var _toggleSidebar = function(){
 
     }
 
+    if ( !fixedZoom ){
+      _scaleWindow();
+    }
+
 };
 
 var _detectCursor = function(){
@@ -247,7 +292,7 @@ var _inversePage = function(){
     win
     .on( 'ui-view-resize ui-view-maximize ui-view-unmaximize', function(){
 
-        _inversePage();
+        //_inversePage();
 
     });
 
@@ -379,7 +424,7 @@ var _inversePage = function(){
         _scalePdf( value );
 
         zoom
-            .val( _preciseDecimal( aplliedScale * 100 ) )
+            .val( _preciseDecimal( appliedScale * 100 ) )
             .blur(); // To Do -> Provoca que se vuelva a invocar el evento al dar a intro
 
     });
@@ -461,6 +506,20 @@ win
     if( win.hasClass('fullscreen') ){
         toggleFullscreen();
     }
+
+})
+
+.on( 'ui-view-resize ui-view-maximize ui-view-unmaximize', function(){
+
+  if ( !fixedZoom ){
+    _scaleWindow();
+  }
+
+})
+
+.on( 'ui-view-resize-end', function(){
+
+  //_scaleWindow();
 
 })
 
