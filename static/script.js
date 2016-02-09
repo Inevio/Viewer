@@ -8,7 +8,7 @@ var thumb             = $( '.weevisor-sidebar-page.wz-prototype', win );
 var toggle            = $( '.weevisor-sidebar-button', win );
 var zone              = $( '.weevisor-images', win );
 var zoom              = $( '.weevisor-zoom', win );
-var uiBarTop          = $('.wz-ui-header');
+var uiBarTop          = $( '.ui-header', win );
 var marginTop         = 12;
 var isWebKit          = /webkit/i.test( navigator.userAgent );
 var prevClientX       = 0;
@@ -38,6 +38,7 @@ var _startApp = function(){
 
       wz.fs( params.data, function( error, structure ){
 
+        console.log( structure );
         $( '.weevisor-title', win ).text( structure.name );
         var dimensions  = structure.metadata.pdf.pageSize.split(' ');
         pdfSize.push( parseInt( dimensions[0] , 10 ) , parseInt( dimensions[2] , 10 ) );
@@ -55,12 +56,12 @@ var _startApp = function(){
 var _scaleWindow = function(){
 
   var zWidth = zone.width();
-  var zHeight = zone.height()- marginTop*2;
+  var zHeight = zone.height() - marginTop*2;
   var scale = null;
   var scaleWidth = zWidth / pdfSize[0];
   var scaleHeight = zHeight / pdfSize[1];
 
-  console.log( zWidth, zHeight, scaleWidth, scaleHeight );
+  //console.log( zWidth, zHeight, scaleWidth, scaleHeight );
 
   if( scaleWidth >= scaleHeight ){
     scale = scaleHeight;
@@ -113,7 +114,7 @@ var _loadPdf = function( file ){
 
     }
 
-    var zWidth = zone.width();
+    /*var zWidth = zone.width();
     var zHeight = zone.height() - marginTop;
     var scale = null;
     var scaleWidth = zWidth / pdfSize[0];
@@ -128,7 +129,9 @@ var _loadPdf = function( file ){
     }
 
     console.log(pdfSize, scale);
-    _scalePdf(scale);
+    _scalePdf(scale);*/
+
+    _scaleWindow();
 
     $('.weevisor-images img:last').css('margin-bottom', '12px');
 
@@ -439,7 +442,6 @@ var _inversePage = function(){
     });
 
     zone.on( 'mousewheel', function(){
-      console.log('scroll');
       _detectPage();
     });
 
@@ -497,8 +499,9 @@ var hideControls = function(){
 };
 
 win
-.on( 'click', '.wz-view-fullscreen', function(){
+.on( 'click', '.ui-fullscreen', function(e){
     toggleFullscreen();
+    e.stopPropagation();
 })
 
 .on( 'click', '.wz-view-minimize', function(){
@@ -568,7 +571,12 @@ win
     $('.weevisor-sidebar').show();
     showControls();
 
-    _scalePdf(0.29);
+    if( !fixedZoom ){
+      _scaleWindow();
+    }else{
+      _scalePdf(0.29);
+    }
+
     $('.weevisor-images').find('img').css( { "margin-top": 12 + 'px' , "margin-bottom": 0 + 'px' } );
     var tmp = $( '.weevisor-sidebar-page.selected');
     sidebar

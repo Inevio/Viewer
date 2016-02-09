@@ -134,6 +134,18 @@
     overflow: hidden;
 }
 
+.ui-fullscreen i{
+  background: url('@static/fullscreen.png');
+  background-position: 0px 0;
+  background-size: 10px 10px;
+}
+
+.ui-header{
+  border-radius: 0px;
+  -webkit-border-radius: 0px;
+  -moz-border-radius: 0px;
+}
+
 .weevisor-zoom{
     float: right;
     font-size: 12px;
@@ -231,6 +243,10 @@
     overflow: hidden;
 }
 
+.weevisor-images .wz-scroll-bar-horizontal{
+  display: none;
+}
+
 .wz-view.pdf.sidebar .weevisor-images{
     padding: 0px 15px;
     width: ~'calc(100% - 211px)';
@@ -270,7 +286,7 @@
   /*top: -40px;*/
 }
 
-.wz-view.fullscreen .weevisor-images{
+.wz-view.fullscreen.pdf .weevisor-images{
   padding: 0;
   width: 100% !important;
   height: 100%;
