@@ -1,8 +1,8 @@
 
 // Variables
 var win               = $( this );
-var minus             = $( '.weevisor-zoom-minus', win );
-var plus              = $( '.weevisor-zoom-plus', win );
+var minus             = $( '.zoom-minus', win );
+var plus              = $( '.zoom-plus', win );
 var sidebar           = $( '.weevisor-sidebar', win );
 var thumb             = $( '.weevisor-sidebar-page.wz-prototype', win );
 var toggle            = $( '.weevisor-sidebar-button', win );

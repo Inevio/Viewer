@@ -321,3 +321,69 @@
   background: url('@static/sprite.png') -48px 0px no-repeat;
   background-size: 57px 15px;
 }
+
+.zoom-buttons{
+  width: 95px;
+  height: 35px;
+  margin-top: 8px;
+  margin-right: 10px;
+  float: right;
+}
+
+.zoom-buttons .zoom-minus, .zoom-buttons .zoom-original, .zoom-buttons .zoom-plus{
+  width: 15px;
+  height: 15px;
+  padding: 5px;
+  border: 1px solid transparent;
+  float: left;
+  border-radius: 3px;
+}
+
+.zoom-buttons .zoom-minus i, .zoom-buttons .zoom-original i, .zoom-buttons .zoom-plus i{
+  width: 15px;
+  height: 15px;
+  background-size: 15px 15px;
+  display: inline-block;
+}
+
+.zoom-buttons .zoom-minus, .zoom-buttons .zoom-original{
+  margin-right: 7px;
+}
+
+.zoom-buttons .zoom-minus i{
+  background-image: url('@static/zoom_minus.png');
+}
+
+.zoom-buttons .zoom-original i{
+  background-image: url('@static/zoom_100.png');
+}
+
+.zoom-buttons .zoom-plus i{
+  background-image: url('@static/zoom_plus.png');
+}
+
+.zoom-buttons .zoom-minus:hover, .zoom-buttons .zoom-original:hover, .zoom-buttons .zoom-plus:hover{
+  background-color: #545f65;
+  -webkit-box-shadow: 0 2px 1px rgba(0,0,0,.05), inset 0 2px rgba(255,255,255,.03);
+  -moz-box-shadow: 0 2px 1px rgba(0,0,0,.05), inset 0 2px rgba(255,255,255,.03);
+  box-shadow: 0 2px 1px rgba(0,0,0,.05), inset 0 2px rgba(255,255,255,.03);
+  border: solid 1px rgba(0,0,0,.3);
+  background-image: -webkit-linear-gradient(bottom, #49535c, #535f6a);
+  background-image: -moz-linear-gradient(bottom, #49535c, #535f6a);
+  background-image: -o-linear-gradient(bottom, #49535c, #535f6a);
+  background-image: -ms-linear-gradient(bottom, #49535c, #535f6a);
+  background-image: linear-gradient(to top, #49535c, #535f6a);
+  background-clip: padding-box;
+}
+
+.zoom-buttons .zoom-minus:active, .zoom-buttons .zoom-original:active, .zoom-buttons .zoom-plus:active{
+  background-color: #363c43;
+  border: solid 1px rgba(0,0,0,.3);
+  background-image: -webkit-linear-gradient(top, #323a40, #3d444b);
+  background-image: -moz-linear-gradient(top, #323a40, #3d444b);
+  background-image: -o-linear-gradient(top, #323a40, #3d444b);
+  background-image: -ms-linear-gradient(top, #323a40, #3d444b);
+  background-image: linear-gradient(to bottom, #323a40, #3d444b);
+  box-shadow: none;
+  background-clip: padding-box;
+}
