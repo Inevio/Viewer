@@ -67,10 +67,19 @@
     overflow: hidden;
 }
 
+.ui-header .ui-header-buttons .ui-fullscreen{
+  padding: 8px;
+  width: 8px;
+  height: 8px;
+}
+
 .ui-fullscreen i{
   background: url('@static/fullscreen.png');
   background-position: 0px 0;
-  background-size: 10px 10px;
+  background-size: 8px 8px;
+  width: 8px;
+  height: 8px;
+  display: inline-block;
 }
 
 .weevisor-zoom{
@@ -157,8 +166,10 @@
 .weevisor-sidebar-page span{
     width: 100%;
     display: inline-block;
-    font-size: 13px;
     color: #bdc4c6;
+    font-size: 11px;
+    font-family: Lato;
+    font-weight: bold;
 }
 
 .weevisor-images{

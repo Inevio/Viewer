@@ -22,6 +22,7 @@ var fileLoaded        = null;
 var appliedZoom       = null;
 var appliedScale      = null;
 var fixedZoom         = false;
+var nImages           = 0;
 
 
 var menuHeight = $( '.wz-view-menu', win ).outerHeight();
@@ -61,6 +62,9 @@ var _scaleWindow = function(){
   var scaleWidth = zWidth / pdfSize[0];
   var scaleHeight = zHeight / pdfSize[1];
 
+  var fullZoneHeight = $('.weevisor-images img').outerHeight(true) * nImages;
+  var zonePercentage = $('.weevisor-images').scrollTop() / fullZoneHeight;
+
   //console.log( zWidth, zHeight, scaleWidth, scaleHeight );
 
   if( scaleWidth >= scaleHeight ){
@@ -71,6 +75,8 @@ var _scaleWindow = function(){
 
   if( scale != appliedScale){
     _scalePdf(scale);
+    var fullZoneHeight2 = $('.weevisor-images img').outerHeight(true) * nImages;
+    $('.weevisor-images').scrollTop( zonePercentage * fullZoneHeight2 );
   }
 
 }
@@ -100,8 +106,9 @@ var _loadPdf = function( file ){
     }
 
     var k = null;
+    nImages = images.length;
 
-    for( var i = 0; i < images.length; i++ ){
+    for( var i = 0; i < nImages; i++ ){
 
         zone.append( $( '<img />').attr( 'src', images[ i ] ) );
 
@@ -131,9 +138,8 @@ var _loadPdf = function( file ){
     console.log(pdfSize, scale);
     _scalePdf(scale);*/
 
-    _scaleWindow();
-
     $('.weevisor-images img:last').css('margin-bottom', '12px');
+    _scaleWindow();
 
 };
 
