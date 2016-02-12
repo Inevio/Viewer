@@ -9,6 +9,7 @@ var toggle            = $( '.weevisor-sidebar-button', win );
 var zone              = $( '.weevisor-images', win );
 var zoom              = $( '.weevisor-zoom', win );
 var uiBarTop          = $( '.ui-header', win );
+var maxWindowBtn      = $( '.max-screen', win );
 var marginTop         = 12;
 var isWebKit          = /webkit/i.test( navigator.userAgent );
 var prevClientX       = 0;
@@ -165,6 +166,7 @@ var _scalePdf = function( scale ){
 var _scaleButton = function( dir ){
 
     fixedZoom = true;
+    maxWindowBtn.removeClass('active');
 
     if( appliedZoom === -1 ){
 
