@@ -39,7 +39,7 @@ var _startApp = function(){
       wz.fs( params.data, function( error, structure ){
 
         console.log( structure );
-        $( '.weevisor-title', win ).text( structure.name );
+        $( '.ui-header-brand span', win ).text( structure.name );
         var dimensions  = structure.metadata.pdf.pageSize.split(' ');
         pdfSize.push( parseInt( dimensions[0] , 10 ) , parseInt( dimensions[2] , 10 ) );
         fileLoaded = structure;
@@ -509,6 +509,16 @@ win
     if( win.hasClass('fullscreen') ){
         toggleFullscreen();
     }
+
+})
+
+.on( 'click' , '.max-screen', function(){
+
+  fixedZoom = !fixedZoom;
+  $(this).toggleClass('active');
+  if( !fixedZoom ){
+    _scaleWindow();
+  }
 
 })
 
