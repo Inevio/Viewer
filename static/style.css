@@ -1,6 +1,6 @@
 
 .wz-view{
-    background: #EBEBEB;
+    background: #2c3238;
     border: solid 1px #2c3238;
     border-radius: 6px;
 }
@@ -10,6 +10,12 @@
     background: #EBEBEB;
 }
 */
+
+.ui-header{
+  border-radius: 3px 3px 0 0;
+  -webkit-border-radius: 3px 3px 0 0;
+  -moz-border-radius: 3px 3px 0 0;
+}
 
 .wz-scroll-bar-vertical{
     width: 5px;
