@@ -328,9 +328,9 @@
 
 .zoom-buttons .zoom-minus:hover, .zoom-buttons .zoom-original:hover, .zoom-buttons .zoom-plus:hover, .weevisor-sidebar-button:hover, .max-screen:hover{
   background-color: #545f65;
-  -webkit-box-shadow: 0 2px 1px rgba(0,0,0,.05), inset 0 2px rgba(255,255,255,.03);
-  -moz-box-shadow: 0 2px 1px rgba(0,0,0,.05), inset 0 2px rgba(255,255,255,.03);
-  box-shadow: 0 2px 1px rgba(0,0,0,.05), inset 0 2px rgba(255,255,255,.03);
+  -webkit-box-shadow: 0 1px 1px rgba(0,0,0,.05), inset 0 1px rgba(255,255,255,.03);
+  -moz-box-shadow: 0 1px 1px rgba(0,0,0,.05), inset 0 1px rgba(255,255,255,.03);
+  box-shadow: 0 1px 1px rgba(0,0,0,.05), inset 0 1px rgba(255,255,255,.03);
   border: solid 1px rgba(0,0,0,.3);
   background-image: -webkit-linear-gradient(bottom, #49535c, #535f6a);
   background-image: -moz-linear-gradient(bottom, #49535c, #535f6a);
