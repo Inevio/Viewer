@@ -29,26 +29,39 @@ if( params && params.command === 'openFile' ){
 
         var dimensions  = structure.metadata.pdf.pageSize.split(' ');
         console.log(dimensions);
-        var width       = parseInt( dimensions[0], 10 ) + sidebarWidth;
-        var height      = parseInt( dimensions[2], 10 ) + header.outerHeight();
-        var widthRatio  = width / ( wz.tool.desktopWidth() - ( view_margin * 2 ) );
-        var heightRatio = height / ( wz.tool.desktopHeight() - ( view_margin * 2 ) );
+        var width, height;
 
-        if( widthRatio > 1 || heightRatio > 1 ){
+        if( parseInt( dimensions[0], 10 ) >= parseInt( dimensions[2], 10 ) ){
 
-          if( widthRatio >= heightRatio ){
+          width       = parseInt( dimensions[0], 10 ) + sidebarWidth;
+          height      = parseInt( dimensions[2], 10 ) + header.outerHeight();
+          var widthRatio  = width / ( wz.tool.desktopWidth() - ( view_margin * 2 ) );
+          var heightRatio = height / ( wz.tool.desktopHeight() - ( view_margin * 2 ) );
 
-              width  = wz.tool.desktopWidth() - ( view_margin * 2 );
-              height = height / widthRatio;
+          if( widthRatio > 1 || heightRatio > 1 ){
 
-          }else{
+            if( widthRatio >= heightRatio ){
 
-              width  = width / heightRatio;
-              height = wz.tool.desktopHeight() - ( view_margin * 2 );
+                width  = wz.tool.desktopWidth() - ( view_margin * 2 );
+                height = height / widthRatio;
+
+            }else{
+
+                width  = width / heightRatio;
+                height = wz.tool.desktopHeight() - ( view_margin * 2 );
+
+            }
 
           }
 
+        }else{
+
+          width = wz.tool.desktopWidth() - ( view_margin * 2 );
+          height = wz.tool.desktopHeight() - ( view_margin * 2 );
+
         }
+
+
 
         if( location.host.indexOf('file') === -1 ){
 

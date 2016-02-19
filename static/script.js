@@ -1,29 +1,31 @@
 
 // Variables
-var win               = $( this );
-var minus             = $( '.zoom-minus', win );
-var plus              = $( '.zoom-plus', win );
-var sidebar           = $( '.weevisor-sidebar', win );
-var thumb             = $( '.weevisor-sidebar-page.wz-prototype', win );
-var toggle            = $( '.weevisor-sidebar-button', win );
-var zone              = $( '.weevisor-images', win );
-var zoom              = $( '.weevisor-zoom', win );
-var uiBarTop          = $( '.ui-header', win );
-var maxWindowBtn      = $( '.max-screen', win );
-var marginTop         = 12;
-var isWebKit          = /webkit/i.test( navigator.userAgent );
-var prevClientX       = 0;
-var prevClientY       = 0;
-var hideControlsTimer = 0;
-var normalWidth       = 0;
-var normalHeight      = 0;
-var pdfMode           = false;
-var pdfSize           = [];
-var fileLoaded        = null;
-var appliedZoom       = null;
-var appliedScale      = null;
-var fixedZoom         = false;
-var nImages           = 0;
+var win                 = $( this );
+var minus               = $( '.zoom-minus', win );
+var plus                = $( '.zoom-plus', win );
+var sidebar             = $( '.weevisor-sidebar', win );
+var thumb               = $( '.weevisor-sidebar-page.wz-prototype', win );
+var toggle              = $( '.weevisor-sidebar-button', win );
+var zone                = $( '.weevisor-images', win );
+var zoom                = $( '.weevisor-zoom', win );
+var uiBarTop            = $( '.ui-header', win );
+var adjustVerticalBtn   = $( '.adjust-vertical', win );
+var adjustHorizontalBtn = $( '.adjust-horizontal', win );
+var marginTop           = 12;
+var isWebKit            = /webkit/i.test( navigator.userAgent );
+var prevClientX         = 0;
+var prevClientY         = 0;
+var hideControlsTimer   = 0;
+var normalWidth         = 0;
+var normalHeight        = 0;
+var pdfMode             = false;
+var pdfSize             = [];
+var fileLoaded          = null;
+var appliedZoom         = null;
+var appliedScale        = null;
+var adjustVertical      = true;
+var adjustHorizontal    = false;
+var nImages             = 0;
 
 
 var menuHeight = $( '.wz-view-menu', win ).outerHeight();
@@ -47,6 +49,15 @@ var _startApp = function(){
         fileLoaded = structure;
         appliedZoom = -1;
 
+        if( parseInt( dimensions[0], 10 ) < parseInt( dimensions[2], 10 ) ){
+
+          $('.adjust-vertical').removeClass('active');
+          $('.adjust-horizontal').addClass('active');
+          adjustVertical = !adjustVertical;
+          adjustHorizontal = !adjustHorizontal;
+          
+        }
+
         _loadPdf( fileLoaded );
 
       });
@@ -68,13 +79,13 @@ var _scaleWindow = function(){
 
   //console.log( zWidth, zHeight, scaleWidth, scaleHeight );
 
-  if( scaleWidth >= scaleHeight ){
+  if( scaleWidth >= scaleHeight && !adjustHorizontal ){
     scale = scaleHeight;
   }else{
     scale = scaleWidth;
   }
 
-  if( scale != appliedScale){
+  if( scale != appliedScale ){
     _scalePdf(scale);
     var fullZoneHeight2 = $('.weevisor-images img').outerHeight(true) * nImages;
     $('.weevisor-images').scrollTop( zonePercentage * fullZoneHeight2 );
@@ -165,8 +176,9 @@ var _scalePdf = function( scale ){
 
 var _scaleButton = function( dir ){
 
-    fixedZoom = true;
-    maxWindowBtn.removeClass('active');
+    adjustVertical = false;
+    adjustHorizontal = false;
+    adjustVerticalBtn.removeClass('active');
 
     if( appliedZoom === -1 ){
 
@@ -277,7 +289,7 @@ var _toggleSidebar = function(){
 
     }
 
-    if ( !fixedZoom ){
+    if ( adjustVertical || adjustHorizontal ){
       _scaleWindow();
     }
 
@@ -520,11 +532,33 @@ win
 
 })
 
-.on( 'click' , '.max-screen', function(){
+.on( 'click' , '.adjust-vertical', function(){
 
-  fixedZoom = !fixedZoom;
-  $(this).toggleClass('active');
-  if( !fixedZoom ){
+  adjustVertical = !adjustVertical;
+  if( adjustVertical && adjustHorizontal ){
+    adjustHorizontal = !adjustHorizontal;
+    $('.adjust-horizontal').removeClass('active');
+  }
+
+  $(this).addClass('active');
+
+  if( adjustVertical || adjustHorizontal ){
+    _scaleWindow();
+  }
+
+})
+
+.on( 'click' , '.adjust-horizontal', function(){
+
+  adjustHorizontal = !adjustHorizontal;
+  if( adjustHorizontal && adjustVertical ){
+    adjustVertical = !adjustVertical;
+    $('.adjust-vertical').removeClass('active');
+  }
+
+  $(this).addClass('active');
+
+  if( adjustVertical || adjustHorizontal ){
     _scaleWindow();
   }
 
@@ -532,7 +566,7 @@ win
 
 .on( 'ui-view-resize ui-view-maximize ui-view-unmaximize', function(){
 
-  if ( !fixedZoom ){
+  if ( adjustVertical || adjustHorizontal){
     _scaleWindow();
   }
 
@@ -589,7 +623,7 @@ win
     $('.weevisor-sidebar').show();
     showControls();
 
-    if( !fixedZoom ){
+    if( adjustVertical || adjustHorizontal ){
       _scaleWindow();
     }else{
       _scalePdf(0.29);
@@ -622,7 +656,6 @@ win
 
         prevClientX = e.clientX;
         prevClientY = e.clientY;
-
         clearTimeout( 0 );
 
     }
