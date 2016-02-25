@@ -55,7 +55,7 @@ var _startApp = function(){
           $('.adjust-horizontal').addClass('active');
           adjustVertical = !adjustVertical;
           adjustHorizontal = !adjustHorizontal;
-          
+
         }
 
         _loadPdf( fileLoaded );
@@ -179,6 +179,7 @@ var _scaleButton = function( dir ){
     adjustVertical = false;
     adjustHorizontal = false;
     adjustVerticalBtn.removeClass('active');
+    adjustHorizontalBtn.removeClass('active');
 
     if( appliedZoom === -1 ){
 
@@ -535,12 +536,18 @@ win
 .on( 'click' , '.adjust-vertical', function(){
 
   adjustVertical = !adjustVertical;
-  if( adjustVertical && adjustHorizontal ){
-    adjustHorizontal = !adjustHorizontal;
-    $('.adjust-horizontal').removeClass('active');
-  }
 
-  $(this).addClass('active');
+  if( adjustVertical && adjustHorizontal ){
+
+    adjustHorizontal = !adjustHorizontal;
+    adjustHorizontalBtn.removeClass('active');
+    $(this).addClass('active');
+
+  }else if( !adjustVertical ){
+    $(this).removeClass('active');
+  }else{
+    $(this).addClass('active');
+  }
 
   if( adjustVertical || adjustHorizontal ){
     _scaleWindow();
@@ -551,12 +558,18 @@ win
 .on( 'click' , '.adjust-horizontal', function(){
 
   adjustHorizontal = !adjustHorizontal;
-  if( adjustHorizontal && adjustVertical ){
-    adjustVertical = !adjustVertical;
-    $('.adjust-vertical').removeClass('active');
-  }
 
-  $(this).addClass('active');
+  if( adjustHorizontal && adjustVertical ){
+
+    adjustVertical = !adjustVertical;
+    adjustVerticalBtn.removeClass('active');
+    $(this).addClass('active');
+
+  }else if( !adjustHorizontal ){
+    $(this).removeClass('active');
+  }else{
+    $(this).addClass('active');
+  }
 
   if( adjustVertical || adjustHorizontal ){
     _scaleWindow();
