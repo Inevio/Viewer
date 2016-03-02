@@ -39,6 +39,11 @@
 
 .ui-header .ui-header-brand{
   padding-left: 10px;
+  max-width: ~"calc(100% - 340px)"
+}
+
+.ui-header .ui-header-brand span{
+  max-width: 100%;
 }
 
 .weevisor-sidebar-button{
