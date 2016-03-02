@@ -29,14 +29,12 @@ if( params && params.command === 'openFile' ){
 
         var dimensions  = structure.metadata.pdf.pageSize.split(' ');
         console.log(dimensions);
-        var width, height;
+        var width       = parseInt( dimensions[0], 10 ) + sidebarWidth;
+        var height      = parseInt( dimensions[2], 10 ) + header.outerHeight();
+        var widthRatio  = width / ( wz.tool.desktopWidth() - ( view_margin * 2 ) );
+        var heightRatio = height / ( wz.tool.desktopHeight() - ( view_margin * 2 ) );
 
         if( parseInt( dimensions[0], 10 ) >= parseInt( dimensions[2], 10 ) ){
-
-          width       = parseInt( dimensions[0], 10 ) + sidebarWidth;
-          height      = parseInt( dimensions[2], 10 ) + header.outerHeight();
-          var widthRatio  = width / ( wz.tool.desktopWidth() - ( view_margin * 2 ) );
-          var heightRatio = height / ( wz.tool.desktopHeight() - ( view_margin * 2 ) );
 
           if( widthRatio > 1 || heightRatio > 1 ){
 
@@ -56,11 +54,16 @@ if( params && params.command === 'openFile' ){
 
         }else{
 
-          width = wz.tool.desktopWidth() - ( view_margin * 2 );
-          height = wz.tool.desktopHeight() - ( view_margin * 2 );
+          if( widthRatio > 1 ){
+
+            width = wz.tool.desktopWidth() - ( view_margin * 4 );
+            height = wz.tool.desktopHeight() - ( view_margin * 4 );
+
+          }else{
+            height = wz.tool.desktopHeight() - ( view_margin * 4 );
+          }
 
         }
-
 
 
         if( location.host.indexOf('file') === -1 ){
