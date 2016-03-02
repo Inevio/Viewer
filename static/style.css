@@ -49,22 +49,21 @@
 .weevisor-sidebar-button{
   display: block;
   margin-left: 8px;
-  margin-top: 9px;
-  width: 13px;
+  margin-top: 7px;
+  width: 14px;
   height: 10px;
   float: left;
-  padding: 6px;
+  padding: 8px 6px;
   border: 1px solid transparent;
+  border-radius: 3px;
 }
 
 .weevisor-sidebar-button i{
-
-    width: 13px;
-    height: 10px;
-    display: block;
-    background: url('@static/sidebar.png') no-repeat;
-    background-size: 13px 10px;
-
+  width: 14px;
+  height: 10px;
+  display: block;
+  background: url('@static/sidebar.png') no-repeat;
+  background-size: 14px 10px;
 }
 
 .weevisor-title{
@@ -204,8 +203,10 @@
     width: ~'calc(100% - 211px)';
 }
 
-.weevisor-images img{
-    display: inline-block;
+.wz-view.pdf .weevisor-images.page img{
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .wz-view.pdf .weevisor-images img{

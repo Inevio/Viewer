@@ -55,6 +55,7 @@ var _startApp = function(){
           $('.adjust-horizontal').addClass('active');
           adjustVertical = !adjustVertical;
           adjustHorizontal = !adjustHorizontal;
+          zone.removeClass('page');
 
         }
 
@@ -178,6 +179,7 @@ var _scaleButton = function( dir ){
 
     adjustVertical = false;
     adjustHorizontal = false;
+    zone.removeClass('page');
     adjustVerticalBtn.removeClass('active');
     adjustHorizontalBtn.removeClass('active');
 
@@ -313,158 +315,158 @@ var _inversePage = function(){
 };
 
 // Events
-    win
-    .on( 'ui-view-resize ui-view-maximize ui-view-unmaximize', function(){
+win
+.on( 'ui-resize wz-resize ui-view-resize ui-view-maximize ui-view-unmaximize', function(){
 
-        //_inversePage();
+    //console.log('resize');
 
-    });
+});
 
-    sidebar
-    .on( 'click', '.weevisor-sidebar-page', function( e, noAnimate ){
+sidebar
+.on( 'click', '.weevisor-sidebar-page', function( e, noAnimate ){
 
-        $(this)
-            .addClass('selected')
-            .siblings('.selected')
-                .removeClass('selected');
+    $(this)
+        .addClass('selected')
+        .siblings('.selected')
+            .removeClass('selected');
 
-        var img = $( 'img', zone ).eq( $(this).index() - 1 );
+    var img = $( 'img', zone ).eq( $(this).index() - 1 );
 
-        zone
-            .stop()
-            .clearQueue();
+    zone
+        .stop()
+        .clearQueue();
 
-        if( noAnimate ){
-            zone.scrollTop( img[ 0 ].offsetTop - parseInt( img.css('margin-top') ) );
-        }else{
-            zone.animate( { scrollTop : img[ 0 ].offsetTop - parseInt( img.css('margin-top') ) }, 250 );
-        }
+    if( noAnimate ){
+        zone.scrollTop( img[ 0 ].offsetTop - parseInt( img.css('margin-top') ) );
+    }else{
+        zone.animate( { scrollTop : img[ 0 ].offsetTop - parseInt( img.css('margin-top') ) }, 250 );
+    }
 
-    });
+});
 
-    minus
-    .on( 'click', function(){
+minus
+.on( 'click', function(){
 
-        var zoom    = appliedZoom;
-        var scrollX = 0;
-        var scrollY = 0;
-        var resize  = ( zone[ 0 ].scrollWidth - zone[ 0 ].offsetWidth ) || ( zone[ 0 ].scrollHeight - zone[ 0 ].offsetHeight );
+    var zoom    = appliedZoom;
+    var scrollX = 0;
+    var scrollY = 0;
+    var resize  = ( zone[ 0 ].scrollWidth - zone[ 0 ].offsetWidth ) || ( zone[ 0 ].scrollHeight - zone[ 0 ].offsetHeight );
+
+    if( resize ){
+
+        /*
+         *
+         * Las siguientes variables se han puesto directamente en la fórmula para no declarar variables que solo se usan una vez
+         *
+         * var posX   = e.clientX - offset.left;
+         * var posY   = e.clientY - offset.top - menuHeight;
+         *
+         * Es la posición del ratón dentro de la zona de la imagen
+         *
+         */
+
+        var perX = ( zone[ 0 ].scrollLeft + ( zone[ 0 ].offsetWidth / 2 ) ) / zone[ 0 ].scrollWidth;
+        var perY = ( zone[ 0 ].scrollTop + ( zone[ 0 ].offsetHeight / 2 ) ) / zone[ 0 ].scrollHeight;
+
+    }
+
+    _scaleButton( -1 );
+
+    // Si no se comprueba el zoom se pueden emular desplazamientos, esto lo previene
+    if( zoom !== appliedZoom ){
 
         if( resize ){
 
-            /*
-             *
-             * Las siguientes variables se han puesto directamente en la fórmula para no declarar variables que solo se usan una vez
-             *
-             * var posX   = e.clientX - offset.left;
-             * var posY   = e.clientY - offset.top - menuHeight;
-             *
-             * Es la posición del ratón dentro de la zona de la imagen
-             *
-             */
-
-            var perX = ( zone[ 0 ].scrollLeft + ( zone[ 0 ].offsetWidth / 2 ) ) / zone[ 0 ].scrollWidth;
-            var perY = ( zone[ 0 ].scrollTop + ( zone[ 0 ].offsetHeight / 2 ) ) / zone[ 0 ].scrollHeight;
+            scrollX = ( zone[ 0 ].scrollWidth * perX ) - ( zone[ 0 ].offsetWidth * perX );
+            scrollY = ( zone[ 0 ].scrollHeight * perY ) - ( zone[ 0 ].offsetHeight * perY );
 
         }
 
-        _scaleButton( -1 );
+        zone
+            .scrollLeft( scrollX )
+            .scrollTop( scrollY );
 
-        // Si no se comprueba el zoom se pueden emular desplazamientos, esto lo previene
-        if( zoom !== appliedZoom ){
+    }
 
-            if( resize ){
+});
 
-                scrollX = ( zone[ 0 ].scrollWidth * perX ) - ( zone[ 0 ].offsetWidth * perX );
-                scrollY = ( zone[ 0 ].scrollHeight * perY ) - ( zone[ 0 ].offsetHeight * perY );
+plus
+.on( 'click', function(){
 
-            }
+    var zoom    = appliedZoom;
+    var scrollX = 0;
+    var scrollY = 0;
+    var resize  = ( zone[ 0 ].scrollWidth - zone[ 0 ].offsetWidth ) || ( zone[ 0 ].scrollHeight - zone[ 0 ].offsetHeight );
 
-            zone
-                .scrollLeft( scrollX )
-                .scrollTop( scrollY );
+    if( resize || appliedZoom === -1 ){
 
-        }
+        /*
+         *
+         * Las siguientes variables se han puesto directamente en la fórmula para no declarar variables que solo se usan una vez
+         *
+         * var posX   = e.clientX - offset.left;
+         * var posY   = e.clientY - offset.top - menuHeight;
+         *
+         * Es la posición del ratón dentro de la zona de la imagen
+         *
+         */
 
-    });
+        var perX = ( zone[ 0 ].scrollLeft + ( zone[ 0 ].offsetWidth / 2 ) ) / zone[ 0 ].scrollWidth;
+        var perY = ( zone[ 0 ].scrollTop + ( zone[ 0 ].offsetHeight / 2 ) ) / zone[ 0 ].scrollHeight;
 
-    plus
-    .on( 'click', function(){
+    }
 
-        var zoom    = appliedZoom;
-        var scrollX = 0;
-        var scrollY = 0;
-        var resize  = ( zone[ 0 ].scrollWidth - zone[ 0 ].offsetWidth ) || ( zone[ 0 ].scrollHeight - zone[ 0 ].offsetHeight );
+    _scaleButton( 1 );
 
-        if( resize || appliedZoom === -1 ){
+    // Si no se comprueba el zoom se pueden emular desplazamientos, esto lo previene
+    if( zoom !== appliedZoom ){
 
-            /*
-             *
-             * Las siguientes variables se han puesto directamente en la fórmula para no declarar variables que solo se usan una vez
-             *
-             * var posX   = e.clientX - offset.left;
-             * var posY   = e.clientY - offset.top - menuHeight;
-             *
-             * Es la posición del ratón dentro de la zona de la imagen
-             *
-             */
+        if( resize || zoom === -1 ){
 
-            var perX = ( zone[ 0 ].scrollLeft + ( zone[ 0 ].offsetWidth / 2 ) ) / zone[ 0 ].scrollWidth;
-            var perY = ( zone[ 0 ].scrollTop + ( zone[ 0 ].offsetHeight / 2 ) ) / zone[ 0 ].scrollHeight;
-
-        }
-
-        _scaleButton( 1 );
-
-        // Si no se comprueba el zoom se pueden emular desplazamientos, esto lo previene
-        if( zoom !== appliedZoom ){
-
-            if( resize || zoom === -1 ){
-
-                scrollX = ( zone[ 0 ].scrollWidth * perX ) - ( zone[ 0 ].offsetWidth * perX );
-                scrollY = ( zone[ 0 ].scrollHeight * perY ) - ( zone[ 0 ].offsetHeight * perY );
-
-            }
-
-            zone
-                .scrollLeft( scrollX )
-                .scrollTop( scrollY );
+            scrollX = ( zone[ 0 ].scrollWidth * perX ) - ( zone[ 0 ].offsetWidth * perX );
+            scrollY = ( zone[ 0 ].scrollHeight * perY ) - ( zone[ 0 ].offsetHeight * perY );
 
         }
 
-    });
+        zone
+            .scrollLeft( scrollX )
+            .scrollTop( scrollY );
 
-    toggle
-    .on( 'click', function(){
-        _toggleSidebar();
-    });
+    }
+
+});
+
+toggle
+.on( 'click', function(){
+    _toggleSidebar();
+});
+
+zoom
+.on( 'change', function(){
+
+    var value = _preciseDecimal( zoom.val() / 100 );
+
+    appliedZoom = -1;
+    _scalePdf( value );
 
     zoom
-    .on( 'change', function(){
+        .val( _preciseDecimal( appliedScale * 100 ) )
+        .blur(); // To Do -> Provoca que se vuelva a invocar el evento al dar a intro
 
-        var value = _preciseDecimal( zoom.val() / 100 );
+});
 
-        appliedZoom = -1;
-        _scalePdf( value );
+win
+.key( 'numadd', function(){
+    plus.click();
+})
 
-        zoom
-            .val( _preciseDecimal( appliedScale * 100 ) )
-            .blur(); // To Do -> Provoca que se vuelva a invocar el evento al dar a intro
+.key( 'numsubtract', function(){
+    minus.click();
+});
 
-    });
-
-    win
-    .key( 'numadd', function(){
-        plus.click();
-    })
-
-    .key( 'numsubtract', function(){
-        minus.click();
-    });
-
-    zone.on( 'mousewheel', function(){
-      _detectPage();
-    });
+zone.on( 'mousewheel', function(){
+  _detectPage();
+});
 
 
 // Start load
@@ -541,10 +543,14 @@ win
 
     adjustHorizontal = !adjustHorizontal;
     adjustHorizontalBtn.removeClass('active');
+    zone.addClass('page');
     $(this).addClass('active');
 
   }else if( !adjustVertical ){
+
+    zone.removeClass('page');
     $(this).removeClass('active');
+
   }else{
     $(this).addClass('active');
   }
@@ -564,9 +570,13 @@ win
     adjustVertical = !adjustVertical;
     adjustVerticalBtn.removeClass('active');
     $(this).addClass('active');
+    zone.removeClass('page');
 
   }else if( !adjustHorizontal ){
+
+    zone.addClass('page');
     $(this).removeClass('active');
+
   }else{
     $(this).addClass('active');
   }
@@ -582,12 +592,6 @@ win
   if ( adjustVertical || adjustHorizontal){
     _scaleWindow();
   }
-
-})
-
-.on( 'ui-view-resize-end', function(){
-
-  //_scaleWindow();
 
 })
 
@@ -674,6 +678,11 @@ win
     }
 
 })
+
+/*.on( 'wz-scroll-drag', function(){
+  console.log('drag');
+  _detectPage();
+})*/
 
 .key( 'left, pageup', function(){
 
