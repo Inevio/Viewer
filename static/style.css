@@ -253,6 +253,9 @@
   margin: 0;
   left: 0;
   border: 0;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .wz-view.fullscreen, .wz-view.fullscreen .wz-ui-header{

@@ -640,22 +640,21 @@ win
     $('.weevisor-sidebar').show();
     showControls();
 
+    var itemSelected = $('.weevisor-sidebar-page.selected');
+    itemSelected.click();
+
     if( adjustVertical || adjustHorizontal ){
       _scaleWindow();
     }else{
       _scalePdf(0.29);
     }
 
-    $('.weevisor-images').find('img').css( { "margin-top": 12 + 'px' , "margin-bottom": 0 + 'px' } );
+    /*$('.weevisor-images').find('img').css( { "margin-top": 12 + 'px' , "margin-bottom": 0 + 'px' } );
     var tmp = $( '.weevisor-sidebar-page.selected');
     sidebar
         .stop()
         .clearQueue()
-        .animate( { scrollTop : tmp[ 0 ].offsetTop - parseInt( tmp.css('margin-top'), 10 ) }, 250 );
-
-    var itemSelected = $('.weevisor-sidebar-page.selected');
-    var img = $( 'img', zone ).eq( itemSelected.index() - 1 );
-    zone.scrollTop( img[ 0 ].offsetTop - parseInt( img.css('margin-top') ) );
+        .animate( { scrollTop : tmp[ 0 ].offsetTop - parseInt( tmp.css('margin-top'), 10 ) }, 250 );*/
 
 })
 
