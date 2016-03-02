@@ -76,7 +76,7 @@ var _scaleWindow = function(){
   var scaleHeight = zHeight / pdfSize[1];
 
   var fullZoneHeight = $('.weevisor-images img').outerHeight(true) * nImages;
-  var zonePercentage = $('.weevisor-images').scrollTop() / fullZoneHeight;
+  var zonePercentage = zone.scrollTop() / fullZoneHeight;
 
   //console.log( zWidth, zHeight, scaleWidth, scaleHeight );
 
@@ -89,7 +89,7 @@ var _scaleWindow = function(){
   if( scale != appliedScale ){
     _scalePdf(scale);
     var fullZoneHeight2 = $('.weevisor-images img').outerHeight(true) * nImages;
-    $('.weevisor-images').scrollTop( zonePercentage * fullZoneHeight2 );
+    zone.scrollTop( zonePercentage * fullZoneHeight2 );
   }
 
 }
@@ -164,12 +164,19 @@ var _scalePdf = function( scale ){
         return false;
     }
 
+    var fullZoneHeight = $('.weevisor-images img').outerHeight(true) * nImages;
+    var zonePercentage = $('.weevisor-images').scrollTop() / fullZoneHeight;
+
     console.log( scale, pdfSize[0] );
 
     $( 'img', zone )
         .width( parseInt( scale * pdfSize[0] , 10 ) );
 
     appliedScale = scale;
+
+    var fullZoneHeight2 = $('.weevisor-images img').outerHeight(true) * nImages;
+    console.log( zonePercentage * fullZoneHeight2 );
+    zone.scrollTop( zonePercentage * fullZoneHeight2 );
 
     _detectPage();
 
@@ -237,7 +244,6 @@ var _scaleButton = function( dir ){
         }
 
         _scalePdf( newZoom );
-
         zoom.val( _preciseDecimal( appliedScale * 100 ) );
 
     }
@@ -373,7 +379,7 @@ minus
     _scaleButton( -1 );
 
     // Si no se comprueba el zoom se pueden emular desplazamientos, esto lo previene
-    if( zoom !== appliedZoom ){
+    /*if( zoom !== appliedZoom ){
 
         if( resize ){
 
@@ -386,7 +392,7 @@ minus
             .scrollLeft( scrollX )
             .scrollTop( scrollY );
 
-    }
+    }*/
 
 });
 
@@ -419,7 +425,7 @@ plus
     _scaleButton( 1 );
 
     // Si no se comprueba el zoom se pueden emular desplazamientos, esto lo previene
-    if( zoom !== appliedZoom ){
+    /*if( zoom !== appliedZoom ){
 
         if( resize || zoom === -1 ){
 
@@ -432,7 +438,7 @@ plus
             .scrollLeft( scrollX )
             .scrollTop( scrollY );
 
-    }
+    }*/
 
 });
 
