@@ -167,17 +167,13 @@ var _scalePdf = function( scale ){
     var fullZoneHeight = $('.weevisor-images img').outerHeight(true) * nImages;
     var zonePercentage = $('.weevisor-images').scrollTop() / fullZoneHeight;
 
-    console.log( scale, pdfSize[0] );
-
     $( 'img', zone )
         .width( parseInt( scale * pdfSize[0] , 10 ) );
 
     appliedScale = scale;
 
     var fullZoneHeight2 = $('.weevisor-images img').outerHeight(true) * nImages;
-    console.log( zonePercentage * fullZoneHeight2 );
     zone.scrollTop( zonePercentage * fullZoneHeight2 );
-
     _detectPage();
 
 };
@@ -321,12 +317,6 @@ var _inversePage = function(){
 };
 
 // Events
-win
-.on( 'ui-resize wz-resize ui-view-resize ui-view-maximize ui-view-unmaximize', function(){
-
-    //console.log('resize');
-
-});
 
 sidebar
 .on( 'click', '.weevisor-sidebar-page', function( e, noAnimate ){
@@ -593,7 +583,7 @@ win
 
 })
 
-.on( 'ui-view-resize ui-view-maximize ui-view-unmaximize', function(){
+.on( 'ui-view-resize ui-view-resize-end ui-view-maximize ui-view-unmaximize', function(){
 
   if ( adjustVertical || adjustHorizontal){
     _scaleWindow();
@@ -613,19 +603,19 @@ win
 
     var zoomWidth = screen.width / pdfSize[0] ;
     var zoomHeight = screen.height / pdfSize[1] ;
+    //console.log(pdfSize);
 
-    console.log(pdfSize);
     if( zoomWidth < zoomHeight ){
 
-      console.log('width ' + zoomWidth );
+      //console.log('width ' + zoomWidth );
       _scalePdf( zoomWidth );
       var margins = parseInt( ( screen.height - $('.weevisor-images').find('img')[0].height ) / 2 );
-      console.log(margins);
+      //console.log(margins);
       $('.weevisor-images').find('img').css( { "margin-top": margins + 'px' , "margin-bottom": margins + 'px' } );
 
     }else{
 
-      console.log('height ' +  zoomHeight );
+      //console.log('height ' +  zoomHeight );
       _scalePdf( zoomHeight );
 
     }
