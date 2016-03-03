@@ -674,7 +674,7 @@ win
 
 })
 
-/*.on( 'wz-scroll-drag', function(){
+/*.on( 'ui-drag-move wz-drag-move wz-drag ui-drag wz-scroll-drag ui-scroll-drag', function(){
   console.log('drag');
   _detectPage();
 })*/

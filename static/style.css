@@ -1,15 +1,11 @@
 
 .wz-view{
     background: #2c3238;
-    border: solid 1px #2c3238;
+    border-left: 1px solid #2c3238;
+    border-right: 1px solid #2c3238;
+    border-bottom: 1px solid #2c3238;
     border-radius: 6px;
 }
-
-/*
-.wz-view.pdf{
-    background: #EBEBEB;
-}
-*/
 
 .ui-header{
   border-radius: 3px 3px 0 0;
