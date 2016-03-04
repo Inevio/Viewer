@@ -674,10 +674,9 @@ win
 
 })
 
-/*.on( 'ui-scroll-drag wz-scroll-drag scroll-drag ', function(){
-  console.log('drag');
+.on( 'wz-scroll-dragging', function(){
   _detectPage();
-})*/
+})
 
 .key( 'left, pageup', function(){
 
