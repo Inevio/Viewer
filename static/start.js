@@ -1,6 +1,4 @@
 
-// Constan
-
 // Local variables
 var win      = $( this );
 var header   = $('.wz-ui-header');
@@ -17,6 +15,7 @@ if( params && params.command === 'openFile' ){
 
       $( '.weevisor-title', win ).text( structure.name );
 
+      console.log( structure );
       // Si es un PDF
       if(
           structure.mime === 'application/pdf' ||
@@ -27,8 +26,7 @@ if( params && params.command === 'openFile' ){
             .addClass('pdf')
             .addClass('sidebar');
 
-        var dimensions  = structure.metadata.pdf.pageSize.split(' ');
-        console.log(dimensions);
+        var dimensions  = structure.metadata ? structure.metadata.pdf.pageSize.split(' ') : [ 29.7, 0, 21 ];
         var width       = parseInt( dimensions[0], 10 ) + sidebarWidth;
         var height      = parseInt( dimensions[2], 10 ) + header.outerHeight();
         var widthRatio  = width / ( wz.tool.desktopWidth() - ( view_margin * 2 ) );
@@ -76,7 +74,6 @@ if( params && params.command === 'openFile' ){
           //wz.fit( win, 775 - win.width(), 500 - win.height() );
         }
 
-      // Si es una imagen
       }
 
       win.addClass('dark');

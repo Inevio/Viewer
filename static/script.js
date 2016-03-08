@@ -44,7 +44,7 @@ var _startApp = function(){
 
         console.log( structure );
         $( '.ui-header-brand span', win ).text( structure.name );
-        var dimensions  = structure.metadata.pdf.pageSize.split(' ');
+        var dimensions = structure.metadata ? structure.metadata.pdf.pageSize.split(' ') : [ 29.7, 0, 21 ];
         pdfSize.push( parseInt( dimensions[0] , 10 ) , parseInt( dimensions[2] , 10 ) );
         fileLoaded = structure;
         appliedZoom = -1;
