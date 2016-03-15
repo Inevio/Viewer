@@ -92,34 +92,36 @@
   display: inline-block;
 }
 
-.weevisor-zoom{
-    float: right;
-    font-size: 12px;
-    height: 12px;
-    width: 22px;
-    text-align: right;
-    padding: 2px;
-    margin-right: 2px;
-    margin-top: 12px;
-    border-radius: 2px;
-    box-shadow: 0 1px 0 rgba( 0, 0, 0, 0.1 ) inset, 0 0 0 1px #252525;
+.ui-header .open-local{
+  float: right;
+  margin-top: 6px;
+  margin-right: 9px;
+  padding: 5px 7px;
+  border-radius: 3px;
+  border: 1px solid transparent;
 }
 
-.weevisor-percent{
-    float: right;
-    color: #FEFEFE;
-    font-size: 12px;
-    margin-top: 15px;
-    margin-right: 15px;
+.ui-header .open-local figure{
+  margin-top: 1px;
+  margin-right: 8px;
+  width: 16px;
+  height: 16px;
+  display: inline-block;
+  background-size: 16px 16px;
+  background-image: url('@static/edit.png');
+  float: left;
 }
 
-.weevisor-zoom-minus{
-    margin-top: 6px;
-    margin-right: 5px;
+.ui-header .open-local span{
+  margin-top: 3px;
+  font-family: Lato;
+  float: left;
+  font-size: 13px;
+  color: #889399;
 }
 
-.weevisor-zoom-plus{
-    margin-top: 6px;
+.ui-header .open-local:hover span{
+  color: #d4dce2;
 }
 
 .weevisor-content{
@@ -142,14 +144,6 @@
     border-right: 1px solid #2c3238;
     background: #363d46;
     display: none;
-}
-
-.weevisor-frame{
-    float: left;
-    -moz-transform-origin: left top;
-    -webkit-transform-origin: left top;
-    -o-transform-origin: left top;
-    transform-origin: left top;
 }
 
 .weevisor-sidebar-page{
@@ -346,7 +340,8 @@
   background-image: url('@static/zoom_plus.png');
 }
 
-.zoom-buttons .zoom-minus:hover, .zoom-buttons .zoom-plus:hover, .weevisor-sidebar-button:hover, .adjust-vertical:hover, .adjust-horizontal:hover{
+.zoom-buttons .zoom-minus:hover, .zoom-buttons .zoom-plus:hover,
+ .weevisor-sidebar-button:hover, .adjust-vertical:hover, .adjust-horizontal:hover, .open-local:hover{
   background-color: #545f65;
   -webkit-box-shadow: 0 1px 1px rgba(0,0,0,.05), inset 0 1px rgba(255,255,255,.03);
   -moz-box-shadow: 0 1px 1px rgba(0,0,0,.05), inset 0 1px rgba(255,255,255,.03);
@@ -360,7 +355,8 @@
   background-clip: padding-box;
 }
 
-.zoom-buttons .zoom-minus:active, .zoom-buttons .zoom-plus:active, .weevisor-sidebar-button:active, .adjust-vertical:active, .adjust-horizontal:active{
+.zoom-buttons .zoom-minus:active, .zoom-buttons .zoom-plus:active,
+ .weevisor-sidebar-button:active, .adjust-vertical:active, .adjust-horizontal:active, .open-local:active{
   background-color: #363c43;
   border: solid 1px rgba(0,0,0,.3);
   background-image: -webkit-linear-gradient(top, #323a40, #3d444b);
