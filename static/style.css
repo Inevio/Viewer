@@ -92,17 +92,25 @@
   display: inline-block;
 }
 
+.ui-header .divider{
+  width: 1px;
+  height: 22px;
+  background-color: #5c6367;
+  display: inline-block;
+  float: right;
+  margin: 10px 12px 0px 11px;
+}
+
 .ui-header .open-local{
   float: right;
-  margin-top: 6px;
-  margin-right: 9px;
-  padding: 5px 7px;
+  margin-top: 4px;
+  padding: 8px 11px;
   border-radius: 3px;
+  margin-right: 2px;
   border: 1px solid transparent;
 }
 
 .ui-header .open-local figure{
-  margin-top: 1px;
   margin-right: 8px;
   width: 16px;
   height: 16px;
@@ -113,14 +121,10 @@
 }
 
 .ui-header .open-local span{
-  margin-top: 3px;
+  margin-top: 2px;
   font-family: Lato;
   float: left;
   font-size: 13px;
-  color: #889399;
-}
-
-.ui-header .open-local:hover span{
   color: #d4dce2;
 }
 
@@ -311,7 +315,7 @@
 .zoom-buttons{
   height: 35px;
   margin-top: 8px;
-  margin-right: 18px;
+  margin-right: 5px;
   float: right;
 }
 

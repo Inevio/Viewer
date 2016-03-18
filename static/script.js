@@ -678,6 +678,20 @@ win
   _detectPage();
 })
 
+.on( 'click', '.open-local', function(){
+
+  if( api.fs.localAppsSupported() ){
+
+    api.fs( params.data, function( error, object ){
+      object.openLocal();
+    });
+
+  }else{
+    alert( 'Local apps no disponible' );
+  }
+
+})
+
 .key( 'left, pageup', function(){
 
   var sidebarArray = $('.weevisor-sidebar-page');
