@@ -42,24 +42,30 @@ var _startApp = function(){
 
       wz.fs( params.data, function( error, structure ){
 
-        console.log( structure );
-        $( '.ui-header-brand span', win ).text( structure.name );
-        var dimensions = structure.metadata ? structure.metadata.pdf.pageSize.split(' ') : [ 29.7, 0, 21 ];
-        pdfSize.push( parseInt( dimensions[0] , 10 ) , parseInt( dimensions[2] , 10 ) );
-        fileLoaded = structure;
-        appliedZoom = -1;
+        structure.getFormats( function( error, formats ){
 
-        if( parseInt( dimensions[0], 10 ) < parseInt( dimensions[2], 10 ) ){
+          structure.formats = formats;
 
-          $('.adjust-vertical').removeClass('active');
-          $('.adjust-horizontal').addClass('active');
-          adjustVertical = !adjustVertical;
-          adjustHorizontal = !adjustHorizontal;
-          zone.removeClass('page');
+          $( '.ui-header-brand span', win ).text( structure.name );
+          var metadata   = structure.mime === 'application/pdf' ? structure.formats.original.metadata : structure.formats['application/pdf'].metadata;
+          var dimensions = metadata.pdf.pageSize.split(' ');
+          pdfSize.push( parseInt( dimensions[0] , 10 ) , parseInt( dimensions[2] , 10 ) );
+          fileLoaded = structure;
+          appliedZoom = -1;
 
-        }
+          if( parseInt( dimensions[0], 10 ) < parseInt( dimensions[2], 10 ) ){
 
-        _loadPdf( fileLoaded );
+            $('.adjust-vertical').removeClass('active');
+            $('.adjust-horizontal').addClass('active');
+            adjustVertical = !adjustVertical;
+            adjustHorizontal = !adjustHorizontal;
+            zone.removeClass('page');
+
+          }
+
+          _loadPdf( fileLoaded );
+
+        });
 
       });
 
@@ -102,14 +108,14 @@ var _loadPdf = function( file ){
 
     var images = [];
 
-    if( $.isArray( file.formats.jpeg ) ){
+    if( $.isArray( file.formats['image/jpeg'] ) ){
 
-      for( var i in file.formats.jpeg ){
-        images.push( file.formats.jpeg[ i ].url );
+      for( var i in file.formats['image/jpeg'] ){
+        images.push( file.formats['image/jpeg'][ i ].url );
       }
 
-    }else if( file.formats.jpeg ){
-      images.push( file.formats.jpeg.url );
+    }else if( file.formats['image/jpeg'] ){
+      images.push( file.formats['image/jpeg'].url );
     }else{
 
       return alert( lang.canNotOpenPDF, function(){
