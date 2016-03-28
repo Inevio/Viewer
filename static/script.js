@@ -40,11 +40,11 @@ var _startApp = function(){
 
       // To Do -> Error
 
-      wz.fs( params.data, function( error, structure ){
+      api.fs( params.data, function( error, structure ){
 
         console.log( structure );
         $( '.ui-header-brand span', win ).text( structure.name );
-        var dimensions = structure.metadata ? structure.metadata.pdf.pageSize.split(' ') : [ 29.7, 0, 21 ];
+        var dimensions  = structure.metadata.pdf.pageSize.split(' ');
         pdfSize.push( parseInt( dimensions[0] , 10 ) , parseInt( dimensions[2] , 10 ) );
         fileLoaded = structure;
         appliedZoom = -1;
@@ -113,7 +113,7 @@ var _loadPdf = function( file ){
     }else{
 
       return alert( lang.canNotOpenPDF, function(){
-        wz.app.removeView( win );
+        api.app.removeView( win );
       });
 
     }
@@ -468,11 +468,11 @@ zone.on( 'mousewheel', function(){
 // Start load
 if( location.host.indexOf('file') === -1 ){
 
-  win.deskitemX( parseInt( ( wz.tool.desktopWidth() - win.width() ) / 2, 10 ) );
-  win.deskitemY( parseInt( ( wz.tool.desktopHeight() - win.height() ) / 2, 10 ) );
+  win.deskitemX( parseInt( ( api.tool.desktopWidth() - win.width() ) / 2, 10 ) );
+  win.deskitemY( parseInt( ( api.tool.desktopHeight() - win.height() ) / 2, 10 ) );
 
 }else{
-  wz.app.maximizeView( win );
+  api.app.maximizeView( win );
 }
 
 _startApp();
@@ -482,7 +482,7 @@ var toggleFullscreen = function(){
 
     if( win.hasClass( 'fullscreen' ) ){
 
-        wz.tool.exitFullscreen();
+        api.tool.exitFullscreen();
 
 
     }else{
@@ -676,6 +676,14 @@ win
 
 .on( 'wz-scroll-dragging', function(){
   _detectPage();
+})
+
+.on( 'click', '.open-local', function(){
+
+  api.fs( params.data, function( error, object ){
+    object.openLocal();
+  });
+
 })
 
 .key( 'left, pageup', function(){

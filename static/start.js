@@ -1,4 +1,6 @@
 
+// Constan
+
 // Local variables
 var win      = $( this );
 var header   = $('.wz-ui-header');
@@ -11,11 +13,10 @@ if( params && params.command === 'openFile' ){
 
     // To Do -> Error
 
-    wz.fs( params.data, function( error, structure ){
+    api.fs( params.data, function( error, structure ){
 
       $( '.weevisor-title', win ).text( structure.name );
 
-      console.log( structure );
       // Si es un PDF
       if(
           structure.mime === 'application/pdf' ||
@@ -26,11 +27,12 @@ if( params && params.command === 'openFile' ){
             .addClass('pdf')
             .addClass('sidebar');
 
-        var dimensions  = structure.metadata ? structure.metadata.pdf.pageSize.split(' ') : [ 29.7, 0, 21 ];
+        var dimensions  = structure.metadata.pdf.pageSize.split(' ');
+        console.log(dimensions);
         var width       = parseInt( dimensions[0], 10 ) + sidebarWidth;
         var height      = parseInt( dimensions[2], 10 ) + header.outerHeight();
-        var widthRatio  = width / ( wz.tool.desktopWidth() - ( view_margin * 2 ) );
-        var heightRatio = height / ( wz.tool.desktopHeight() - ( view_margin * 2 ) );
+        var widthRatio  = width / ( api.tool.desktopWidth() - ( view_margin * 2 ) );
+        var heightRatio = height / ( api.tool.desktopHeight() - ( view_margin * 2 ) );
 
         if( parseInt( dimensions[0], 10 ) >= parseInt( dimensions[2], 10 ) ){
 
@@ -38,13 +40,13 @@ if( params && params.command === 'openFile' ){
 
             if( widthRatio >= heightRatio ){
 
-                width  = wz.tool.desktopWidth() - ( view_margin * 2 );
+                width  = api.tool.desktopWidth() - ( view_margin * 2 );
                 height = height / widthRatio;
 
             }else{
 
                 width  = width / heightRatio;
-                height = wz.tool.desktopHeight() - ( view_margin * 2 );
+                height = api.tool.desktopHeight() - ( view_margin * 2 );
 
             }
 
@@ -54,11 +56,11 @@ if( params && params.command === 'openFile' ){
 
           if( widthRatio > 1 ){
 
-            width = wz.tool.desktopWidth() - ( view_margin * 4 );
-            height = wz.tool.desktopHeight() - ( view_margin * 4 );
+            width = api.tool.desktopWidth() - ( view_margin * 4 );
+            height = api.tool.desktopHeight() - ( view_margin * 4 );
 
           }else{
-            height = wz.tool.desktopHeight() - ( view_margin * 4 );
+            height = api.tool.desktopHeight() - ( view_margin * 4 );
           }
 
         }
@@ -71,9 +73,10 @@ if( params && params.command === 'openFile' ){
             'height'  : height + 'px'
           });
 
-          //wz.fit( win, 775 - win.width(), 500 - win.height() );
+          //api.fit( win, 775 - win.width(), 500 - win.height() );
         }
 
+      // Si es una imagen
       }
 
       win.addClass('dark');
