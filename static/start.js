@@ -28,7 +28,6 @@ if( params && params.command === 'openFile' ){
             .addClass('sidebar');
 
         var dimensions = structure.metadata ? structure.metadata.pdf.pageSize.split(' ') : [ 630, 0, 891 ];
-        console.log(dimensions);
         var width       = parseInt( dimensions[0], 10 ) + sidebarWidth;
         var height      = parseInt( dimensions[2], 10 ) + header.outerHeight();
         var widthRatio  = width / ( api.tool.desktopWidth() - ( view_margin * 2 ) );
