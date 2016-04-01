@@ -136,6 +136,11 @@
     position: relative;
 }
 
+.weevisor-content iframe{
+  width: 100%;
+  height: 100%;
+}
+
 .wz-view.sidebar .weevisor-sidebar{
     display: block;
 }

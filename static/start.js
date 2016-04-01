@@ -2,7 +2,7 @@
 // Constan
 
 // Local variables
-var win      = $( this );
+/*var win      = $( this );
 var header   = $('.wz-ui-header');
 var uiImages = $('.weevisor-images');
 var sidebarWidth = $('.weevisor-sidebar').outerWidth();
@@ -83,4 +83,8 @@ if( params && params.command === 'openFile' ){
 
     });
 
-}
+}*/
+
+var win = $( this );
+win.addClass('dark');
+start();
