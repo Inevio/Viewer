@@ -1,4 +1,6 @@
 
+// Constan
+
 // Local variables
 var win      = $( this );
 var header   = $('.wz-ui-header');
@@ -11,7 +13,7 @@ if( params && params.command === 'openFile' ){
 
     // To Do -> Error
 
-    wz.fs( params.data, function( error, structure ){
+    api.fs( params.data, function( error, structure ){
 
       structure.getFormats( function( error, formats ){
 

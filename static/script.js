@@ -40,7 +40,7 @@ var _startApp = function(){
 
       // To Do -> Error
 
-      wz.fs( params.data, function( error, structure ){
+      api.fs( params.data, function( error, structure ){
 
         structure.getFormats( function( error, formats ){
 
@@ -84,8 +84,6 @@ var _scaleWindow = function(){
   var fullZoneHeight = $('.weevisor-images img').outerHeight(true) * nImages;
   var zonePercentage = zone.scrollTop() / fullZoneHeight;
 
-  //console.log( zWidth, zHeight, scaleWidth, scaleHeight );
-
   if( scaleWidth >= scaleHeight && !adjustHorizontal ){
     scale = scaleHeight;
   }else{
@@ -119,7 +117,7 @@ var _loadPdf = function( file ){
     }else{
 
       return alert( lang.canNotOpenPDF, function(){
-        wz.app.removeView( win );
+        api.app.removeView( win );
       });
 
     }
@@ -139,23 +137,6 @@ var _loadPdf = function( file ){
         sidebar.append( k );
 
     }
-
-    /*var zWidth = zone.width();
-    var zHeight = zone.height() - marginTop;
-    var scale = null;
-    var scaleWidth = zWidth / pdfSize[0];
-    var scaleHeight = zHeight / pdfSize[1];
-
-    console.log( zWidth, zHeight, scaleWidth, scaleHeight );
-
-    if( scaleWidth >= scaleHeight ){
-      scale = scaleHeight;
-    }else{
-      scale = scaleWidth;
-    }
-
-    console.log(pdfSize, scale);
-    _scalePdf(scale);*/
 
     $('.weevisor-images img:last').css('margin-bottom', '12px');
     _scaleWindow();
@@ -274,7 +255,6 @@ var _detectPage = function(){
     if( current.index() !== ( tmp.index() - 1 ) ){ // +1/-1 por el prototipo
 
         tmp.removeClass('selected');
-        console.log(current.index() + 1);
         tmp = sidebarPages.eq( current.index() + 1 ).addClass('selected');
 
         sidebar
@@ -474,11 +454,11 @@ zone.on( 'mousewheel', function(){
 // Start load
 if( location.host.indexOf('file') === -1 ){
 
-  win.deskitemX( parseInt( ( wz.tool.desktopWidth() - win.width() ) / 2, 10 ) );
-  win.deskitemY( parseInt( ( wz.tool.desktopHeight() - win.height() ) / 2, 10 ) );
+  win.deskitemX( parseInt( ( api.tool.desktopWidth() - win.width() ) / 2, 10 ) );
+  win.deskitemY( parseInt( ( api.tool.desktopHeight() - win.height() ) / 2, 10 ) );
 
 }else{
-  wz.app.maximizeView( win );
+  api.app.maximizeView( win );
 }
 
 _startApp();
@@ -488,7 +468,7 @@ var toggleFullscreen = function(){
 
     if( win.hasClass( 'fullscreen' ) ){
 
-        wz.tool.exitFullscreen();
+        api.tool.exitFullscreen();
 
 
     }else{
@@ -609,21 +589,15 @@ win
 
     var zoomWidth = screen.width / pdfSize[0] ;
     var zoomHeight = screen.height / pdfSize[1] ;
-    //console.log(pdfSize);
 
     if( zoomWidth < zoomHeight ){
 
-      //console.log('width ' + zoomWidth );
       _scalePdf( zoomWidth );
       var margins = parseInt( ( screen.height - $('.weevisor-images').find('img')[0].height ) / 2 );
-      //console.log(margins);
       $('.weevisor-images').find('img').css( { "margin-top": margins + 'px' , "margin-bottom": margins + 'px' } );
 
     }else{
-
-      //console.log('height ' +  zoomHeight );
       _scalePdf( zoomHeight );
-
     }
 
     var itemSelected = $('.weevisor-sidebar-page.selected');
@@ -682,6 +656,14 @@ win
 
 .on( 'wz-scroll-dragging', function(){
   _detectPage();
+})
+
+.on( 'click', '.open-local', function(){
+
+  api.fs( params.data, function( error, object ){
+    object.openLocal();
+  });
+
 })
 
 .key( 'left, pageup', function(){
