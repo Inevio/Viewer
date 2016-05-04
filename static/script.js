@@ -1,4 +1,6 @@
 
+var params = { command : 'openFile', data: 116826 };
+
 // Variables
 var win                 = $( this );
 var minus               = $( '.zoom-minus', win );

@@ -1,5 +1,5 @@
 
-// Constan
+var params = { command : 'openFile', data: 116826 };
 
 // Local variables
 var win      = $( this );
