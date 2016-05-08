@@ -1,6 +1,4 @@
 
-var params = { command : 'openFile', data: 116826 };
-
 // Variables
 var win                 = $( this );
 var minus               = $( '.zoom-minus', win );
@@ -98,44 +96,7 @@ var _preciseDecimal = function( number ){
 };
 
 var _loadPdf = function( file ){
-
-    var images = [];
-
-    if( $.isArray( file.formats.jpeg ) ){
-
-      for( var i in file.formats.jpeg ){
-        images.push( file.formats.jpeg[ i ].url );
-      }
-
-    }else if( file.formats.jpeg ){
-      images.push( file.formats.jpeg.url );
-    }else{
-
-      return alert( lang.canNotOpenPDF, function(){
-        api.app.removeView( win );
-      });
-
-    }
-
-    var k = null;
-    nImages = images.length;
-
-    for( var i = 0; i < nImages; i++ ){
-
-        zone.append( $( '<img />').attr( 'src', images[ i ] ) );
-
-        k = thumb.clone().removeClass('wz-prototype');
-
-        k.find('img').attr( 'src', images[ i ] );
-        k.find('span').text( i + 1 );
-
-        sidebar.append( k );
-
-    }
-
-    $('.weevisor-images img:last').css('margin-bottom', '12px');
-    _scaleWindow();
-
+  $('iframe').attr( 'src', 'https://www.inevio.com/app/361/pdfjs/web/viewer.html?file=https://download.inevio.com/' + file.id );
 };
 
 var _scalePdf = function( scale ){
