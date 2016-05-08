@@ -124,7 +124,7 @@ function scrollIntoView(element, spot, skipOverflowHiddenElements) {
       parent.scrollLeft = offsetX;
     }
   }
-  parent.scrollTop = offsetY;
+  parent.scrollTop = offsetY - 10; // 10 is the top margin
 }
 
 /**
@@ -875,10 +875,9 @@ var ViewHistory = (function ViewHistoryClosure() {
   ViewHistory.prototype = {
     _writeToStorage: function ViewHistory_writeToStorage() {
       return new Promise(function (resolve) {
-        var databaseStr = JSON.stringify(this.database);
+        /*var databaseStr = JSON.stringify(this.database);
 
-
-        localStorage.setItem('database', databaseStr);
+        localStorage.setItem('database', databaseStr);*/
         resolve();
       }.bind(this));
     },
@@ -886,7 +885,7 @@ var ViewHistory = (function ViewHistoryClosure() {
     _readFromStorage: function ViewHistory_readFromStorage() {
       return new Promise(function (resolve) {
 
-        resolve(localStorage.getItem('database'));
+        resolve(/*localStorage.getItem('database')*/);
       });
     },
 
@@ -4004,7 +4003,6 @@ var PDFPageView = (function PDFPageViewClosure() {
       renderTask.onContinue = renderContinueCallback;
 
       this.renderTask.promise.then(function pdfPageRenderCallback() {
-        console.error('PROMISE');
           pageViewDrawCallback(null);
           if (textLayer) {
             self.pdfPage.getTextContent({ normalizeWhitespace: true }).then(
