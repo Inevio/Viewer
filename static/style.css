@@ -134,6 +134,7 @@
     float: left;
     border-radius: 0 0 3px 3px;
     position: relative;
+    background: #3f4750;
 }
 
 .weevisor-content{
@@ -284,7 +285,7 @@
   background-size: 57px 15px;
 }
 
-.adjust-vertical, .adjust-horizontal{
+.adjust-vertical, .adjust-horizontal, .print{
   width: 19px;
   height: 19px;
   padding: 3px;
@@ -293,7 +294,7 @@
   border-radius: 3px;
 }
 
-.adjust-horizontal{
+.adjust-vertical, .adjust-horizontal{
   margin-right: 7px;
 }
 
@@ -302,6 +303,14 @@
   height: 19px;
   background-size: 19px 19px;
   display: inline-block;
+}
+
+.print i{
+  width: 19px;
+  height: 18px;
+  background-size: 19px 18px;
+  display: inline-block;
+  background-image: url('@static/print.png');
 }
 
 .adjust-vertical i{
@@ -353,7 +362,8 @@
 }
 
 .zoom-buttons .zoom-minus:hover, .zoom-buttons .zoom-plus:hover,
- .weevisor-sidebar-button:hover, .adjust-vertical:hover, .adjust-horizontal:hover, .open-local:hover{
+.weevisor-sidebar-button:hover, .adjust-vertical:hover, .adjust-horizontal:hover, .print:hover,
+.open-local:hover{
   background-color: #545f65;
   -webkit-box-shadow: 0 1px 1px rgba(0,0,0,.05), inset 0 1px rgba(255,255,255,.03);
   -moz-box-shadow: 0 1px 1px rgba(0,0,0,.05), inset 0 1px rgba(255,255,255,.03);

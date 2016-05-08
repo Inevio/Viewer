@@ -13,6 +13,7 @@ var zoom                = $( '.weevisor-zoom', win );
 var uiBarTop            = $( '.ui-header', win );
 var adjustVerticalBtn   = $( '.adjust-vertical', win );
 var adjustHorizontalBtn = $( '.adjust-horizontal', win );
+var iframe              = $();
 var marginTop           = 12;
 var isWebKit            = /webkit/i.test( navigator.userAgent );
 var prevClientX         = 0;
@@ -28,7 +29,6 @@ var appliedScale        = null;
 var adjustVertical      = true;
 var adjustHorizontal    = false;
 var nImages             = 0;
-
 
 var menuHeight = $( '.wz-view-menu', win ).outerHeight();
 
@@ -298,7 +298,6 @@ var _inversePage = function(){
 };
 
 // Events
-
 sidebar
 .on( 'click', '.weevisor-sidebar-page', function( e, noAnimate ){
 
@@ -321,103 +320,23 @@ sidebar
 
 });
 
-minus
-.on( 'click', function(){
-
-    var zoom    = appliedZoom;
-    var scrollX = 0;
-    var scrollY = 0;
-    var resize  = ( zone[ 0 ].scrollWidth - zone[ 0 ].offsetWidth ) || ( zone[ 0 ].scrollHeight - zone[ 0 ].offsetHeight );
-
-    if( resize ){
-
-        /*
-         *
-         * Las siguientes variables se han puesto directamente en la fórmula para no declarar variables que solo se usan una vez
-         *
-         * var posX   = e.clientX - offset.left;
-         * var posY   = e.clientY - offset.top - menuHeight;
-         *
-         * Es la posición del ratón dentro de la zona de la imagen
-         *
-         */
-
-        var perX = ( zone[ 0 ].scrollLeft + ( zone[ 0 ].offsetWidth / 2 ) ) / zone[ 0 ].scrollWidth;
-        var perY = ( zone[ 0 ].scrollTop + ( zone[ 0 ].offsetHeight / 2 ) ) / zone[ 0 ].scrollHeight;
-
-    }
-
-    _scaleButton( -1 );
-
-    // Si no se comprueba el zoom se pueden emular desplazamientos, esto lo previene
-    /*if( zoom !== appliedZoom ){
-
-        if( resize ){
-
-            scrollX = ( zone[ 0 ].scrollWidth * perX ) - ( zone[ 0 ].offsetWidth * perX );
-            scrollY = ( zone[ 0 ].scrollHeight * perY ) - ( zone[ 0 ].offsetHeight * perY );
-
-        }
-
-        zone
-            .scrollLeft( scrollX )
-            .scrollTop( scrollY );
-
-    }*/
-
+minus.on( 'click', function(){
+  iframe.find('#zoomOut').click();
 });
 
-plus
-.on( 'click', function(){
-
-    var zoom    = appliedZoom;
-    var scrollX = 0;
-    var scrollY = 0;
-    var resize  = ( zone[ 0 ].scrollWidth - zone[ 0 ].offsetWidth ) || ( zone[ 0 ].scrollHeight - zone[ 0 ].offsetHeight );
-
-    if( resize || appliedZoom === -1 ){
-
-        /*
-         *
-         * Las siguientes variables se han puesto directamente en la fórmula para no declarar variables que solo se usan una vez
-         *
-         * var posX   = e.clientX - offset.left;
-         * var posY   = e.clientY - offset.top - menuHeight;
-         *
-         * Es la posición del ratón dentro de la zona de la imagen
-         *
-         */
-
-        var perX = ( zone[ 0 ].scrollLeft + ( zone[ 0 ].offsetWidth / 2 ) ) / zone[ 0 ].scrollWidth;
-        var perY = ( zone[ 0 ].scrollTop + ( zone[ 0 ].offsetHeight / 2 ) ) / zone[ 0 ].scrollHeight;
-
-    }
-
-    _scaleButton( 1 );
-
-    // Si no se comprueba el zoom se pueden emular desplazamientos, esto lo previene
-    /*if( zoom !== appliedZoom ){
-
-        if( resize || zoom === -1 ){
-
-            scrollX = ( zone[ 0 ].scrollWidth * perX ) - ( zone[ 0 ].offsetWidth * perX );
-            scrollY = ( zone[ 0 ].scrollHeight * perY ) - ( zone[ 0 ].offsetHeight * perY );
-
-        }
-
-        zone
-            .scrollLeft( scrollX )
-            .scrollTop( scrollY );
-
-    }*/
-
+plus.on( 'click', function(){
+  iframe.find('#zoomIn').click();
 });
 
-toggle
-.on( 'click', function(){
-    _toggleSidebar();
+toggle.on( 'click', function(){
+  iframe.find('#sidebarToggle').click();
 });
 
+$('.print').on( 'click', function(){
+  iframe.find('#print').click();
+});
+
+/*
 zoom
 .on( 'change', function(){
 
@@ -444,7 +363,7 @@ win
 zone.on( 'mousewheel', function(){
   _detectPage();
 });
-
+*/
 
 // Start load
 if( location.host.indexOf('file') === -1 ){
@@ -498,6 +417,10 @@ var hideControls = function(){
 
 };
 
+$('iframe').on( 'load', function(){
+  iframe = $(this).contents();
+});
+
 win
 .on( 'click', '.ui-fullscreen', function(e){
     toggleFullscreen();
@@ -514,6 +437,13 @@ win
 
 .on( 'click' , '.adjust-vertical', function(){
 
+  var select = iframe.find('#scaleSelect').val('page-fit');
+  var event  = $('iframe')[ 0 ].contentWindow.document.createEvent('UIEvents');
+
+  event.initUIEvent( 'change', true, true, window, 1 );
+  select[ 0 ].dispatchEvent( event );
+
+  /*
   adjustVertical = !adjustVertical;
 
   if( adjustVertical && adjustHorizontal ){
@@ -535,11 +465,19 @@ win
   if( adjustVertical || adjustHorizontal ){
     _scaleWindow();
   }
+  */
 
 })
 
 .on( 'click' , '.adjust-horizontal', function(){
 
+  var select = iframe.find('#scaleSelect').val('page-width');
+  var event  = $('iframe')[ 0 ].contentWindow.document.createEvent('UIEvents');
+
+  event.initUIEvent( 'change', true, true, window, 1 );
+  select[ 0 ].dispatchEvent( event );
+
+  /*
   adjustHorizontal = !adjustHorizontal;
 
   if( adjustHorizontal && adjustVertical ){
@@ -561,6 +499,7 @@ win
   if( adjustVertical || adjustHorizontal ){
     _scaleWindow();
   }
+  */
 
 })
 

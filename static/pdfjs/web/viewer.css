@@ -215,8 +215,7 @@ html {
 
 body {
   height: 100%;
-  background-color: #404040;
-  background-image: url(images/texture.png);
+  background-color: #3f4750;
 }
 
 body,
@@ -356,7 +355,7 @@ html[dir='rtl'] .innerCenter {
   position: absolute;
   top: 0;
   bottom: 0;
-  width: 200px;
+  width: 180px;
   visibility: hidden;
   -webkit-transition-duration: 200ms;
   -webkit-transition-timing-function: ease;
@@ -367,12 +366,12 @@ html[dir='rtl'] .innerCenter {
 html[dir='ltr'] #sidebarContainer {
   -webkit-transition-property: left;
   transition-property: left;
-  left: -200px;
+  left: -180px;
 }
 html[dir='rtl'] #sidebarContainer {
   -webkit-transition-property: right;
   transition-property: right;
-  right: -200px;
+  right: -180px;
 }
 
 #outerContainer.sidebarMoving > #sidebarContainer,
@@ -401,22 +400,22 @@ html[dir='rtl'] #outerContainer.sidebarOpen > #sidebarContainer {
 html[dir='ltr'] #outerContainer.sidebarOpen > #mainContainer {
   -webkit-transition-property: left;
   transition-property: left;
-  left: 200px;
+  left: 180px;
 }
 html[dir='rtl'] #outerContainer.sidebarOpen > #mainContainer {
   -webkit-transition-property: right;
   transition-property: right;
-  right: 200px;
+  right: 180px;
 }
 
 #sidebarContent {
-  top: 32px;
+  top: 0;
   bottom: 0;
   overflow: auto;
   -webkit-overflow-scrolling: touch;
   position: absolute;
-  width: 200px;
-  background-color: hsla(0,0%,0%,.1);
+  width: 180px;
+  background: #363d46;
 }
 html[dir='ltr'] #sidebarContent {
   left: 0;
@@ -431,7 +430,7 @@ html[dir='rtl'] #sidebarContent {
   overflow: auto;
   -webkit-overflow-scrolling: touch;
   position: absolute;
-  top: 32px;
+  top: 0;
   right: 0;
   bottom: 0;
   left: 0;
@@ -445,6 +444,7 @@ html[dir='rtl'] #viewerContainer {
 }
 
 .toolbar {
+  display: none;
   position: relative;
   left: 0;
   right: 0;
@@ -457,7 +457,8 @@ html[dir='rtl'] #viewerContainer {
 }
 
 #toolbarSidebar {
-  width: 200px;
+  display: none;
+  width: 180px;
   height: 32px;
   background-color: #424242; /* fallback */
   background-image: url(images/texture.png),
@@ -1293,18 +1294,31 @@ html[dir='rtl'] .verticalToolbarSeparator {
 }
 
 #thumbnailView {
-  position: absolute;
-  width: 120px;
+  /*position: absolute;*/
   top: 0;
   bottom: 0;
-  padding: 10px 40px 0;
+  padding: 10px 0 0;
   overflow: auto;
   -webkit-overflow-scrolling: touch;
+}
+
+#thumbnailView a{
+  display: inline-block;
+  width: 100%;
 }
 
 .thumbnail {
   float: left;
   margin-bottom: 5px;
+  width: calc( 100% - 6px );
+  padding: 0 3px 0 0;
+  border-left: 3px solid transparent;
+  text-align: center;
+}
+
+.thumbnail.selected{
+  background-color: #4a5159;
+  border-left: 3px solid #4698e0;
 }
 
 #thumbnailView > a:last-of-type > .thumbnail {
@@ -1316,12 +1330,13 @@ html[dir='rtl'] .verticalToolbarSeparator {
 }
 
 .thumbnail:not([data-loaded]) {
-  border: 1px dashed rgba(255, 255, 255, 0.5);
   margin: -1px -1px 4px -1px;
+  background: url('./loading.gif') center center no-repeat;
+  background-size: 32px 32px;
 }
 
 .thumbnailImage {
-  border: 1px solid transparent;
+  /*border: 1px solid transparent;*/
   box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.5), 0 2px 8px rgba(0, 0, 0, 0.3);
   opacity: 0.8;
   z-index: 99;
@@ -1331,14 +1346,15 @@ html[dir='rtl'] .verticalToolbarSeparator {
 
 .thumbnailSelectionRing {
   border-radius: 2px;
-  padding: 7px;
+  padding: 12px 0;
+  display: inline-block;
 }
 
 a:focus > .thumbnail > .thumbnailSelectionRing > .thumbnailImage,
 .thumbnail:hover > .thumbnailSelectionRing > .thumbnailImage {
   opacity: .9;
 }
-
+/*
 a:focus > .thumbnail > .thumbnailSelectionRing,
 .thumbnail:hover > .thumbnailSelectionRing {
   background-color: hsla(0,0%,100%,.15);
@@ -1349,11 +1365,12 @@ a:focus > .thumbnail > .thumbnailSelectionRing,
               0 0 1px hsla(0,0%,0%,.2);
   color: hsla(0,0%,100%,.9);
 }
+*/
 
 .thumbnail.selected > .thumbnailSelectionRing > .thumbnailImage {
   box-shadow: 0 0 0 1px hsla(0,0%,0%,.5);
   opacity: 1;
-}
+}/*
 
 .thumbnail.selected > .thumbnailSelectionRing {
   background-color: hsla(0,0%,100%,.3);
@@ -1363,12 +1380,12 @@ a:focus > .thumbnail > .thumbnailSelectionRing,
               0 0 1px hsla(0,0%,100%,.1) inset,
               0 0 1px hsla(0,0%,0%,.2);
   color: hsla(0,0%,100%,1);
-}
+}*/
 
 #outlineView,
 #attachmentsView {
   position: absolute;
-  width: 192px;
+  width: 172px;
   top: 0;
   bottom: 0;
   overflow: auto;
@@ -2043,10 +2060,6 @@ html[dir='rtl'] #documentPropertiesOverlay .row > * {
   }
   .loadingInProgress #sidebarContainer {
     top: 37px;
-  }
-  #sidebarContent {
-    top: 32px;
-    background-color: hsla(0,0%,0%,.7);
   }
 
   html[dir='ltr'] #outerContainer.sidebarOpen > #mainContainer {

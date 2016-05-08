@@ -3429,8 +3429,7 @@ var PDFRenderingQueue = (function PDFRenderingQueueClosure() {
       return this.highestPriorityPage === view.renderingId;
     },
 
-    renderHighestPriority: function
-        PDFRenderingQueue_renderHighestPriority(currentlyVisiblePages) {
+    renderHighestPriority: function PDFRenderingQueue_renderHighestPriority(currentlyVisiblePages) {
       if (this.idleTimeout) {
         clearTimeout(this.idleTimeout);
         this.idleTimeout = null;
@@ -3446,6 +3445,8 @@ var PDFRenderingQueue = (function PDFRenderingQueueClosure() {
           return;
         }
       }
+
+      this.pdfThumbnailViewer.forceRendering( currentlyVisiblePages );
 
       if (this.printing) {
         // If printing is currently ongoing do not reschedule cleanup.
@@ -4002,8 +4003,8 @@ var PDFPageView = (function PDFPageViewClosure() {
       var renderTask = this.renderTask = this.pdfPage.render(renderContext);
       renderTask.onContinue = renderContinueCallback;
 
-      this.renderTask.promise.then(
-        function pdfPageRenderCallback() {
+      this.renderTask.promise.then(function pdfPageRenderCallback() {
+        console.error('PROMISE');
           pageViewDrawCallback(null);
           if (textLayer) {
             self.pdfPage.getTextContent({ normalizeWhitespace: true }).then(
@@ -5482,8 +5483,7 @@ var PDFThumbnailView = (function PDFThumbnailViewClosure() {
     /**
      * @private
      */
-    _getPageDrawContext:
-        function PDFThumbnailView_getPageDrawContext(noCtxScale) {
+    _getPageDrawContext: function PDFThumbnailView_getPageDrawContext(noCtxScale) {
       var canvas = document.createElement('canvas');
       this.canvas = canvas;
 
@@ -6087,7 +6087,7 @@ var PDFViewerApplication = {
   fellback: false,
   pdfDocument: null,
   pdfLoadingTask: null,
-  sidebarOpen: false,
+  sidebarOpen: true,
   printing: false,
   /** @type {PDFViewer} */
   pdfViewer: null,
@@ -7189,7 +7189,7 @@ function webViewerInitialized() {
   var queryString = document.location.search.substring(1);
   var params = parseQueryString(queryString);
   var file = 'file' in params ? params.file : DEFAULT_URL;
-  validateFileURL(file);
+  //validateFileURL(file);
 
   var fileInput = document.createElement('input');
   fileInput.id = 'fileInput';
@@ -7997,4 +7997,3 @@ window.addEventListener('afterprint', function afterPrint(evt) {
     window.requestAnimationFrame(resolve);
   });
 })();
-
