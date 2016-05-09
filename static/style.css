@@ -137,6 +137,15 @@
     background: #3f4750;
 }
 
+.cover{
+  position: absolute;
+  width: 100%;
+  height: ~'calc(100% - 41px)';
+  bottom: 0px;
+  z-index: 2;
+  display: none;
+}
+
 .weevisor-content{
     width: 100%;
     height: ~'calc(100% - 41px)';

@@ -182,6 +182,14 @@ win
 
 })
 
+.on( 'ui-view-resize-start ui-view-blur' , function(e){
+  $('.cover').show();
+})
+
+.on( 'ui-view-resize-end ui-view-focus' , function(e){
+  $('.cover').hide();
+})
+
 .key( 'left, pageup', function(){
   // To Do
 })
@@ -207,4 +215,13 @@ win
     e.preventDefault();
   }
 
+});
+
+win.parent()
+.on( 'wz-dragstart' , function(e){
+  $('.cover').show();
+})
+
+.on( 'wz-dragend' , function(e){
+  $('.cover').hide();
 });
