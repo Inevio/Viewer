@@ -34,7 +34,19 @@ var _startApp = function(){
 }
 
 var _loadPdf = function( file ){
-  $('iframe').attr( 'src', 'https://www.inevio.com/app/361/pdfjs/web/viewer.html?file=https://download.inevio.com/' + file.id );
+
+  if( file.mime === 'application/pdf' ){
+    $('iframe').attr( 'src', 'https://www.inevio.com/app/6/pdfjs/web/viewer.html?file=https://download.inevio.com/' + file.id );
+  }else if( file.formats && file.formats.pdf ){
+    $('iframe').attr( 'src', 'https://www.inevio.com/app/6/pdfjs/web/viewer.html?file=https://download.inevio.com/' + file.id + '/format/pdf' );
+  }else{
+
+    return alert( lang.canNotOpenPDF, function(){
+      api.app.removeView( win );
+    });
+
+  }
+
 };
 
 // Events
