@@ -1,6 +1,4 @@
 
-// Constan
-
 // Local variables
 var win      = $( this );
 var header   = $('.wz-ui-header');
