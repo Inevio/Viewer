@@ -100,7 +100,12 @@ var toggleFullscreen = function(){
 
         normalWidth  = win.width();
         normalHeight = win.height();
+        console.log('test fullscreen');
+        console.log( iframe.find('#presentationMode') );
+        iframe.find('#presentationMode').click();
+
     }
+
 
 };
 
@@ -124,8 +129,10 @@ $('iframe').on( 'load', function(){
 
 win
 .on( 'click', '.ui-fullscreen', function(e){
+
     toggleFullscreen();
     e.stopPropagation();
+
 })
 
 .on( 'click', '.wz-view-minimize', function(){
@@ -160,10 +167,10 @@ win
 
     win.addClass('fullscreen');
 
-    win.css( 'width', screen.width );
+    /*win.css( 'width', screen.width );
     win.css( 'height', screen.height );
 
-    hideControls();
+    hideControls();*/
 
 })
 
@@ -171,10 +178,10 @@ win
 
     win.removeClass('fullscreen');
 
-    win.css( 'width', normalWidth );
+    /*win.css( 'width', normalWidth );
     win.css( 'height', normalHeight );
 
-    showControls();
+    showControls();*/
 
 })
 
