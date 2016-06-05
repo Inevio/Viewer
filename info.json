@@ -30,7 +30,7 @@
             "view" : {
 
                 "main" : {
-                    
+
                     "template" : "main.html",
 
                     "animation" : false,
@@ -39,16 +39,16 @@
 
                     "width"  : {
 
-                        "default" : 470,
-                        "min"     : 470,
+                        "default" : 771,
+                        "min"     : 771,
                         "max"     : 0
 
                     },
 
                     "height" : {
 
-                        "default" : 300,
-                        "min"     : 300,
+                        "default" : 500,
+                        "min"     : 500,
                         "max"     : 0
 
                     },
@@ -72,7 +72,7 @@
             "read" : true
 
         }
-        
+
     }
 
 }
