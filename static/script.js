@@ -14,7 +14,7 @@ var fileLoaded   = null;
 // Private Methods
 var _startApp = function(){
 
-  if( params && params.command === 'openFile' ){
+  /*if( params && params.command === 'openFile' ){
 
       // To Do -> Error
 
@@ -29,7 +29,9 @@ var _startApp = function(){
 
       });
 
-  }
+  }*/
+
+  $('iframe').attr( 'src', 'https://www.inevio.com/app/358/pdfjs/web/viewer.html?file=https://download.inevio.com/1520202');
 
 }
 

@@ -7,7 +7,7 @@ var sidebarWidth = $('.weevisor-sidebar').outerWidth();
 var view_margin = 50;
 
 // Load structure
-if( params && params.command === 'openFile' ){
+/*if( params && params.command === 'openFile' ){
 
     // To Do -> Error
 
@@ -81,4 +81,8 @@ if( params && params.command === 'openFile' ){
 
     });
 
-}
+}*/
+
+win.addClass('dark');
+win.addClass('mobile');
+start();
