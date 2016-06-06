@@ -11,6 +11,8 @@ var normalHeight = 0;
 var pdfSize      = [];
 var fileLoaded   = null;
 
+var mobile = true;
+
 // Private Methods
 var _startApp = function(){
 
@@ -126,7 +128,13 @@ var hideControls = function(){
 };
 
 $('iframe').on( 'load', function(){
+
   iframe = $(this).contents();
+  if( mobile ){
+    iframe.find('#sidebarContainer').hide();
+    iframe.find('#sidebarToggle').click();
+  }
+
 });
 
 win

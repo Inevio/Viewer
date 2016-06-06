@@ -401,7 +401,7 @@
 
 .wz-view.mobile{
 
-  .ui-header .ui-header-buttons, .ui-header .divider, .ui-header .zoom-buttons, .ui-header .open-local{
+  .ui-header .ui-header-buttons, .ui-header .divider, .ui-header .zoom-buttons, .ui-header .open-local, .weevisor-sidebar-button{
     display: none;
   }
 
