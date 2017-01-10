@@ -79,9 +79,9 @@
 
                 "main" : {
 
-                    "template" : "main.html",
-                    "css"    : ["style.css"],
-                    "script" : ["script.js"],
+                    "template" : "mobileMain.html",
+                    "css"    : [],
+                    "script" : ["mobile/script.js"],
                     "start"  : []
 
                 }
