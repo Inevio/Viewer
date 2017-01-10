@@ -1,4 +1,5 @@
 
 {
-    "canNotOpenPDF" : "This PDF file can't be opened"
+    "canNotOpenPDF" : "This PDF file can't be opened",
+    "loading" : "Loading..."
 }

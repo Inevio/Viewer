@@ -80,7 +80,7 @@
                 "main" : {
 
                     "template" : "mobileMain.html",
-                    "css"    : [],
+                    "css"    : ["mobile/style.css"],
                     "script" : ["mobile/script.js"],
                     "start"  : []
 

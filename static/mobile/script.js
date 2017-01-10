@@ -8,6 +8,10 @@ if( params.command === 'openFile' ){
 
   api.fs( params.data, function( err, fsnode ){
 
+    $('.file-name').text(fsnode.name);
+    $('.file-preview').css('background-image', 'url(' + fsnode.icons[512] + ')');
+    $('.loading').text(lang.loading);
+
     window.resolveLocalFileSystemURL( cordova.file.dataDirectory, function( dirEntry ){
 
       dirEntry.getFile( Date.now() + '-' + fsnode.name, { create: true, exclusive: false }, function (fileEntry) {
@@ -32,7 +36,7 @@ if( params.command === 'openFile' ){
               },
               function(){
                 console.log('close')
-                api.view.remove( win )
+                api.view.remove( false );
               },
               function(){
                 console.log('missing app')
