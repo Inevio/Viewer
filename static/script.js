@@ -1,4 +1,3 @@
-
 // Variables
 var win          = $( this );
 var minus        = $( '.zoom-minus', win );
@@ -9,9 +8,7 @@ var iframe       = $();
 var normalWidth  = 0;
 var normalHeight = 0;
 var pdfSize      = [];
-//var fileLoaded   = null;
-
-var mobile = true;
+var fileLoaded   = null;
 
 // Private Methods
 var _startApp = function(){
@@ -23,17 +20,15 @@ var _startApp = function(){
       api.fs( params.data, function( error, structure ){
 
         $( '.ui-header-brand span', win ).text( structure.name );
-        //var dimensions = structure.metadata ? structure.metadata.pdf.pageSize.split(' ') : [ 630, 0, 891 ];
-        //pdfSize.push( parseInt( dimensions[0] , 10 ) , parseInt( dimensions[2] , 10 ) );
-        //fileLoaded = structure;
+        var dimensions = structure.metadata ? structure.metadata.pdf.pageSize.split(' ') : [ 630, 0, 891 ];
+        pdfSize.push( parseInt( dimensions[0] , 10 ) , parseInt( dimensions[2] , 10 ) );
+        fileLoaded = structure;
 
-        _loadPdf( structure );
+        _loadPdf( fileLoaded );
 
       });
 
   }
-
-  //$('iframe').attr( 'src', 'https://www.inevio.com/app/358/pdfjs/web/viewer.html?file=https://download.inevio.com/1520202');
 
 }
 
@@ -73,8 +68,8 @@ $('.print').on( 'click', function(){
 // Start load
 if( location.host.indexOf('file') === -1 ){
 
-  //win.deskitemX( parseInt( ( api.tool.desktopWidth() - win.width() ) / 2, 10 ) );
-  //win.deskitemY( parseInt( ( api.tool.desktopHeight() - win.height() ) / 2, 10 ) );
+  win.deskitemX( parseInt( ( api.tool.desktopWidth() - win.width() ) / 2, 10 ) );
+  win.deskitemY( parseInt( ( api.tool.desktopHeight() - win.height() ) / 2, 10 ) );
 
 }else{
   api.app.maximizeView( win );
@@ -104,12 +99,7 @@ var toggleFullscreen = function(){
 
         normalWidth  = win.width();
         normalHeight = win.height();
-        console.log('test fullscreen');
-        console.log( iframe.find('#presentationMode') );
-        iframe.find('#presentationMode').click();
-
     }
-
 
 };
 
@@ -128,21 +118,13 @@ var hideControls = function(){
 };
 
 $('iframe').on( 'load', function(){
-
   iframe = $(this).contents();
-  if( mobile ){
-    iframe.find('#sidebarContainer').hide();
-    iframe.find('#sidebarToggle').click();
-  }
-
 });
 
 win
 .on( 'click', '.ui-fullscreen', function(e){
-
     toggleFullscreen();
     e.stopPropagation();
-
 })
 
 .on( 'click', '.wz-view-minimize', function(){
@@ -177,10 +159,10 @@ win
 
     win.addClass('fullscreen');
 
-    /*win.css( 'width', screen.width );
+    win.css( 'width', screen.width );
     win.css( 'height', screen.height );
 
-    hideControls();*/
+    hideControls();
 
 })
 
@@ -188,10 +170,10 @@ win
 
     win.removeClass('fullscreen');
 
-    /*win.css( 'width', normalWidth );
+    win.css( 'width', normalWidth );
     win.css( 'height', normalHeight );
 
-    showControls();*/
+    showControls();
 
 })
 
@@ -219,7 +201,7 @@ win
   $('.cover').hide();
 })
 
-/*.key( 'left, pageup', function(){
+.key( 'left, pageup', function(){
   // To Do
 })
 
@@ -244,7 +226,7 @@ win
     e.preventDefault();
   }
 
-});*/
+});
 
 win.parent()
 .on( 'wz-dragstart' , function(e){

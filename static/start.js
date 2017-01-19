@@ -1,4 +1,3 @@
-
 // Local variables
 var win      = $( this );
 var header   = $('.wz-ui-header');
@@ -82,6 +81,3 @@ if( params && params.command === 'openFile' ){
     });
 
 }
-
-win.addClass('dark');
-start();
