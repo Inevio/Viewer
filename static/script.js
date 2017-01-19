@@ -11,10 +11,12 @@ var normalHeight = 0;
 var pdfSize      = [];
 var fileLoaded   = null;
 
+var mobile = true;
+
 // Private Methods
 var _startApp = function(){
 
-  if( params && params.command === 'openFile' ){
+  /*if( params && params.command === 'openFile' ){
 
       // To Do -> Error
 
@@ -29,7 +31,9 @@ var _startApp = function(){
 
       });
 
-  }
+  }*/
+
+  $('iframe').attr( 'src', 'https://www.inevio.com/app/358/pdfjs/web/viewer.html?file=https://download.inevio.com/1520202');
 
 }
 
@@ -69,8 +73,8 @@ $('.print').on( 'click', function(){
 // Start load
 if( location.host.indexOf('file') === -1 ){
 
-  win.deskitemX( parseInt( ( api.tool.desktopWidth() - win.width() ) / 2, 10 ) );
-  win.deskitemY( parseInt( ( api.tool.desktopHeight() - win.height() ) / 2, 10 ) );
+  //win.deskitemX( parseInt( ( api.tool.desktopWidth() - win.width() ) / 2, 10 ) );
+  //win.deskitemY( parseInt( ( api.tool.desktopHeight() - win.height() ) / 2, 10 ) );
 
 }else{
   api.app.maximizeView( win );
@@ -124,7 +128,13 @@ var hideControls = function(){
 };
 
 $('iframe').on( 'load', function(){
+
   iframe = $(this).contents();
+  if( mobile ){
+    iframe.find('#sidebarContainer').hide();
+    iframe.find('#sidebarToggle').click();
+  }
+
 });
 
 win
@@ -209,7 +219,7 @@ win
   $('.cover').hide();
 })
 
-.key( 'left, pageup', function(){
+/*.key( 'left, pageup', function(){
   // To Do
 })
 
@@ -234,7 +244,7 @@ win
     e.preventDefault();
   }
 
-});
+});*/
 
 win.parent()
 .on( 'wz-dragstart' , function(e){

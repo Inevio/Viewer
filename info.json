@@ -39,16 +39,16 @@
 
                     "width"  : {
 
-                        "default" : 771,
-                        "min"     : 771,
+                        "default" : 375,
+                        "min"     : 375,
                         "max"     : 0
 
                     },
 
                     "height" : {
 
-                        "default" : 500,
-                        "min"     : 500,
+                        "default" : 677,
+                        "min"     : 677,
                         "max"     : 0
 
                     },
@@ -56,6 +56,33 @@
                     "css"    : ["style.css"],
                     "script" : ["script.js"],
                     "start"  : ["start.js"]
+
+                }
+
+            }
+
+        },
+
+        "mobile" : {
+
+            "primary" : "main",
+            "service" : [],
+            "common"  : {
+
+                "css"    : [],
+                "script" : [],
+                "start"  : []
+
+            },
+
+            "view" : {
+
+                "main" : {
+
+                    "template" : "mobileMain.html",
+                    "css"    : ["mobile/style.css"],
+                    "script" : ["mobile/script.js"],
+                    "start"  : []
 
                 }
 
