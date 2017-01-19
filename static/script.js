@@ -9,31 +9,31 @@ var iframe       = $();
 var normalWidth  = 0;
 var normalHeight = 0;
 var pdfSize      = [];
-var fileLoaded   = null;
+//var fileLoaded   = null;
 
 var mobile = true;
 
 // Private Methods
 var _startApp = function(){
 
-  /*if( params && params.command === 'openFile' ){
+  if( params && params.command === 'openFile' ){
 
       // To Do -> Error
 
       api.fs( params.data, function( error, structure ){
 
         $( '.ui-header-brand span', win ).text( structure.name );
-        var dimensions = structure.metadata ? structure.metadata.pdf.pageSize.split(' ') : [ 630, 0, 891 ];
-        pdfSize.push( parseInt( dimensions[0] , 10 ) , parseInt( dimensions[2] , 10 ) );
-        fileLoaded = structure;
+        //var dimensions = structure.metadata ? structure.metadata.pdf.pageSize.split(' ') : [ 630, 0, 891 ];
+        //pdfSize.push( parseInt( dimensions[0] , 10 ) , parseInt( dimensions[2] , 10 ) );
+        //fileLoaded = structure;
 
-        _loadPdf( fileLoaded );
+        _loadPdf( structure );
 
       });
 
-  }*/
+  }
 
-  $('iframe').attr( 'src', 'https://www.inevio.com/app/358/pdfjs/web/viewer.html?file=https://download.inevio.com/1520202');
+  //$('iframe').attr( 'src', 'https://www.inevio.com/app/358/pdfjs/web/viewer.html?file=https://download.inevio.com/1520202');
 
 }
 
