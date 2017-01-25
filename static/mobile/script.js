@@ -9,8 +9,31 @@ if( params.command === 'openFile' ){
   api.fs( params.data, function( err, fsnode ){
 
     $('.file-name').text(fsnode.name);
-    $('.file-preview').css('background-image', 'url(' + fsnode.icons[512] + ')');
     $('.loading').text(lang.loading);
+    $('.opening-text').text(lang.opening);
+    var image = new Image();
+    image.src = fsnode.icons[512];
+    $('.file-preview').css('background-image', 'url(' + fsnode.icons[512] + ')');
+
+    $(image).load(function () {
+        //console.log( (image.width + 'x' + image.height) );
+
+        $('.file-preview').css({
+
+          'width'  : (image.width/2),
+          'height' : (image.height/2),
+          'background-size' : (image.width/2) + 'px ' + (image.height/2) + 'px'
+
+        })
+
+        .transition({
+          'opacity' : 1
+        },200);
+
+    });
+
+
+    //$('.file-icon').css('background-image', 'url(' + fsnode.icons[16] + ')');
 
     window.resolveLocalFileSystemURL( cordova.file.dataDirectory, function( dirEntry ){
 

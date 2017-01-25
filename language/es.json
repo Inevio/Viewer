@@ -1,5 +1,6 @@
 
 {
     "canNotOpenPDF" : "Este archivo PDF no puede ser abierto",
-    "loading" : "Cargando..."
+    "loading" : "Cargando...",
+    "opening" : "Abriendo"
 }
