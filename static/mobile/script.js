@@ -2,6 +2,7 @@
 // Variables
 var win    = $( this )
 var window = win.parents().slice( -1 )[ 0 ].parentNode.defaultView
+var IS_ANDROID = typeof device !== 'undefined' && device.platform.toLowerCase().indexOf('android') !== -1
 
 // Start
 if( params.command === 'openFile' ){
@@ -35,55 +36,55 @@ if( params.command === 'openFile' ){
 
     //$('.file-icon').css('background-image', 'url(' + fsnode.icons[16] + ')');
 
-    window.resolveLocalFileSystemURL( cordova.file.dataDirectory, function( dirEntry ){
+    window.resolveLocalFileSystemURL( IS_ANDROID ? cordova.file.externalCacheDirectory : cordova.file.dataDirectory, function( dirEntry ){
 
-      dirEntry.getFile( Date.now() + '-' + fsnode.name, { create: true, exclusive: false }, function (fileEntry) {
+        dirEntry.getFile( Date.now() + '-' + fsnode.name, { create: true, exclusive: false }, function (fileEntry) {
 
-        console.log( fileEntry.nativeURL )
+          var fileTransfer = new FileTransfer()
+          var fallbackExecuted = false
+          var fallback = function( entry ){
 
-        var fileTransfer = new FileTransfer()
+            if( fallbackExecuted ){
+              return
+            }
 
-        fileTransfer.download(
+            fallbackExecuted = true
 
-          'https://download.inevio.com/' + fsnode.id,
-          fileEntry.nativeURL,
-          function( entry ){
-
-            cordova.plugins.SitewaertsDocumentViewer.viewDocument(
-
-              entry.toURL(),
-              fsnode.mime,
-              {},
-              function(){
-                console.log('showing')
+            cordova.plugins.fileOpener2.open( IS_ANDROID ? decodeURI( entry.nativeURL ) : entry.nativeURL, fsnode.mime, {
+              error : function(e) {
+                console.log('Error status: ' + e.status + ' - Error message: ' + e.message)
               },
-              function(){
-                console.log('close')
-                api.view.remove( false );
-              },
-              function(){
-                console.log('missing app')
-              },
-              function(){
-                console.log('error')
+              success : function () {
+                console.log('file opened successfully')
               }
+            })
 
-            )
+          }
+          fileTransfer.download( 'https://download.inevio.com/' + fsnode.id, fileEntry.nativeURL, function( entry ){
 
-          },
-          function (error) {
+              cordova.plugins.SitewaertsDocumentViewer.viewDocument( entry.toURL(), 'application/pdf', {},
+                function(){},
+                function(){ api.view.remove( false ) },
+                function(){ fallback( entry ) },
+                function(){ fallback( entry ) }
+              )
+
+            },
+            function (error) {
               console.log("download error source " + error.source)
               console.log("download error target " + error.target)
               console.log("upload error code" + error.code)
-          },
-          null,
-          {}
+              navigator.notification.alert( lang.openFileError )
+              return setTimeout( function(){ api.view.remove( false ) }, 10 )
+            },
+            null,
+            {}
 
-        )
+          )
+
+        })
 
       })
-
-    })
 
   })
 
