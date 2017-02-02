@@ -56,6 +56,7 @@ if( params.command === 'openFile' ){
               },
               success : function () {
                 console.log('file opened successfully')
+                api.view.remove( false )
               }
             })
 
