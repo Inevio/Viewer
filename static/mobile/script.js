@@ -13,23 +13,24 @@ if( params.command === 'openFile' ){
     $('.loading').text(lang.loading);
     $('.opening-text').text(lang.opening);
     var image = new Image();
-    image.src = fsnode.icons[512];
+    image.src = fsnode.icons[ 512 ];
     $('.file-preview').css('background-image', 'url(' + fsnode.icons[512] + ')');
 
-    $(image).load(function () {
-        //console.log( (image.width + 'x' + image.height) );
+    $(image).load(function (){
 
-        $('.file-preview').css({
+      //console.log( (image.width + 'x' + image.height) );
 
-          'width'  : (image.width/2),
-          'height' : (image.height/2),
-          'background-size' : (image.width/2) + 'px ' + (image.height/2) + 'px'
+      $('.file-preview').css({
 
-        })
+        'width'  : (image.width/2),
+        'height' : (image.height/2),
+        'background-size' : (image.width/2) + 'px ' + (image.height/2) + 'px'
 
-        .transition({
-          'opacity' : 1
-        },200);
+      })
+
+      .transition({
+        'opacity' : 1
+      },200);
 
     });
 
@@ -61,6 +62,10 @@ if( params.command === 'openFile' ){
             })
 
           }
+
+          fileTransfer.onprogress = function(){
+          }
+
           fileTransfer.download( 'https://download.inevio.com/' + fsnode.id, fileEntry.nativeURL, function( entry ){
 
               cordova.plugins.SitewaertsDocumentViewer.viewDocument( entry.toURL(), 'application/pdf', {},
