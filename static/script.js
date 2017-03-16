@@ -35,9 +35,9 @@ var _startApp = function(){
 var _loadPdf = function( file ){
 
   if( file.mime === 'application/pdf' ){
-    $('iframe').attr( 'src', 'https://' + location.hostname + '/app/6/pdfjs/web/viewer.html?file=https://download.horbito.com/' + file.id );
+    $('iframe').attr( 'src', 'https://static.horbito.com/app/6/pdfjs/web/viewer.html?file=https://download.horbito.com/' + file.id );
   }else if( file.formats && file.formats.pdf ){
-    $('iframe').attr( 'src', 'https://' + location.hostname + '/app/6/pdfjs/web/viewer.html?file=https://download.horbito.com/' + file.id + '/format/pdf' );
+    $('iframe').attr( 'src', 'https://static.horbito.com/app/6/pdfjs/web/viewer.html?file=https://download.horbito.com/' + file.id + '/format/pdf' );
   }else{
 
     return alert( lang.canNotOpenPDF, function(){
