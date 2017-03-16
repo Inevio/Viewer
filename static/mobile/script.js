@@ -66,7 +66,7 @@ if( params.command === 'openFile' ){
           fileTransfer.onprogress = function(){
           }
 
-          fileTransfer.download( 'https://download.inevio.com/' + fsnode.id, fileEntry.nativeURL, function( entry ){
+          fileTransfer.download( 'https://download.horbito.com/' + fsnode.id, fileEntry.nativeURL, function( entry ){
 
               cordova.plugins.SitewaertsDocumentViewer.viewDocument( entry.toURL(), 'application/pdf', {},
                 function(){},
