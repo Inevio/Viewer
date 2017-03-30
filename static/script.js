@@ -24,6 +24,7 @@ var _startApp = function(){
         pdfSize.push( parseInt( dimensions[0] , 10 ) , parseInt( dimensions[2] , 10 ) );
         fileLoaded = structure;
 
+        setTexts();
         _loadPdf( fileLoaded );
 
       });
@@ -119,6 +120,11 @@ var hideControls = function(){
     uiBarTop.css( 'display' , 'none' );
 
 };
+
+var setTexts = function(){
+  $('.adjust-horizontal').attr('title',lang.adjustWidth);
+  $('.adjust-vertical').attr('title',lang.adjustHeight);
+}
 
 $('iframe').on( 'load', function(){
   iframe = $(this).contents();

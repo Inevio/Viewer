@@ -2,5 +2,7 @@
 {
     "canNotOpenPDF" : "This PDF file can't be opened",
     "loading" : "Loading...",
-    "opening" : "Opening"
+    "opening" : "Opening",
+    "adjustWidth" : "Fit to window",
+    "adjustHeight" : "Fit to page"
 }
