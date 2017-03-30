@@ -69,18 +69,6 @@ $('.print').on( 'click', function(){
   iframe.find('#print').click();
 });
 
-// Start load
-if( location.host.indexOf('file') === -1 ){
-
-  win.deskitemX( parseInt( ( api.tool.desktopWidth() - win.width() ) / 2, 10 ) );
-  win.deskitemY( parseInt( ( api.tool.desktopHeight() - win.height() ) / 2, 10 ) );
-
-}else{
-  api.app.maximizeView( win );
-}
-
-_startApp();
-
 /* fullscreen mode */
 var toggleFullscreen = function(){
 
@@ -245,3 +233,15 @@ win.parent()
 .on( 'wz-dragend' , function(e){
   $('.cover').hide();
 });
+
+// Start load
+if( location.host.indexOf('file') === -1 ){
+
+  win.deskitemX( parseInt( ( api.tool.desktopWidth() - win.width() ) / 2, 10 ) );
+  win.deskitemY( parseInt( ( api.tool.desktopHeight() - win.height() ) / 2, 10 ) );
+
+}else{
+  api.app.maximizeView( win );
+}
+
+_startApp();
