@@ -39,7 +39,7 @@
 
 .ui-header .ui-header-brand{
   padding-left: 10px;
-  max-width: ~"calc(100% - 505px)"
+  max-width: ~"calc(100% - 505px)";
   padding: 17px 0px 16px 20px;
 }
 
