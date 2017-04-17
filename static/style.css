@@ -39,17 +39,19 @@
 
 .ui-header .ui-header-brand{
   padding-left: 10px;
-  max-width: ~"calc(100% - 505px)"
+  max-width: ~"calc(100% - 505px)";
+  padding: 17px 0px 16px 20px;
 }
 
 .ui-header .ui-header-brand span{
   max-width: 100%;
+  font-size: 16px;
 }
 
 .weevisor-sidebar-button{
   display: block;
   margin-left: 8px;
-  margin-top: 7px;
+  margin-top: 11px;
   width: 14px;
   height: 10px;
   float: left;
@@ -98,12 +100,12 @@
   background-color: #5c6367;
   display: inline-block;
   float: right;
-  margin: 10px 12px 0px 11px;
+  margin: 14px 12px 0px 11px;
 }
 
 .ui-header .open-local{
   float: right;
-  margin-top: 4px;
+  margin-top: 8px;
   padding: 8px 11px;
   border-radius: 3px;
   margin-right: 2px;
@@ -130,7 +132,7 @@
 
 .pdfjs{
     width: 100%;
-    height: ~'calc(100% - 41px)';
+    height: ~'calc(100% - 50px)';
     float: left;
     border-radius: 0 0 3px 3px;
     position: relative;
@@ -340,7 +342,7 @@
 
 .zoom-buttons{
   height: 35px;
-  margin-top: 8px;
+  margin-top: 11px;
   margin-right: 5px;
   float: right;
 }

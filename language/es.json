@@ -1,5 +1,8 @@
 
 {
     "canNotOpenPDF" : "Este archivo PDF no puede ser abierto",
-    "loading" : "Cargando..."
+    "loading" : "Cargando...",
+    "opening" : "Abriendo",
+    "adjustWidth" : "Ajustar al ancho",
+    "adjustHeight" : "Ajustar a página"
 }

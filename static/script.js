@@ -1,4 +1,3 @@
-
 // Variables
 var win          = $( this );
 var minus        = $( '.zoom-minus', win );
@@ -11,12 +10,10 @@ var normalHeight = 0;
 var pdfSize      = [];
 var fileLoaded   = null;
 
-var mobile = true;
-
 // Private Methods
 var _startApp = function(){
 
-  /*if( params && params.command === 'openFile' ){
+  if( params && params.command === 'openFile' ){
 
       // To Do -> Error
 
@@ -27,22 +24,24 @@ var _startApp = function(){
         pdfSize.push( parseInt( dimensions[0] , 10 ) , parseInt( dimensions[2] , 10 ) );
         fileLoaded = structure;
 
+        setTexts();
         _loadPdf( fileLoaded );
 
       });
 
-  }*/
-
-  $('iframe').attr( 'src', 'https://www.inevio.com/app/358/pdfjs/web/viewer.html?file=https://download.inevio.com/1520202');
+  }
 
 }
 
 var _loadPdf = function( file ){
 
+  var filePreview = location.hostname.indexOf('file') !== -1
+  var downloadLink = filePreview ? 'file/' + location.pathname.replace( /\//g, '' ) : file.id
+
   if( file.mime === 'application/pdf' ){
-    $('iframe').attr( 'src', 'https://www.inevio.com/app/6/pdfjs/web/viewer.html?file=https://download.inevio.com/' + file.id );
+    $('iframe').attr( 'src', 'https://' + location.hostname + '/app/6/pdfjs/web/viewer.html?file=https://download.horbito.com/' + downloadLink );
   }else if( file.formats && file.formats.pdf ){
-    $('iframe').attr( 'src', 'https://www.inevio.com/app/6/pdfjs/web/viewer.html?file=https://download.inevio.com/' + file.id + '/format/pdf' );
+    $('iframe').attr( 'src', 'https://' + location.hostname + '/app/6/pdfjs/web/viewer.html?file=https://download.horbito.com/' + downloadLink + '/format/pdf' );
   }else{
 
     return alert( lang.canNotOpenPDF, function(){
@@ -70,18 +69,6 @@ $('.print').on( 'click', function(){
   iframe.find('#print').click();
 });
 
-// Start load
-if( location.host.indexOf('file') === -1 ){
-
-  //win.deskitemX( parseInt( ( api.tool.desktopWidth() - win.width() ) / 2, 10 ) );
-  //win.deskitemY( parseInt( ( api.tool.desktopHeight() - win.height() ) / 2, 10 ) );
-
-}else{
-  api.app.maximizeView( win );
-}
-
-_startApp();
-
 /* fullscreen mode */
 var toggleFullscreen = function(){
 
@@ -104,12 +91,7 @@ var toggleFullscreen = function(){
 
         normalWidth  = win.width();
         normalHeight = win.height();
-        console.log('test fullscreen');
-        console.log( iframe.find('#presentationMode') );
-        iframe.find('#presentationMode').click();
-
     }
-
 
 };
 
@@ -127,22 +109,19 @@ var hideControls = function(){
 
 };
 
+var setTexts = function(){
+  $('.adjust-horizontal').attr('title',lang.adjustWidth);
+  $('.adjust-vertical').attr('title',lang.adjustHeight);
+}
+
 $('iframe').on( 'load', function(){
-
   iframe = $(this).contents();
-  if( mobile ){
-    iframe.find('#sidebarContainer').hide();
-    iframe.find('#sidebarToggle').click();
-  }
-
 });
 
 win
 .on( 'click', '.ui-fullscreen', function(e){
-
     toggleFullscreen();
     e.stopPropagation();
-
 })
 
 .on( 'click', '.wz-view-minimize', function(){
@@ -177,10 +156,10 @@ win
 
     win.addClass('fullscreen');
 
-    /*win.css( 'width', screen.width );
+    win.css( 'width', screen.width );
     win.css( 'height', screen.height );
 
-    hideControls();*/
+    hideControls();
 
 })
 
@@ -188,10 +167,10 @@ win
 
     win.removeClass('fullscreen');
 
-    /*win.css( 'width', normalWidth );
+    win.css( 'width', normalWidth );
     win.css( 'height', normalHeight );
 
-    showControls();*/
+    showControls();
 
 })
 
@@ -219,7 +198,7 @@ win
   $('.cover').hide();
 })
 
-/*.key( 'left, pageup', function(){
+.key( 'left, pageup', function(){
   // To Do
 })
 
@@ -244,7 +223,7 @@ win
     e.preventDefault();
   }
 
-});*/
+});
 
 win.parent()
 .on( 'wz-dragstart' , function(e){
@@ -254,3 +233,15 @@ win.parent()
 .on( 'wz-dragend' , function(e){
   $('.cover').hide();
 });
+
+// Start load
+if( location.host.indexOf('file') === -1 ){
+
+  win.deskitemX( parseInt( ( api.tool.desktopWidth() - win.width() ) / 2, 10 ) );
+  win.deskitemY( parseInt( ( api.tool.desktopHeight() - win.height() ) / 2, 10 ) );
+
+}else{
+  api.app.maximizeView( win );
+}
+
+_startApp();
