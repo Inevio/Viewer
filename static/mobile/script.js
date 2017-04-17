@@ -68,7 +68,6 @@ if( params.command === 'openFile' ){
 
           fileTransfer.onprogress = function( progressEvent ){
 
-            console.log(percentage);
             percentage = ( progressEvent.loaded / progressEvent.total );
 
             if( percentage < 0.01 ){
