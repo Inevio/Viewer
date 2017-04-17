@@ -63,20 +63,47 @@ if( params.command === 'openFile' ){
 
           }
 
-          fileTransfer.onprogress = function(){
+          var backWidth;
+          var percentage;
+
+          fileTransfer.onprogress = function( progressEvent ){
+
+            console.log(percentage);
+            percentage = ( progressEvent.loaded / progressEvent.total );
+
+            if( percentage < 0.01 ){
+              backWidth = $('.progress-bar').width();
+            }else{
+
+              $('.progress-bar-loaded').width( backWidth * percentage );
+
+            }
+
+            $('.progress-text').text( parseInt(percentage*100) + '%' );
+
           }
 
           fileTransfer.download( 'https://download.horbito.com/' + fsnode.id, fileEntry.nativeURL, function( entry ){
 
               cordova.plugins.SitewaertsDocumentViewer.viewDocument( entry.toURL(), 'application/pdf', {},
                 function(){},
-                function(){ api.view.remove( false ) },
+                function(){
+
+                  $('.progress-bar-loaded').width( 0 );
+                  $('.progress-text').text( '0%' );
+                  api.view.remove( false );
+
+                },
                 function(){ fallback( entry ) },
                 function(){ fallback( entry ) }
               )
 
             },
             function (error) {
+
+              $('.progress-bar-loaded').width( 0 );
+              $('.progress-text').text( '0%' );
+
               console.log("download error source " + error.source)
               console.log("download error target " + error.target)
               console.log("upload error code" + error.code)
