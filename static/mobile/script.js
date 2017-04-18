@@ -63,21 +63,14 @@ if( params.command === 'openFile' ){
 
           }
 
-          var backWidth;
+          var backWidth = $('.progress-bar').width();
           var percentage;
 
           fileTransfer.onprogress = function( progressEvent ){
 
             percentage = ( progressEvent.loaded / progressEvent.total );
 
-            if( percentage < 0.01 ){
-              backWidth = $('.progress-bar').width();
-            }else{
-
-              $('.progress-bar-loaded').width( backWidth * percentage );
-
-            }
-
+            $('.progress-bar-loaded').width( backWidth * percentage );
             $('.progress-text').text( parseInt(percentage*100) + '%' );
 
           }
