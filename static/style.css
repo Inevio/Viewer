@@ -13,10 +13,6 @@
   -moz-border-radius: 3px 3px 0 0;
 }
 
-.ui-header-brand span{
-  height: 16px;
-}
-
 .wz-scroll-bar-vertical{
     width: 5px;
     background: transparent;
@@ -38,9 +34,8 @@
 }
 
 .ui-header .ui-header-brand{
-  padding-left: 10px;
   max-width: ~"calc(100% - 505px)";
-  padding: 17px 0px 16px 20px;
+  padding: 17px 10px;
 }
 
 .ui-header .ui-header-brand span{
@@ -50,14 +45,13 @@
 
 .weevisor-sidebar-button{
   display: block;
-  margin-left: 8px;
-  margin-top: 11px;
   width: 14px;
   height: 10px;
   float: left;
   padding: 8px 6px;
   border: 1px solid transparent;
   border-radius: 3px;
+  margin: 11px 8px;
 }
 
 .weevisor-sidebar-button i{
@@ -100,16 +94,14 @@
   background-color: #5c6367;
   display: inline-block;
   float: right;
-  margin: 14px 12px 0px 11px;
+  margin: 14px 12px;
 }
 
 .ui-header .open-local{
   float: right;
-  margin-top: 8px;
-  padding: 8px 11px;
   border-radius: 3px;
-  margin-right: 2px;
   border: 1px solid transparent;
+  margin: 16px 0;
 }
 
 .ui-header .open-local figure{
