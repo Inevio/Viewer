@@ -34,7 +34,7 @@
 }
 
 .ui-header .ui-header-brand{
-  max-width: ~"calc(100% - 505px)";
+  max-width: ~"calc(100% - 550px)";
   padding: 17px 10px;
 }
 
@@ -101,7 +101,8 @@
   float: right;
   border-radius: 3px;
   border: 1px solid transparent;
-  margin: 16px 0;
+  margin: 8px 0;
+  padding: 8px;
 }
 
 .ui-header .open-local figure{
