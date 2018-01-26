@@ -110,6 +110,76 @@
   cursor: pointer;
 }
 
+.annotationLayer .textWidgetAnnotation input,
+.annotationLayer .textWidgetAnnotation textarea,
+.annotationLayer .choiceWidgetAnnotation select,
+.annotationLayer .buttonWidgetAnnotation.checkBox input,
+.annotationLayer .buttonWidgetAnnotation.radioButton input {
+  background-color: rgba(0, 54, 255, 0.13);
+  border: 1px solid transparent;
+  box-sizing: border-box;
+  font-size: 9px;
+  height: 100%;
+  padding: 0 3px;
+  vertical-align: top;
+  width: 100%;
+}
+
+.annotationLayer .textWidgetAnnotation textarea {
+  font: message-box;
+  font-size: 9px;
+  resize: none;
+}
+
+.annotationLayer .textWidgetAnnotation input[disabled],
+.annotationLayer .textWidgetAnnotation textarea[disabled],
+.annotationLayer .choiceWidgetAnnotation select[disabled],
+.annotationLayer .buttonWidgetAnnotation.checkBox input[disabled],
+.annotationLayer .buttonWidgetAnnotation.radioButton input[disabled] {
+  background: none;
+  border: 1px solid transparent;
+  cursor: not-allowed;
+}
+
+.annotationLayer .textWidgetAnnotation input:hover,
+.annotationLayer .textWidgetAnnotation textarea:hover,
+.annotationLayer .choiceWidgetAnnotation select:hover,
+.annotationLayer .buttonWidgetAnnotation.checkBox input:hover,
+.annotationLayer .buttonWidgetAnnotation.radioButton input:hover {
+  border: 1px solid #000;
+}
+
+.annotationLayer .textWidgetAnnotation input:focus,
+.annotationLayer .textWidgetAnnotation textarea:focus,
+.annotationLayer .choiceWidgetAnnotation select:focus {
+  background: none;
+  border: 1px solid transparent;
+}
+
+.annotationLayer .textWidgetAnnotation input.comb {
+  font-family: monospace;
+  padding-left: 2px;
+  padding-right: 0;
+}
+
+.annotationLayer .textWidgetAnnotation input.comb:focus {
+  /*
+   * Letter spacing is placed on the right side of each character. Hence, the
+   * letter spacing of the last character may be placed outside the visible
+   * area, causing horizontal scrolling. We avoid this by extending the width
+   * when the element has focus and revert this when it loses focus.
+   */
+  width: 115%;
+}
+
+.annotationLayer .buttonWidgetAnnotation.checkBox input,
+.annotationLayer .buttonWidgetAnnotation.radioButton input {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  -ms-appearance: none;
+  appearance: none;
+}
+
 .annotationLayer .popupWrapper {
   position: absolute;
   width: 20em;
@@ -141,7 +211,9 @@
 .annotationLayer .highlightAnnotation,
 .annotationLayer .underlineAnnotation,
 .annotationLayer .squigglyAnnotation,
-.annotationLayer .strikeoutAnnotation {
+.annotationLayer .strikeoutAnnotation,
+.annotationLayer .lineAnnotation svg line,
+.annotationLayer .fileAttachmentAnnotation {
   cursor: pointer;
 }
 
@@ -153,7 +225,7 @@
   direction: ltr;
   width: 816px;
   height: 1056px;
-  margin: 1px auto 8px auto;
+  margin: 1px auto -8px auto;
   position: relative;
   overflow: visible;
   border: 9px solid transparent;
@@ -167,9 +239,22 @@
   border: none;
 }
 
+.pdfViewer.singlePageView {
+  display: inline-block;
+}
+
+.pdfViewer.singlePageView .page {
+  margin: 0;
+  border: none;
+}
+
 .pdfViewer .page canvas {
   margin: 0;
   display: block;
+}
+
+.pdfViewer .page canvas[hidden] {
+  display: none;
 }
 
 .pdfViewer .page .loadingIcon {
@@ -209,13 +294,16 @@
 
 html {
   height: 100%;
+  width: 100%;
   /* Font size is needed to make the activity bar the correct size. */
   font-size: 10px;
 }
 
 body {
   height: 100%;
-  background-color: #3f4750;
+  width: 100%;
+  background-color: #404040;
+  background-image: url(images/texture.png);
 }
 
 body,
@@ -319,32 +407,6 @@ select {
   cursor: default;
 }
 
-/* outer/inner center provides horizontal center */
-.outerCenter {
-  pointer-events: none;
-  position: relative;
-}
-html[dir='ltr'] .outerCenter {
-  float: right;
-  right: 50%;
-}
-html[dir='rtl'] .outerCenter {
-  float: left;
-  left: 50%;
-}
-.innerCenter {
-  pointer-events: auto;
-  position: relative;
-}
-html[dir='ltr'] .innerCenter {
-  float: right;
-  right: -50%;
-}
-html[dir='rtl'] .innerCenter {
-  float: left;
-  left: -50%;
-}
-
 #outerContainer {
   width: 100%;
   height: 100%;
@@ -355,7 +417,7 @@ html[dir='rtl'] .innerCenter {
   position: absolute;
   top: 0;
   bottom: 0;
-  width: 180px;
+  width: 200px;
   visibility: hidden;
   -webkit-transition-duration: 200ms;
   -webkit-transition-timing-function: ease;
@@ -366,12 +428,12 @@ html[dir='rtl'] .innerCenter {
 html[dir='ltr'] #sidebarContainer {
   -webkit-transition-property: left;
   transition-property: left;
-  left: -180px;
+  left: -200px;
 }
 html[dir='rtl'] #sidebarContainer {
   -webkit-transition-property: right;
   transition-property: right;
-  right: -180px;
+  right: -200px;
 }
 
 #outerContainer.sidebarMoving > #sidebarContainer,
@@ -400,22 +462,22 @@ html[dir='rtl'] #outerContainer.sidebarOpen > #sidebarContainer {
 html[dir='ltr'] #outerContainer.sidebarOpen > #mainContainer {
   -webkit-transition-property: left;
   transition-property: left;
-  left: 180px;
+  left: 200px;
 }
 html[dir='rtl'] #outerContainer.sidebarOpen > #mainContainer {
   -webkit-transition-property: right;
   transition-property: right;
-  right: 180px;
+  right: 200px;
 }
 
 #sidebarContent {
-  top: 0;
+  top: 32px;
   bottom: 0;
   overflow: auto;
   -webkit-overflow-scrolling: touch;
   position: absolute;
-  width: 180px;
-  background: #363d46;
+  width: 200px;
+  background-color: hsla(0,0%,0%,.1);
 }
 html[dir='ltr'] #sidebarContent {
   left: 0;
@@ -430,7 +492,7 @@ html[dir='rtl'] #sidebarContent {
   overflow: auto;
   -webkit-overflow-scrolling: touch;
   position: absolute;
-  top: 0;
+  top: 32px;
   right: 0;
   bottom: 0;
   left: 0;
@@ -444,7 +506,6 @@ html[dir='rtl'] #viewerContainer {
 }
 
 .toolbar {
-  display: none;
   position: relative;
   left: 0;
   right: 0;
@@ -457,8 +518,7 @@ html[dir='rtl'] #viewerContainer {
 }
 
 #toolbarSidebar {
-  display: none;
-  width: 180px;
+  width: 200px;
   height: 32px;
   background-color: #424242; /* fallback */
   background-image: url(images/texture.png),
@@ -559,8 +619,7 @@ html[dir='rtl'] #toolbarContainer, .findbar, .secondaryToolbar {
   top: 32px;
   position: absolute;
   z-index: 10000;
-  height: 32px;
-
+  height: auto;
   min-width: 16px;
   padding: 0px 6px 0px 6px;
   margin: 4px 2px 4px 2px;
@@ -571,10 +630,21 @@ html[dir='rtl'] #toolbarContainer, .findbar, .secondaryToolbar {
   cursor: default;
 }
 
+.findbar {
+  min-width: 300px;
+}
+.findbar > div {
+  height: 32px;
+}
+.findbar.wrapContainers > div {
+  clear: both;
+}
+.findbar.wrapContainers > div#findbarMessageContainer {
+  height: auto;
+}
 html[dir='ltr'] .findbar {
   left: 68px;
 }
-
 html[dir='rtl'] .findbar {
   right: 68px;
 }
@@ -584,6 +654,21 @@ html[dir='rtl'] .findbar {
   -moz-user-select: none;
 }
 
+#findInput {
+  width: 200px;
+}
+#findInput::-webkit-input-placeholder {
+  font-style: italic;
+}
+#findInput::-moz-placeholder {
+  font-style: italic;
+}
+#findInput:-ms-input-placeholder {
+  font-style: italic;
+}
+#findInput::placeholder {
+  font-style: italic;
+}
 #findInput[data-status="pending"] {
   background-image: url(images/loading-small.png);
   background-repeat: no-repeat;
@@ -675,41 +760,39 @@ html[dir='ltr'] .doorHangerRight:before {
   font-style: italic;
   color: #A6B7D0;
 }
+#findMsg:empty {
+  display: none;
+}
 
 #findInput.notFound {
   background-color: rgb(255, 102, 102);
 }
 
-html[dir='ltr'] #toolbarViewerLeft {
-  margin-left: -1px;
-}
-html[dir='rtl'] #toolbarViewerRight {
-  margin-right: -1px;
+#toolbarViewerMiddle {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 html[dir='ltr'] #toolbarViewerLeft,
 html[dir='rtl'] #toolbarViewerRight {
-  position: absolute;
-  top: 0;
-  left: 0;
+  float: left;
 }
 html[dir='ltr'] #toolbarViewerRight,
 html[dir='rtl'] #toolbarViewerLeft {
-  position: absolute;
-  top: 0;
-  right: 0;
+  float: right;
 }
 html[dir='ltr'] #toolbarViewerLeft > *,
 html[dir='ltr'] #toolbarViewerMiddle > *,
 html[dir='ltr'] #toolbarViewerRight > *,
-html[dir='ltr'] .findbar > * {
+html[dir='ltr'] .findbar * {
   position: relative;
   float: left;
 }
 html[dir='rtl'] #toolbarViewerLeft > *,
 html[dir='rtl'] #toolbarViewerMiddle > *,
 html[dir='rtl'] #toolbarViewerRight > *,
-html[dir='rtl'] .findbar > * {
+html[dir='rtl'] .findbar * {
   position: relative;
   float: right;
 }
@@ -751,10 +834,6 @@ html[dir='rtl'] .splitToolbarButton > .toolbarButton {
 .secondaryToolbarButton[disabled],
 .overlayButton[disabled] {
   opacity: .5;
-}
-
-.toolbarButton.group {
-  margin-right: 0;
 }
 
 .splitToolbarButton.toggled .toolbarButton {
@@ -994,12 +1073,6 @@ html[dir='rtl'] .toolbarButton:first-child {
   height: 1px;
 }
 
-.toolbarButtonFlexibleSpacer {
-  -webkit-box-flex: 1;
-  -moz-box-flex: 1;
-  min-width: 30px;
-}
-
 html[dir='ltr'] #findPrevious {
   margin-left: 3px;
 }
@@ -1143,6 +1216,24 @@ html[dir="rtl"] #viewOutline.toolbarButton::before {
   content: url(images/toolbarButton-search.png);
 }
 
+.toolbarButton.pdfSidebarNotification::after {
+  position: absolute;
+  display: inline-block;
+  top: 1px;
+  /* Create a filled circle, with a diameter of 9 pixels, using only CSS: */
+  content: '';
+  background-color: #70DB55;
+  height: 9px;
+  width: 9px;
+  border-radius: 50%;
+}
+html[dir='ltr'] .toolbarButton.pdfSidebarNotification::after {
+  left: 17px;
+}
+html[dir='rtl'] .toolbarButton.pdfSidebarNotification::after {
+  right: 17px;
+}
+
 .secondaryToolbarButton {
   position: relative;
   margin: 0 0 4px 0;
@@ -1189,6 +1280,10 @@ html[dir="rtl"] .secondaryToolbarButton > span {
 
 .secondaryToolbarButton.rotateCw::before {
   content: url(images/secondaryToolbarButton-rotateCw.png);
+}
+
+.secondaryToolbarButton.selectTool::before {
+  content: url(images/secondaryToolbarButton-selectTool.png);
 }
 
 .secondaryToolbarButton.handTool::before {
@@ -1294,31 +1389,18 @@ html[dir='rtl'] .verticalToolbarSeparator {
 }
 
 #thumbnailView {
-  /*position: absolute;*/
+  position: absolute;
+  width: 120px;
   top: 0;
   bottom: 0;
-  padding: 10px 0 0;
+  padding: 10px 40px 0;
   overflow: auto;
   -webkit-overflow-scrolling: touch;
-}
-
-#thumbnailView a{
-  display: inline-block;
-  width: 100%;
 }
 
 .thumbnail {
   float: left;
   margin-bottom: 5px;
-  width: calc( 100% - 6px );
-  padding: 0 3px 0 0;
-  border-left: 3px solid transparent;
-  text-align: center;
-}
-
-.thumbnail.selected{
-  background-color: #4a5159;
-  border-left: 3px solid #4698e0;
 }
 
 #thumbnailView > a:last-of-type > .thumbnail {
@@ -1330,13 +1412,12 @@ html[dir='rtl'] .verticalToolbarSeparator {
 }
 
 .thumbnail:not([data-loaded]) {
+  border: 1px dashed rgba(255, 255, 255, 0.5);
   margin: -1px -1px 4px -1px;
-  background: url('./loading.gif') center center no-repeat;
-  background-size: 32px 32px;
 }
 
 .thumbnailImage {
-  /*border: 1px solid transparent;*/
+  border: 1px solid transparent;
   box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.5), 0 2px 8px rgba(0, 0, 0, 0.3);
   opacity: 0.8;
   z-index: 99;
@@ -1346,15 +1427,14 @@ html[dir='rtl'] .verticalToolbarSeparator {
 
 .thumbnailSelectionRing {
   border-radius: 2px;
-  padding: 12px 0;
-  display: inline-block;
+  padding: 7px;
 }
 
 a:focus > .thumbnail > .thumbnailSelectionRing > .thumbnailImage,
 .thumbnail:hover > .thumbnailSelectionRing > .thumbnailImage {
   opacity: .9;
 }
-/*
+
 a:focus > .thumbnail > .thumbnailSelectionRing,
 .thumbnail:hover > .thumbnailSelectionRing {
   background-color: hsla(0,0%,100%,.15);
@@ -1365,12 +1445,11 @@ a:focus > .thumbnail > .thumbnailSelectionRing,
               0 0 1px hsla(0,0%,0%,.2);
   color: hsla(0,0%,100%,.9);
 }
-*/
 
 .thumbnail.selected > .thumbnailSelectionRing > .thumbnailImage {
   box-shadow: 0 0 0 1px hsla(0,0%,0%,.5);
   opacity: 1;
-}/*
+}
 
 .thumbnail.selected > .thumbnailSelectionRing {
   background-color: hsla(0,0%,100%,.3);
@@ -1380,12 +1459,12 @@ a:focus > .thumbnail > .thumbnailSelectionRing,
               0 0 1px hsla(0,0%,100%,.1) inset,
               0 0 1px hsla(0,0%,0%,.2);
   color: hsla(0,0%,100%,1);
-}*/
+}
 
 #outlineView,
 #attachmentsView {
   position: absolute;
-  width: 172px;
+  width: 192px;
   top: 0;
   bottom: 0;
   overflow: auto;
@@ -1932,6 +2011,10 @@ html[dir='rtl'] #documentPropertiesOverlay .row > * {
     content: url(images/secondaryToolbarButton-rotateCw@2x.png);
   }
 
+  .secondaryToolbarButton.selectTool::before {
+    content: url(images/secondaryToolbarButton-selectTool@2x.png);
+  }
+
   .secondaryToolbarButton.handTool::before {
     content: url(images/secondaryToolbarButton-handTool@2x.png);
   }
@@ -1997,21 +2080,29 @@ html[dir='rtl'] #documentPropertiesOverlay .row > * {
     display: none;
   }
 
-  /* Rules for browsers that support mozPrintCallback */
-  body[data-mozPrintCallback] #outerContainer {
+  /* Rules for browsers that support PDF.js printing */
+  body[data-pdfjsprinting] #outerContainer {
     display: none;
   }
-  body[data-mozPrintCallback] #printContainer {
+  body[data-pdfjsprinting] #printContainer {
     display: block;
+  }
+  #printContainer {
+    height: 100%;
   }
   /* wrapper around (scaled) print canvas elements */
   #printContainer > div {
     position: relative;
     top: 0;
     left: 0;
-    overflow: hidden;
+    width: 1px;
+    height: 1px;
+    overflow: visible;
+    page-break-after: always;
+    page-break-inside: avoid;
   }
-  #printContainer canvas {
+  #printContainer canvas,
+  #printContainer img {
     display: block;
   }
 }
@@ -2022,38 +2113,47 @@ html[dir='rtl'] #documentPropertiesOverlay .row > * {
   display: none;
 }
 
-@media all and (max-width: 960px) {
-  html[dir='ltr'] #outerContainer.sidebarMoving .outerCenter,
-  html[dir='ltr'] #outerContainer.sidebarOpen .outerCenter {
-    float: left;
-    left: 205px;
-  }
-  html[dir='rtl'] #outerContainer.sidebarMoving .outerCenter,
-  html[dir='rtl'] #outerContainer.sidebarOpen .outerCenter {
-    float: right;
-    right: 205px;
+@media all and (max-width: 1040px) {
+  #outerContainer.sidebarMoving #toolbarViewerMiddle,
+  #outerContainer.sidebarOpen #toolbarViewerMiddle {
+    display: table;
+    margin: auto;
+    left: auto;
+    position: inherit;
+    transform: none;
   }
 }
 
-@media all and (max-width: 900px) {
+@media all and (max-width: 980px) {
+  .sidebarMoving .hiddenLargeView,
   .sidebarOpen .hiddenLargeView {
     display: none;
   }
+  .sidebarMoving .visibleLargeView,
   .sidebarOpen .visibleLargeView {
     display: inherit;
   }
 }
 
-@media all and (max-width: 860px) {
+@media all and (max-width: 900px) {
+  #toolbarViewerMiddle {
+    display: table;
+    margin: auto;
+    left: auto;
+    position: inherit;
+    transform: none;
+  }
+  .sidebarMoving .hiddenMediumView,
   .sidebarOpen .hiddenMediumView {
     display: none;
   }
+  .sidebarMoving .visibleMediumView,
   .sidebarOpen .visibleMediumView {
     display: inherit;
   }
 }
 
-@media all and (max-width: 770px) {
+@media all and (max-width: 840px) {
   #sidebarContainer {
     top: 32px;
     z-index: 100;
@@ -2061,21 +2161,16 @@ html[dir='rtl'] #documentPropertiesOverlay .row > * {
   .loadingInProgress #sidebarContainer {
     top: 37px;
   }
+  #sidebarContent {
+    top: 32px;
+    background-color: hsla(0,0%,0%,.7);
+  }
 
   html[dir='ltr'] #outerContainer.sidebarOpen > #mainContainer {
     left: 0px;
   }
   html[dir='rtl'] #outerContainer.sidebarOpen > #mainContainer {
     right: 0px;
-  }
-
-  html[dir='ltr'] .outerCenter {
-    float: left;
-    left: 205px;
-  }
-  html[dir='rtl'] .outerCenter {
-    float: right;
-    right: 205px;
   }
 
   #outerContainer .hiddenLargeView,
@@ -2088,7 +2183,7 @@ html[dir='rtl'] #documentPropertiesOverlay .row > * {
   }
 }
 
-@media all and (max-width: 700px) {
+@media all and (max-width: 770px) {
   #outerContainer .hiddenLargeView {
     display: none;
   }
@@ -2097,7 +2192,7 @@ html[dir='rtl'] #documentPropertiesOverlay .row > * {
   }
 }
 
-@media all and (max-width: 660px) {
+@media all and (max-width: 700px) {
   #outerContainer .hiddenMediumView {
     display: none;
   }
@@ -2106,30 +2201,26 @@ html[dir='rtl'] #documentPropertiesOverlay .row > * {
   }
 }
 
-@media all and (max-width: 600px) {
-  .hiddenSmallView {
+@media all and (max-width: 640px) {
+  .hiddenSmallView, .hiddenSmallView * {
     display: none;
   }
   .visibleSmallView {
     display: inherit;
   }
-  html[dir='ltr'] #outerContainer.sidebarMoving .outerCenter,
-  html[dir='ltr'] #outerContainer.sidebarOpen .outerCenter,
-  html[dir='ltr'] .outerCenter {
-    left: 156px;
-  }
-  html[dir='rtl'] #outerContainer.sidebarMoving .outerCenter,
-  html[dir='rtl'] #outerContainer.sidebarOpen .outerCenter,
-  html[dir='rtl'] .outerCenter {
-    right: 156px;
-  }
   .toolbarButtonSpacer {
     width: 0;
   }
+  html[dir='ltr'] .findbar {
+    left: 38px;
+  }
+  html[dir='rtl'] .findbar {
+    right: 38px;
+  }
 }
 
-@media all and (max-width: 510px) {
-  #scaleSelectContainer, #pageNumberLabel {
+@media all and (max-width: 535px) {
+  #scaleSelectContainer {
     display: none;
   }
 }
