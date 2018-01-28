@@ -5,79 +5,88 @@ var uiImages = $('.weevisor-images');
 var sidebarWidth = $('.weevisor-sidebar').outerWidth();
 var view_margin = 50;
 
+// Callback
+var precalc = function( name ){
+  //$( '.weevisor-title', win ).text( name )
+}
+
 // Load structure
 if( params && params.command === 'openFile' ){
 
-    // To Do -> Error
+  // To Do -> Error
 
-    api.fs( params.data, function( error, structure ){
+  /*
+  if( params.gdrive ){
 
-      $( '.weevisor-title', win ).text( structure.name );
+    api.integration.gdrive( params.gdrive, function( err, account ){
 
-      // Si es un PDF
-      if(
-          structure.mime === 'application/pdf' ||
-          ( structure.formats && structure.formats['pdf'] )
-      ){
+      account.get( params.id, function( err, data ){
+        console.log( params, err, data )
+        precalc( data.name )
+      })
 
-        win
-            .addClass('pdf')
-            .addClass('sidebar');
+    })
 
-        var dimensions = structure.metadata ? structure.metadata.pdf.pageSize.split(' ') : [ 630, 0, 891 ];
-        var width       = parseInt( dimensions[0], 10 ) + sidebarWidth;
-        var height      = parseInt( dimensions[2], 10 ) + header.outerHeight();
-        var widthRatio  = width / ( api.tool.desktopWidth() - ( view_margin * 2 ) );
-        var heightRatio = height / ( api.tool.desktopHeight() - ( view_margin * 2 ) );
+  }else{
 
-        if( parseInt( dimensions[0], 10 ) >= parseInt( dimensions[2], 10 ) ){
+    api.fs( params.data, function( error, fsnode ){
+      precalc( fsnode.name )
+    })
 
-          if( widthRatio > 1 || heightRatio > 1 ){
+  }
+  */
 
-            if( widthRatio >= heightRatio ){
+  win
+  .addClass('pdf')
+  .addClass('sidebar')
+  .addClass('dark')
 
-                width  = api.tool.desktopWidth() - ( view_margin * 2 );
-                height = height / widthRatio;
+  if( location.host.indexOf('file') === -1 ){
 
-            }else{
+    var dimensions  = /*structure.metadata ? structure.metadata.pdf.pageSize.split(' ') :*/ [ 630, 0, 891 ];
+    var width       = parseInt( dimensions[0], 10 ) + sidebarWidth;
+    var height      = parseInt( dimensions[2], 10 ) + header.outerHeight();
+    var widthRatio  = width / ( api.tool.desktopWidth() - ( view_margin * 2 ) );
+    var heightRatio = height / ( api.tool.desktopHeight() - ( view_margin * 2 ) );
 
-                width  = width / heightRatio;
-                height = api.tool.desktopHeight() - ( view_margin * 2 );
+    if( parseInt( dimensions[0], 10 ) >= parseInt( dimensions[2], 10 ) ){
 
-            }
+      if( widthRatio > 1 || heightRatio > 1 ){
 
-          }
+        if( widthRatio >= heightRatio ){
+
+            width  = api.tool.desktopWidth() - ( view_margin * 2 );
+            height = height / widthRatio;
 
         }else{
 
-          if( widthRatio > 1 ){
-
-            width = api.tool.desktopWidth() - ( view_margin * 4 );
-            height = api.tool.desktopHeight() - ( view_margin * 4 );
-
-          }else{
-            height = api.tool.desktopHeight() - ( view_margin * 4 );
-          }
+            width  = width / heightRatio;
+            height = api.tool.desktopHeight() - ( view_margin * 2 );
 
         }
 
-
-        if( location.host.indexOf('file') === -1 ){
-
-          win.css({
-            'width'   : width + 'px',
-            'height'  : height + 'px'
-          });
-
-          //api.fit( win, 775 - win.width(), 500 - win.height() );
-        }
-
-      // Si es una imagen
       }
 
-      win.addClass('dark');
-      start();
+    }else{
 
+      if( widthRatio > 1 ){
+
+        width = api.tool.desktopWidth() - ( view_margin * 4 );
+        height = api.tool.desktopHeight() - ( view_margin * 4 );
+
+      }else{
+        height = api.tool.desktopHeight() - ( view_margin * 4 );
+      }
+
+    }
+
+    win.css({
+      'width'   : width + 'px',
+      'height'  : height + 'px'
     });
+
+  }
+
+  start()
 
 }
