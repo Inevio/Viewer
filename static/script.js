@@ -15,19 +15,59 @@ var _startApp = function(){
 
   if( params && params.command === 'openFile' ){
 
-      // To Do -> Error
+    // To Do -> Error
 
-      api.fs( params.data, function( error, structure ){
+    if( params.dropbox ){
 
-        $( '.ui-header-brand span', win ).text( structure.name );
-        var dimensions = structure.metadata ? structure.metadata.pdf.pageSize.split(' ') : [ 630, 0, 891 ];
+      api.integration.dropbox( params.dropbox, function( err, account ){
+
+        account.get( params.id, function( err, entry ){
+
+          $( '.ui-header-brand span', win ).text( entry.name );
+          var dimensions = [ 630, 0, 891 ];
+          pdfSize.push( parseInt( dimensions[0] , 10 ) , parseInt( dimensions[2] , 10 ) );
+          fileLoaded = entry;
+
+          setTexts();
+          _loadPdf( entry );
+
+        })
+
+      })
+
+    }else if( params.gdrive ){
+
+      api.integration.gdrive( params.gdrive, function( err, account ){
+
+        account.get( params.id, function( err, entry ){
+
+          $( '.ui-header-brand span', win ).text( entry.name );
+          var dimensions = [ 630, 0, 891 ];
+          pdfSize.push( parseInt( dimensions[0] , 10 ) , parseInt( dimensions[2] , 10 ) );
+          fileLoaded = entry;
+
+          setTexts();
+          _loadPdf( entry );
+
+        })
+
+      })
+
+    }else{
+
+      api.fs( params.data, function( error, fsnode ){
+
+        $( '.ui-header-brand span', win ).text( fsnode.name );
+        var dimensions = [ 630, 0, 891 ];
         pdfSize.push( parseInt( dimensions[0] , 10 ) , parseInt( dimensions[2] , 10 ) );
-        fileLoaded = structure;
+        fileLoaded = fsnode;
 
         setTexts();
         _loadPdf( fileLoaded );
 
       });
+
+    }
 
   }
 
@@ -38,15 +78,25 @@ var _loadPdf = function( file ){
   var filePreview = location.hostname.indexOf('file') !== -1
   var downloadLink = filePreview ? 'file/' + location.pathname.replace( /\//g, '' ) : file.id
 
-  if( file.mime === 'application/pdf' ){
-    $('iframe').attr( 'src', 'https://' + location.hostname + '/app/6/pdfjs/web/viewer.html?file=https://download.horbito.com/' + downloadLink );
-  }else if( file.formats && file.formats.pdf ){
-    $('iframe').attr( 'src', 'https://' + location.hostname + '/app/6/pdfjs/web/viewer.html?file=https://download.horbito.com/' + downloadLink + '/format/pdf' );
+  console.log( file )
+
+  if( file.dropbox ){
+    $('iframe').attr( 'src', 'https://' + location.hostname + '/app/6/pdfjs/web/viewer.html?file=https://download.horbito.com/dropbox/' + file.account + '/' + encodeURIComponent( file.id ) );
+  }else if( file.gdrive ){
+    $('iframe').attr( 'src', 'https://' + location.hostname + '/app/6/pdfjs/web/viewer.html?file=https://download.horbito.com/gdrive/' + file.account + '/' + encodeURIComponent( file.id ) );
   }else{
 
-    return alert( lang.canNotOpenPDF, function(){
-      api.app.removeView( win );
-    });
+    if( file.mime === 'application/pdf' ){
+      $('iframe').attr( 'src', 'https://' + location.hostname + '/app/6/pdfjs/web/viewer.html?file=https://download.horbito.com/' + downloadLink );
+    }else if( file.formats && file.formats.pdf ){
+      $('iframe').attr( 'src', 'https://' + location.hostname + '/app/6/pdfjs/web/viewer.html?file=https://download.horbito.com/' + downloadLink + '/format/pdf' );
+    }else{
+
+      alert( lang.canNotOpenPDF, function(){
+        api.app.removeView( win );
+      });
+
+    }
 
   }
 
