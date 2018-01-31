@@ -53,6 +53,24 @@ var _startApp = function(){
 
       })
 
+    }else if( params.onedrive ){
+
+      api.integration.onedrive( params.onedrive, function( err, account ){
+
+        account.get( params.id, function( err, entry ){
+
+          $( '.ui-header-brand span', win ).text( entry.name );
+          var dimensions = [ 630, 0, 891 ];
+          pdfSize.push( parseInt( dimensions[0] , 10 ) , parseInt( dimensions[2] , 10 ) );
+          fileLoaded = entry;
+
+          setTexts();
+          _loadPdf( entry );
+
+        })
+
+      })
+
     }else{
 
       api.fs( params.data, function( error, fsnode ){
@@ -75,16 +93,18 @@ var _startApp = function(){
 
 var _loadPdf = function( file ){
 
-  var filePreview = location.hostname.indexOf('file') !== -1
-  var downloadLink = filePreview ? 'file/' + location.pathname.replace( /\//g, '' ) : file.id
-
   console.log( file )
 
   if( file.dropbox ){
     $('iframe').attr( 'src', 'https://' + location.hostname + '/app/6/pdfjs/web/viewer.html?file=https://download.horbito.com/dropbox/' + file.account + '/' + encodeURIComponent( file.id ) );
   }else if( file.gdrive ){
     $('iframe').attr( 'src', 'https://' + location.hostname + '/app/6/pdfjs/web/viewer.html?file=https://download.horbito.com/gdrive/' + file.account + '/' + encodeURIComponent( file.id ) );
+  }else if( file.onedrive ){
+    $('iframe').attr( 'src', 'https://' + location.hostname + '/app/6/pdfjs/web/viewer.html?file=https://download.horbito.com/onedrive/' + file.account + '/' + encodeURIComponent( file.id ) );
   }else{
+
+    var filePreview = location.hostname.indexOf('file') !== -1
+    var downloadLink = filePreview ? 'file/' + location.pathname.replace( /\//g, '' ) : file.id
 
     if( file.mime === 'application/pdf' ){
       $('iframe').attr( 'src', 'https://' + location.hostname + '/app/6/pdfjs/web/viewer.html?file=https://download.horbito.com/' + downloadLink );
